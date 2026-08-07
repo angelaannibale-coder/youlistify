@@ -1,7 +1,7 @@
 "use client";
 
-import { FormEvent, useMemo, useState } from "react";
-
+import { FormEvent, useEffect, useMemo, useState } from "react";
+import { create client } from "@supabase/supabase-js";
 type Provider = {
   name:string; category:string; city:string; rating:number; reviews:number;
   response:string; initials:string; phone:string; specialties:string[];
@@ -11,7 +11,10 @@ const categories = [
   ["⌂","Home Services"],["✧","Cleaning"],["⌕","Handyman"],["▣","Moving"],
   ["□","Events"],["♡","Wellness"],["···","More"]
 ];
-
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 const providers: Provider[] = [
   {name:"Alex Morgan",category:"Home Services",city:"Boynton Beach, FL",rating:4.9,reviews:96,response:"Usually answers in 3 min",initials:"AM",phone:"(555) 013-2048",specialties:["Minor repairs","Furniture assembly","Mounting"]},
   {name:"Pulse Event DJs",category:"Events",city:"West Palm Beach, FL",rating:5.0,reviews:84,response:"Usually answers in 2 min",initials:"PD",phone:"(555) 013-5872",specialties:["Weddings","Parties","Corporate events"]},
@@ -23,7 +26,26 @@ export default function Home(){
   const [location,setLocation]=useState("");
   const [searched,setSearched]=useState(false);
   const [selected,setSelected]=useState<Provider|null>(null);
+  const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
+useEffect(() => {
+  async function loadProviders() {
+    const { data, error } = await supabase
+      .from("Providers")
+      .select("*");
 
+    if (error) {
+      console.error("Error loading providers:", error);
+      return;
+    }
+
+    console.log("Providers from Supabase:", data);
+  }
+
+  loadProviders();
+}, []);
   const filtered = useMemo(()=>{
     const s=service.trim().toLowerCase(), l=location.trim().toLowerCase();
     return providers.filter(p=>{
