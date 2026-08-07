@@ -1,7 +1,7 @@
 "use client";
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
-import { create client } from "@supabase/supabase-js";
+import { createClient } from "@supabase/supabase-js";
 type Provider = {
   name:string; category:string; city:string; rating:number; reviews:number;
   response:string; initials:string; phone:string; specialties:string[];
