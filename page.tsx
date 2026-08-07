@@ -26,6 +26,7 @@ export default function Home(){
   const [location,setLocation]=useState("");
   const [searched,setSearched]=useState(false);
   const [selected,setSelected]=useState<Provider|null>(null);
+  const [dbProviders,setDbProviders]=useState<any[]>([]);
   const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -42,18 +43,32 @@ useEffect(() => {
     }
 
     console.log("Providers from Supabase:", data);
+    setDbProviders(data || []);
   }
 
   loadProviders();
 }, []);
+  const searchableProviders: Provider[] = dbProviders.length
+  ? dbProviders.map((p:any) => ({
+      name: p.business_name || p.name || "Provider",
+      category: "",
+      city: [p.city, p.state].filter(Boolean).join(", "),
+      rating: 0,
+      reviews: 0,
+      response: p.bio || "",
+      initials: (p.name || "P").split(" ").map((x:string)=>x[0]).join("").slice(0,2).toUpperCase(),
+      phone: p.phone || "",
+      specialties: []
+    }))
+  : providers;
   const filtered = useMemo(()=>{
     const s=service.trim().toLowerCase(), l=location.trim().toLowerCase();
-    return providers.filter(p=>{
+    return searchableProviders.filter(p=>{
       const ms=!s || p.category.toLowerCase().includes(s) || p.name.toLowerCase().includes(s) || p.specialties.some(x=>x.toLowerCase().includes(s));
       const ml=!l || p.city.toLowerCase().includes(l);
       return ms && ml;
     });
-  },[service,location]);
+  },[service,location, dbProviders]);
 
   function runSearch(e?:FormEvent){
     e?.preventDefault();
