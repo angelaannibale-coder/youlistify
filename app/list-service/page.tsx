@@ -158,11 +158,17 @@ async function saveProvider(e: React.FormEvent) {
   />
 
   <input
-    placeholder="ZIP code"
-    value={form.zip_code}
-    onChange={(e) => setForm({ ...form, zip_code: e.target.value })}
-    style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
-  />
+  placeholder="ZIP code"
+  value={form.zip_code}
+  onChange={(e) => setForm({ ...form, zip_code: e.target.value })}
+  style={{
+    padding: "14px",
+    borderRadius: "10px",
+    border: "1px solid #ddd",
+    width: "160px",
+    maxWidth: "100%"
+  }}
+/>
 <div style={{ display: "grid", gap: "10px" }}>
   <div style={{ fontWeight: "600" }}>
     What services do you offer? Select all that apply.
