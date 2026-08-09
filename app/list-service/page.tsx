@@ -67,7 +67,7 @@ async function saveProvider(e: React.FormEvent) {
     .insert(
       service_ids.map((serviceId) => ({
         provider_id: newProvider.id,
-        service_id: serviceid,
+        service_id: serviceId,
       }))
     );
 
