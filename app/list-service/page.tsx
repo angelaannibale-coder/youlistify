@@ -18,7 +18,7 @@ export default function ListService() {
     email: "",
     city: "",
     state: "",
-    zip: "",
+    zip-code: "",
     bio: "",
   });
 async function saveProvider(e: React.FormEvent) {
@@ -116,8 +116,8 @@ async function saveProvider(e: React.FormEvent) {
 
   <input
     placeholder="ZIP code"
-    value={form.zip}
-    onChange={(e) => setForm({ ...form, zip: e.target.value })}
+    value={form.zip-code}
+    onChange={(e) => setForm({ ...form, zip-code: e.target.value })}
     style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
   />
 
