@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -10,7 +10,7 @@ const supabase = createClient(
 export default function ListService() {
 
   
-
+const [services, setServices] = useState<any[]>([]);
   const [form, setForm] = useState({
     name: "",
     business_name: "",
@@ -20,7 +20,26 @@ export default function ListService() {
     state: "",
     zip_code: "",
     bio: "",
+    service_id:""
   });
+
+  const [services, setServices] = useState<any[]>([]);
+useEffect(() => {
+  async function loadServices() {
+    const { data, error } = await supabase
+      .from("services")
+      .select("id, name, category")
+      .order("category")
+      .order("name");
+
+    if (!error && data) {
+      setServices(data);
+    }
+  }
+
+  loadServices();
+}, []);
+  
 async function saveProvider(e: React.FormEvent) {
   e.preventDefault();
 
@@ -120,6 +139,14 @@ async function saveProvider(e: React.FormEvent) {
     onChange={(e) => setForm({ ...form, zip_code: e.target.value })}
     style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
   />
+
+       <select
+  value={form.service_id}
+  onChange={(e) => setForm({ ...form, service_id: e.target.value })}
+  style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+>
+  <option value="">What service do you offer?</option>
+</select>
 
   <textarea
     placeholder="Tell customers about your services"
