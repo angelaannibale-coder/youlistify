@@ -83,7 +83,7 @@ const searchableProviders: Provider[] = dbProviders.length
 
   return <main>
   
-  <div style={{padding:"10px",background:"#fff3cd"}}>Supabase providers loaded: {dbProviders.length}</div>
+  
     <header className="topbar">
       <a className="brand" href="#top" aria-label="YouListify home">
         <span className="brand-icon">Y</span>
