@@ -23,7 +23,7 @@ const [services, setServices] = useState<any[]>([]);
     service_id:""
   });
 
-  const [services, setServices] = useState<any[]>([]);
+  
 useEffect(() => {
   async function loadServices() {
     const { data, error } = await supabase
