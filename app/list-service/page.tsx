@@ -163,31 +163,43 @@ async function saveProvider(e: React.FormEvent) {
     onChange={(e) => setForm({ ...form, zip_code: e.target.value })}
     style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
   />
-<select
-  multiple
-  value={form.service_ids.map(String)}
-  onChange={(e) =>
-    setForm({
-      ...form,
-      service_ids: Array.from(
-        e.target.selectedOptions,
-        (option) => Number(option.value)
-      ),
-    })
-  }
-  style={{
-    padding: "14px",
-    borderRadius: "10px",
-    border: "1px solid #ddd",
-    minHeight: "140px",
-  }}
->
+<div style={{ display: "grid", gap: "10px" }}>
+  <div style={{ fontWeight: "600" }}>
+    What services do you offer? Select all that apply.
+  </div>
+
   {services.map((service: any) => (
-    <option key={service.id} value={service.id}>
+    <label
+      key={service.id}
+      style={{
+        display: "flex",
+        alignItems: "center",
+        gap: "10px",
+        padding: "10px",
+        border: "1px solid #ddd",
+        borderRadius: "10px",
+        cursor: "pointer",
+      }}
+    >
+      <input
+        type="checkbox"
+        checked={form.service_ids.includes(Number(service.id))}
+        onChange={(e) => {
+          const serviceId = Number(service.id);
+
+          setForm({
+            ...form,
+            service_ids: e.target.checked
+              ? [...form.service_ids, serviceId]
+              : form.service_ids.filter((id) => id !== serviceId),
+          });
+        }}
+      />
+
       {service.name}
-    </option>
+    </label>
   ))}
-</select>
+</div>
       
 
   <textarea
