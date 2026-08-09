@@ -48,57 +48,91 @@ export default function ListService() {
     Create your YouListify provider profile and start connecting with customers.
   </p>
 
-      <form>
-        <input
-          placeholder="Your name"
-          value={form.name}
-          onChange={(e) => setForm({ ...form, name: e.target.value })}
-        />
+     <form
+  style={{
+    display: "grid",
+    gridTemplateColumns: "1fr 1fr",
+    gap: "16px",
+  }}
+>
+  <input
+    placeholder="Your name"
+    value={form.name}
+    onChange={(e) => setForm({ ...form, name: e.target.value })}
+    style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+  />
 
-        <input
-          placeholder="Business name (optional)"
-          value={form.business_name}
-          onChange={(e) => setForm({ ...form, business_name: e.target.value })}
-        />
+  <input
+    placeholder="Business name (optional)"
+    value={form.business_name}
+    onChange={(e) => setForm({ ...form, business_name: e.target.value })}
+    style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+  />
 
-        <input
-          placeholder="Phone"
-          value={form.phone}
-          onChange={(e) => setForm({ ...form, phone: e.target.value })}
-        />
+  <input
+    placeholder="Phone"
+    value={form.phone}
+    onChange={(e) => setForm({ ...form, phone: e.target.value })}
+    style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+  />
 
-        <input
-          placeholder="Email"
-          value={form.email}
-          onChange={(e) => setForm({ ...form, email: e.target.value })}
-        />
+  <input
+    placeholder="Email"
+    value={form.email}
+    onChange={(e) => setForm({ ...form, email: e.target.value })}
+    style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+  />
 
-        <input
-          placeholder="City"
-          value={form.city}
-          onChange={(e) => setForm({ ...form, city: e.target.value })}
-        />
+  <input
+    placeholder="City"
+    value={form.city}
+    onChange={(e) => setForm({ ...form, city: e.target.value })}
+    style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+  />
 
-        <input
-          placeholder="State"
-          value={form.state}
-          onChange={(e) => setForm({ ...form, state: e.target.value })}
-        />
+  <input
+    placeholder="State"
+    value={form.state}
+    onChange={(e) => setForm({ ...form, state: e.target.value })}
+    style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+  />
 
-        <input
-          placeholder="ZIP code"
-          value={form.zip}
-          onChange={(e) => setForm({ ...form, zip: e.target.value })}
-        />
+  <input
+    placeholder="ZIP code"
+    value={form.zip}
+    onChange={(e) => setForm({ ...form, zip: e.target.value })}
+    style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+  />
 
-        <textarea
-          placeholder="Tell customers about your services"
-          value={form.bio}
-          onChange={(e) => setForm({ ...form, bio: e.target.value })}
-        />
+  <textarea
+    placeholder="Tell customers about your services"
+    value={form.bio}
+    onChange={(e) => setForm({ ...form, bio: e.target.value })}
+    style={{
+      padding: "14px",
+      borderRadius: "10px",
+      border: "1px solid #ddd",
+      minHeight: "100px",
+    }}
+  />
 
-        <button type="submit">Continue</button>
-      </form>
+  <button
+    type="submit"
+    style={{
+      gridColumn: "1 / -1",
+      padding: "16px",
+      border: "none",
+      borderRadius: "12px",
+      background: "#5b4cf0",
+      color: "white",
+      fontWeight: "700",
+      fontSize: "16px",
+      cursor: "pointer",
+    }}
+  >
+    Continue
+  </button>
+</form> 
     </main>
   );
 }
