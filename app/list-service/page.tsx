@@ -65,7 +65,7 @@ async function saveProvider(e: React.FormEvent) {
   const { error: serviceError } = await supabase
     .from("provider_services")
     .insert(
-      service_ids.map((serviceId => ({
+      service_ids.map((serviceId) => ({
         provider_id: newProvider.id,
         service_id: serviceid,
       }))
