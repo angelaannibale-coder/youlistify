@@ -19,9 +19,34 @@ export default function ListService() {
   });
 
   return (
-    <main style={{ maxWidth: "700px", margin: "60px auto", padding: "24px" }}>
-      <h1>List your service</h1>
-      <p>Create your YouListify provider profile.</p>
+   <main style={{
+  maxWidth: "760px",
+  margin: "70px auto",
+  padding: "48px",
+  background: "white",
+  borderRadius: "24px",
+  boxShadow: "0 12px 40px rgba(0,0,0,0.08)"
+}}>
+  <div style={{ color: "#5b4cf0", fontWeight: "700", marginBottom: "12px" }}>
+    JOIN YOULISTIFY
+  </div>
+
+  <h1 style={{
+    fontSize: "56px",
+    lineHeight: "1",
+    margin: "0 0 18px",
+    color: "#182033"
+  }}>
+    List your service
+  </h1>
+
+  <p style={{
+    fontSize: "18px",
+    color: "#667085",
+    marginBottom: "32px"
+  }}>
+    Create your YouListify provider profile and start connecting with customers.
+  </p>
 
       <form>
         <input
