@@ -35,7 +35,7 @@ const supabase = createClient(
 useEffect(() => {
   async function loadProviders() {
     const { data, error } = await supabase
-      .from("providers")
+      .from("Providers")
       .select("*");
 
     if (error) {
