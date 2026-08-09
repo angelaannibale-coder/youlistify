@@ -25,7 +25,7 @@ async function saveProvider(e: React.FormEvent) {
   e.preventDefault();
 
   const { error } = await supabase
-    .from("providers")
+    .from("Providers")
     .insert([form]);
 
   if (error) {
