@@ -20,7 +20,7 @@ const [services, setServices] = useState<any[]>([]);
     state: "",
     zip_code: "",
     bio: "",
-    service_id:""
+    service_ids: [] as number []
   });
 
   
@@ -43,12 +43,13 @@ useEffect(() => {
 async function saveProvider(e: React.FormEvent) {
   e.preventDefault();
 
-  if (!form.service_id) {
+  if (form.service_ids.length === 0
+    ) {
     alert("Please choose a service.");
     return;
   }
 
-  const { service_id, ...providerData } = form;
+  const { service_ids, ...providerData } = form;
 
   const { data: newProvider, error: providerError } = await supabase
     .from("Providers")
@@ -63,12 +64,12 @@ async function saveProvider(e: React.FormEvent) {
 
   const { error: serviceError } = await supabase
     .from("provider_services")
-    .insert([
-      {
+    .insert(
+      service_ids.map((serviceId => ({
         provider_id: newProvider.id,
-        service_id: Number(service_id),
-      },
-    ]);
+        service_id: serviceid,
+      }))
+    );
 
   if (serviceError) {
     alert("Provider saved, but service could not be added: " + serviceError.message);
@@ -162,19 +163,32 @@ async function saveProvider(e: React.FormEvent) {
     onChange={(e) => setForm({ ...form, zip_code: e.target.value })}
     style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
   />
-
-       <select
-  value={form.service_id}
-  onChange={(e) => setForm({ ...form, service_id: e.target.value })}
-  style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+<select
+  multiple
+  value={form.service_ids.map(String)}
+  onChange={(e) =>
+    setForm({
+      ...form,
+      service_ids: Array.from(
+        e.target.selectedOptions,
+        (option) => Number(option.value)
+      ),
+    })
+  }
+  style={{
+    padding: "14px",
+    borderRadius: "10px",
+    border: "1px solid #ddd",
+    minHeight: "140px",
+  }}
 >
-  <option value="">What service do you offer?</option>
-         {services.map((service: any) => (
-  <option key={service.id} value={service.id}>
-    {service.category} — {service.name}
-  </option>
-))}
+  {services.map((service: any) => (
+    <option key={service.id} value={service.id}>
+      {service.name}
+    </option>
+  ))}
 </select>
+      
 
   <textarea
     placeholder="Tell customers about your services"
