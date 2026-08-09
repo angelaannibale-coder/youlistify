@@ -1,7 +1,11 @@
 "use client";
 
 import { useState } from "react";
-
+import { createClient } from "@supabase/supabase-js";
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+);
 
 export default function ListService() {
 
@@ -17,7 +21,20 @@ export default function ListService() {
     zip: "",
     bio: "",
   });
+async function saveProvider(e: React.FormEvent) {
+  e.preventDefault();
 
+  const { error } = await supabase
+    .from("providers")
+    .insert([form]);
+
+  if (error) {
+    alert("Something went wrong: " + error.message);
+    return;
+  }
+
+  alert("Your provider profile was saved!");
+}
   return (
    <main style={{
   maxWidth: "760px",
@@ -48,7 +65,7 @@ export default function ListService() {
     Create your YouListify provider profile and start connecting with customers.
   </p>
 
-     <form
+     <form onSubmit={saveProvider}
   style={{
     display: "grid",
     gridTemplateColumns: "1fr 1fr",
