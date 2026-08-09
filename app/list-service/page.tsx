@@ -13,14 +13,16 @@ export default function ListService() {
 const [services, setServices] = useState<any[]>([]);
   const [form, setForm] = useState({
     name: "",
-    business_name: "",
-    phone: "",
-    email: "",
-    city: "",
-    state: "",
-    zip_code: "",
-    bio: "",
-    service_ids: [] as number []
+last_name: "",
+business_name: "",
+phone: "",
+email: "",
+service_mode: "local",
+city: "",
+state: "",
+zip_code: "",
+bio: "",
+service_ids: [] as number[]
   });
 
   
@@ -122,12 +124,17 @@ async function saveProvider(e: React.FormEvent) {
     style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
   />
 
-  <input
-    placeholder="Business name (optional)"
-    value={form.business_name}
-    onChange={(e) => setForm({ ...form, business_name: e.target.value })}
-    style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
-  />
+  first_name: "",
+last_name: "",
+business_name: "",
+phone: "",
+email: "",
+service_mode: "local",
+city: "",
+state: "",
+zip_code: "",
+bio: "",
+service_ids: [] as number[]
 
   <input
     placeholder="Phone"
