@@ -43,12 +43,35 @@ useEffect(() => {
 async function saveProvider(e: React.FormEvent) {
   e.preventDefault();
 
-  const { error } = await supabase
-    .from("Providers")
-    .insert([form]);
+  if (!form.service_id) {
+    alert("Please choose a service.");
+    return;
+  }
 
-  if (error) {
-    alert("Something went wrong: " + error.message);
+  const { service_id, ...providerData } = form;
+
+  const { data: newProvider, error: providerError } = await supabase
+    .from("Providers")
+    .insert([providerData])
+    .select("id")
+    .single();
+
+  if (providerError) {
+    alert("Something went wrong: " + providerError.message);
+    return;
+  }
+
+  const { error: serviceError } = await supabase
+    .from("provider_services")
+    .insert([
+      {
+        provider_id: newProvider.id,
+        service_id: Number(service_id),
+      },
+    ]);
+
+  if (serviceError) {
+    alert("Provider saved, but service could not be added: " + serviceError.message);
     return;
   }
 
@@ -146,6 +169,11 @@ async function saveProvider(e: React.FormEvent) {
   style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
 >
   <option value="">What service do you offer?</option>
+         {services.map((service: any) => (
+  <option key={service.id} value={service.id}>
+    {service.category} — {service.name}
+  </option>
+))}
 </select>
 
   <textarea
