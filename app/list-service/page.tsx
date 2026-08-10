@@ -127,6 +127,7 @@ make updates, add photos, and keep your information current.
 
 <button
 type="button"
+  onClick={() => setSubmitted(false)}
 style={{
 width: "100%",
 padding: "16px",
