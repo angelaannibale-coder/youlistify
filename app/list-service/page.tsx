@@ -118,24 +118,26 @@ async function saveProvider(e: React.FormEvent) {
   }}
 >
   <input
-    placeholder="Your name"
-    value={form.name}
-    onChange={(e) => setForm({ ...form, name: e.target.value })}
-    style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
-  />
+  placeholder="First name"
+  value={form.name}
+  onChange={(e) => setForm({ ...form, name: e.target.value })}
+  style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+/>
 
-  first_name: "",
-last_name: "",
-business_name: "",
-phone: "",
-email: "",
-service_mode: "local",
-city: "",
-state: "",
-zip_code: "",
-bio: "",
-service_ids: [] as number[]
+<input
+  placeholder="Last name"
+  value={form.last_name}
+  onChange={(e) => setForm({ ...form, last_name: e.target.value })}
+  style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+/>
 
+ 
+<input
+  placeholder="Business name (optional)"
+  value={form.business_name}
+  onChange={(e) => setForm({ ...form, business_name: e.target.value })}
+  style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+/>
   <input
     placeholder="Phone"
     value={form.phone}
