@@ -329,7 +329,7 @@ How do you charge?
 </div>
 
 <div style={{ fontSize: "14px", color: "#667085", marginBottom: "10px" }}>
-Select all that apply. Adding a price is optional.
+Select all that apply. You can add rates if you'd like, but pricing is optional.
 </div>
 
 {["Hourly rate", "Flat rate", "Contact for pricing"].map((method) => (
