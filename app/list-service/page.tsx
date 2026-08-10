@@ -23,6 +23,8 @@ city: "",
 state: "",
 zip_code: "",
 bio: "",
+    pricing_methods: [] as string[],
+starting_price: "",
 service_ids: [] as number[]
   });
 
@@ -291,17 +293,84 @@ async function saveProvider(e: React.FormEvent) {
 </div>
       
 
-  <textarea
-    placeholder="Tell customers about your services"
-    value={form.bio}
-    onChange={(e) => setForm({ ...form, bio: e.target.value })}
-    style={{
-      padding: "14px",
-      borderRadius: "10px",
-      border: "1px solid #ddd",
-      minHeight: "100px",
-    }}
-  />
+  <div style={{ gridColumn: "1 / -1" }}>
+<div style={{ fontWeight: "600", marginBottom: "6px" }}>
+About your services
+</div>
+
+<div style={{ fontSize: "14px", color: "#667085", marginBottom: "10px" }}>
+Tell customers what you do, your experience, and what makes your service stand out.
+</div>
+
+<textarea
+placeholder="Describe your services..."
+value={form.bio}
+maxLength={750}
+onChange={(e) => setForm({ ...form, bio: e.target.value })}
+style={{
+width: "100%",
+padding: "14px",
+borderRadius: "10px",
+border: "1px solid #ddd",
+minHeight: "150px",
+resize: "vertical"
+}}
+/>
+</div>
+
+       <div style={{ gridColumn: "1 / -1" }}>
+<div style={{ fontWeight: "600", marginBottom: "6px" }}>
+How do you charge?
+</div>
+
+<div style={{ fontSize: "14px", color: "#667085", marginBottom: "10px" }}>
+Select all that apply. Adding a price is optional.
+</div>
+
+{["Hourly rate", "Flat rate", "Contact for pricing"].map((method) => (
+<label
+key={method}
+style={{
+display: "flex",
+alignItems: "center",
+gap: "10px",
+marginBottom: "10px",
+}}
+>
+<input
+type="checkbox"
+checked={form.pricing_methods.includes(method)}
+onChange={(e) =>
+setForm({
+...form,
+pricing_methods: e.target.checked
+? [...form.pricing_methods, method]
+: form.pricing_methods.filter((item) => item !== method),
+})
+}
+/>
+{method}
+</label>
+))}
+
+<input
+type="number"
+min="0"
+step="0.01"
+placeholder="Starting price or rate (optional)"
+value={form.starting_price}
+onChange={(e) =>
+setForm({ ...form, starting_price: e.target.value })
+}
+style={{
+width: "100%",
+padding: "14px",
+borderRadius: "10px",
+border: "1px solid #ddd",
+marginTop: "4px",
+}}
+/>
+</div>
 
   <button
     type="submit"
