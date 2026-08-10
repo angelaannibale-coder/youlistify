@@ -150,7 +150,15 @@ async function saveProvider(e: React.FormEvent) {
     value={form.email}
     onChange={(e) => setForm({ ...form, email: e.target.value })}
     style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
-  />
+  />  <select
+  value={form.service_mode}
+  onChange={(e) => setForm({ ...form, service_mode: e.target.value })}
+  style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+>
+  <option value="local">Local / In-person</option>
+  <option value="remote">Remote / Online</option>
+  <option value="both">Local + Remote</option>
+</select>
 
   <input
     placeholder="City"
