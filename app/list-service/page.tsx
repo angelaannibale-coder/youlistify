@@ -12,6 +12,7 @@ export default function ListService() {
   
 const [services, setServices] = useState<any[]>([]);
   const [serviceSearch, setSearch] = useState("");
+  const [submitted, setSubmitted] = useState(false);
   const [form, setForm] = useState({
     name: "",
 last_name: "",
@@ -82,9 +83,68 @@ async function saveProvider(e: React.FormEvent) {
     return;
   }
 
-  alert("Your provider profile was saved!");
+  setSubmitted(true);
 }
-  return (
+ if (submitted) {
+return (
+<main style={{
+maxWidth: "760px",
+margin: "70px auto",
+padding: "48px",
+background: "white",
+borderRadius: "24px",
+boxShadow: "0 12px 40px rgba(0,0,0,0.08)",
+textAlign: "center"
+}}>
+<div style={{ fontSize: "56px", marginBottom: "16px" }}>
+🎉
+</div>
+
+<h1 style={{
+fontSize: "42px",
+marginBottom: "16px",
+color: "#182033"
+}}>
+Your listing has been created!
+</h1>
+
+<p style={{
+fontSize: "18px",
+color: "#667085",
+lineHeight: "1.6"
+}}>
+Welcome to YouListify! Your service listing is now saved.
+</p>
+
+<p style={{
+fontSize: "18px",
+color: "#667085",
+lineHeight: "1.6"
+}}>
+Create your free provider account to manage your listing,
+make updates, add photos, and keep your information current.
+</p>
+
+<button
+type="button"
+style={{
+width: "100%",
+padding: "16px",
+marginTop: "20px",
+border: "none",
+borderRadius: "12px",
+background: "#5b4cf0",
+color: "white",
+fontWeight: "700",
+fontSize: "16px",
+cursor: "pointer"
+}}
+>
+Create My Account
+</button>
+</main>
+);
+} return (
    <main style={{
   maxWidth: "760px",
   margin: "70px auto",
