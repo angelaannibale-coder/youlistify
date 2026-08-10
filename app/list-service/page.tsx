@@ -11,6 +11,7 @@ export default function ListService() {
 
   
 const [services, setServices] = useState<any[]>([]);
+  const [serviceSearch, setSearch] = useState("");
   const [form, setForm] = useState({
     name: "",
 last_name: "",
@@ -244,8 +245,19 @@ async function saveProvider(e: React.FormEvent) {
   <div style={{ fontWeight: "600" }}>
     What services do you offer? Select all that apply.
   </div>
-
-  {services.map((service: any) => (
+ <input
+  type="text"
+  placeholder="Search services..."
+  value={serviceSearch}
+  onChange={(e) => setSearch(e.target.value)}
+  style={{
+    padding: "12px",
+    borderRadius: "10px",
+    border: "1px solid #ddd",
+    width: "100%"
+  }}
+/>
+  {services.filter((service: any) => service.name.toLowerCase().includes(serviceSearch.toLowerCase())).map((service: any) => (
     <label
       key={service.id}
       style={{
