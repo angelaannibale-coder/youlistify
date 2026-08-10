@@ -13,6 +13,7 @@ export default function ListService() {
 const [services, setServices] = useState<any[]>([]);
   const [serviceSearch, setSearch] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [password, setPassword] = useState("");
   const [showAccountForm, setShowAccountForm] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -47,6 +48,25 @@ useEffect(() => {
 
   loadServices();
 }, []);
+
+  async function createAccount() {
+if (!form.email || !password) {
+alert("Please enter a password.");
+return;
+}
+
+const { error } = await supabase.auth.signUp({
+email: form.email,
+password: password,
+});
+
+if (error) {
+alert("Could not create account: " + error.message);
+return;
+}
+
+alert("Account created! Please check your email to confirm your account.");
+}
   
 async function saveProvider(e: React.FormEvent) {
   e.preventDefault();
@@ -190,6 +210,8 @@ marginBottom: "14px"
 <input
 type="password"
 placeholder="Create a password"
+  value={password}
+onChange={(e) => setPassword(e.target.value)}
 style={{
 width: "100%",
 padding: "14px",
@@ -201,6 +223,7 @@ marginBottom: "18px"
 
 <button
 type="button"
+  onClick={createAccount}
 style={{
 width: "100%",
 padding: "16px",
