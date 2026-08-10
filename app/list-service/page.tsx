@@ -259,7 +259,11 @@ async function saveProvider(e: React.FormEvent) {
     width: "100%"
   }}
 />
-  {services.filter((service: any) => service.name.toLowerCase().includes(serviceSearch.toLowerCase())).map((service: any) => (
+  {services.filter((service: any) =>
+serviceSearch.trim()
+? service.name.toLowerCase().includes(serviceSearch.toLowerCase())
+: form.service_ids.includes(Number(service.id))
+).map((service: any) => (
     <label
       key={service.id}
       style={{
