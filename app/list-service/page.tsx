@@ -150,15 +150,7 @@ async function saveProvider(e: React.FormEvent) {
     value={form.email}
     onChange={(e) => setForm({ ...form, email: e.target.value })}
     style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
-  />  <select
-  value={form.service_mode}
-  onChange={(e) => setForm({ ...form, service_mode: e.target.value })}
-  style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
->
-  <option value="local">Local / In-person</option>
-  <option value="remote">Remote / Online</option>
-  <option value="both">Local + Remote</option>
-</select>
+ 
 
   <input
     placeholder="City"
@@ -238,7 +230,17 @@ async function saveProvider(e: React.FormEvent) {
     maxWidth: "100%"
   }}
 />
-<div style={{ display: "grid", gap: "10px" }}>
+    <select
+  value={form.service_mode}
+  onChange={(e) => setForm({ ...form, service_mode: e.target.value })}
+  style={{ padding: "14px", borderRadius: "10px", border: "1px solid #ddd" }}
+>
+  <option value="local">Local / In-person</option>
+  <option value="remote">Remote / Online</option>
+  <option value="both">Local + Remote</option>
+</select>
+         
+<div style={{ display: "grid", gap: "10px", gridColumn: "1 / -1" }}>
   <div style={{ fontWeight: "600" }}>
     What services do you offer? Select all that apply.
   </div>
