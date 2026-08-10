@@ -13,6 +13,7 @@ export default function ListService() {
 const [services, setServices] = useState<any[]>([]);
   const [serviceSearch, setSearch] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [showAccountForm, setShowAccountForm] = useState(false);
   const [form, setForm] = useState({
     name: "",
 last_name: "",
@@ -127,7 +128,7 @@ make updates, add photos, and keep your information current.
 
 <button
 type="button"
-  onClick={() => setSubmitted(false)}
+  onClick={() => setShowAccountForm(true)}
 style={{
 width: "100%",
 padding: "16px",
@@ -145,6 +146,78 @@ Create My Account
 </button>
 </main>
 );
+   if (showAccountForm) {
+return (
+<main style={{
+maxWidth: "760px",
+margin: "70px auto",
+padding: "48px",
+background: "white",
+borderRadius: "24px",
+boxShadow: "0 12px 40px rgba(0,0,0,0.08)"
+}}>
+<h1 style={{
+fontSize: "42px",
+marginBottom: "12px",
+color: "#182033"
+}}>
+Create your account
+</h1>
+
+<p style={{
+fontSize: "18px",
+color: "#667085",
+lineHeight: "1.6",
+marginBottom: "28px"
+}}>
+You're almost done! Create your free provider account to manage
+your listing, add photos, and make updates anytime.
+</p>
+
+<input
+type="email"
+value={form.email}
+readOnly
+style={{
+width: "100%",
+padding: "14px",
+borderRadius: "10px",
+border: "1px solid #ddd",
+marginBottom: "14px"
+}}
+/>
+
+<input
+type="password"
+placeholder="Create a password"
+style={{
+width: "100%",
+padding: "14px",
+borderRadius: "10px",
+border: "1px solid #ddd",
+marginBottom: "18px"
+}}
+/>
+
+<button
+type="button"
+style={{
+width: "100%",
+padding: "16px",
+border: "none",
+borderRadius: "12px",
+background: "#5b4cf0",
+color: "white",
+fontWeight: "700",
+fontSize: "16px",
+cursor: "pointer"
+}}
+>
+Create My Account
+</button>
+</main>
+);
+}
 } return (
    <main style={{
   maxWidth: "760px",
