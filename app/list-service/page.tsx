@@ -25,6 +25,7 @@ zip_code: "",
 bio: "",
     pricing_methods: [] as string[],
 starting_price: "",
+    flat_price:"",
 service_ids: [] as number[]
   });
 
@@ -357,11 +358,12 @@ pricing_methods: e.target.checked
 </label>
 ))}
 
+{form.pricing_methods.includes("Hourly rate") && (
 <input
 type="number"
 min="0"
 step="0.01"
-placeholder="Starting price or rate (optional)"
+placeholder="Hourly rate (optional)"
 value={form.starting_price}
 onChange={(e) =>
 setForm({ ...form, starting_price: e.target.value })
@@ -374,6 +376,27 @@ border: "1px solid #ddd",
 marginTop: "4px",
 }}
 />
+)}
+
+{form.pricing_methods.includes("Flat rate") && (
+<input
+type="number"
+min="0"
+step="0.01"
+placeholder="Flat rate (optional)"
+  value={form.flat_price}
+onChange={(e) =>
+setForm({ ...form, flat_price: e.target.value })
+}
+style={{
+width: "100%",
+padding: "14px",
+borderRadius: "10px",
+border: "1px solid #ddd",
+marginTop: "8px",
+}}
+/>
+)}
 </div>
 
   <button
