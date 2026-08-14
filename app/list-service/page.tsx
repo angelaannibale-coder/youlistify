@@ -79,6 +79,14 @@ async function saveProvider(e: React.FormEvent) {
 
   const { service_ids, ...providerData } = form;
 
+providerData.starting_price =
+providerData.starting_price === "" ? null : Number(providerData.starting_price);
+
+providerData.flat_price =
+providerData.flat_price === "" ? null : Number(providerData.flat_price);
+
+  
+
   const { data: newProvider, error: providerError } = await supabase
     .from("Providers")
     .insert([providerData])
