@@ -77,13 +77,15 @@ async function saveProvider(e: React.FormEvent) {
     return;
   }
 
-  const { service_ids, ...providerData } = form;
+ const { service_ids, ...rest } = form;
 
-providerData.starting_price =
-providerData.starting_price === "" ? null : Number(providerData.starting_price);
-
-providerData.flat_price =
-providerData.flat_price === "" ? null : Number(providerData.flat_price);
+const providerData = {
+...rest,
+starting_price:
+form.starting_price === "" ? null : Number(form.starting_price),
+flat_price:
+form.flat_price === "" ? null : Number(form.flat_price),
+};
 
   
 
