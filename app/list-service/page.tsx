@@ -254,7 +254,7 @@ Create My Account
 </main>
 );
 }
-} return (
+ return (
    <main style={{
   maxWidth: "760px",
   margin: "70px auto",
