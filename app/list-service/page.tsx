@@ -50,6 +50,7 @@ useEffect(() => {
 }, []);
 
   async function createAccount() {
+    alert(Create account button is working");
 if (!form.email || !password) {
 alert("Please enter a password.");
 return;
