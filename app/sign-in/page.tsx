@@ -113,6 +113,37 @@ cursor: "pointer",
 {loading ? "Signing in..." : "Sign In"}
 </button>
 </form>
+  <button
+type="button"
+onClick={async () => {
+if (!email) {
+setMessage("Enter your email address first.");
+return;
+}
+
+const { error } = await supabase.auth.resetPasswordForEmail(email, {
+redirectTo: "https://youlistify.com/reset-password",
+});
+
+if (error) {
+setMessage(error.message);
+} else {
+setMessage("Password reset email sent. Check your inbox.");
+}
+}}
+style={{
+background: "none",
+border: "none",
+color: "#4f46e5",
+cursor: "pointer",
+fontSize: "15px",
+marginTop: "14px",
+padding: "0",
+textDecoration: "underline",
+}}
+>
+Forgot password?
+</button>
 
 {message && (
 <p style={{ marginTop: "18px", color: "#b91c1c" }}>{message}</p>
