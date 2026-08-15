@@ -121,7 +121,21 @@ My Dashboard
 </h1>
 </div>
 
-<button
+<a
+href="/dashboard/edit"
+style={{
+background: "#4f46e5",
+color: "white",
+padding: "12px 18px",
+borderRadius: "10px",
+textDecoration: "none",
+fontWeight: "600",
+marginRight: "10px",
+}}
+>
+Edit My Listing
+</a> 
+  <button
 onClick={handleSignOut}
 style={{
 border: "1px solid #ddd",
