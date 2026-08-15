@@ -96,7 +96,7 @@ const searchableProviders: Provider[] = dbProviders.length
       </nav>
       <div className="header-actions">
         <a className="list-link" href="/list-service">List your service</a>
-        <button className="sign-in" onClick={()=>alert("Sign in will be enabled with provider and customer accounts.")}>Sign in</button>
+       <a className="sign-in" href="/sign-in">Sign in</a>
       </div>
     </header>
 
