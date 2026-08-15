@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -13,6 +13,20 @@ const [password, setPassword] = useState("");
 const [confirmPassword, setConfirmPassword] = useState("");
 const [message, setMessage] = useState("");
 const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+const {
+data: { subscription },
+} = supabase.auth.onAuthStateChange((event) => {
+if (event === "PASSWORD_RECOVERY") {
+setMessage("");
+}
+});
+
+return () => {
+subscription.unsubscribe();
+};
+}, []);
 
 async function handleReset(e: React.FormEvent) {
 e.preventDefault();
