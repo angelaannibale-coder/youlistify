@@ -178,6 +178,7 @@ Create My Account
 </button>
 </main>
 );
+ }
    if (showAccountForm) {
 return (
 <main style={{
