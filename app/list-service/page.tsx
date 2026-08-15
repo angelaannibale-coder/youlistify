@@ -117,7 +117,7 @@ form.flat_price === "" ? null : Number(form.flat_price),
 
   setSubmitted(true);
 }
- if (submitted) {
+ if (submitted && !showAccountForm) {
 return (
 <main style={{
 maxWidth: "760px",
@@ -159,10 +159,8 @@ make updates, add photos, and keep your information current.
 
 <button
 type="button"
-  onClick={() => {
-setShowAccountForm(true);
-setSubmitted(false);
-}}
+  onClick={() => setShowAccountForm(true)}
+    
 style={{
 width: "100%",
 padding: "16px",
