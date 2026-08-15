@@ -159,7 +159,10 @@ make updates, add photos, and keep your information current.
 
 <button
 type="button"
-  onClick={() => setShowAccountForm(true)}
+  onClick={() => {
+setShowAccountForm(true);
+setSubmitted(false);
+}}
 style={{
 width: "100%",
 padding: "16px",
