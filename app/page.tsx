@@ -50,7 +50,7 @@ useEffect(() => {
 }, []);
 const searchableProviders: Provider[] = dbProviders.length
   ? dbProviders.map((p: any) => ({
-      name: p.business_name || p.name || "Provider",
+      name: p.business_name || (p.name_display === "first" ? (p.name || "Provider") : p.name_display === "initial" ? `${p.name || "Provider"}${p.last_name ? " " + p.last_name.charAt(0) + "." : ""}` : ([p.name, p.last_name].filter(Boolean).join(" ") || "Provider")),
       category: p.category || "",
       city: [p.city, p.state].filter(Boolean).join(", "),
       rating: 0,
