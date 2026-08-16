@@ -18,7 +18,7 @@ email: string | null;
 city: string | null;
 state: string | null;
 bio: string | null;
-display_name_option?: string | null;
+name_display?: string | null;
 user_id: string | null;
 };
 
@@ -37,7 +37,7 @@ email: "",
 city: "",
 state: "",
 bio: "",
-display_name_option: "initial",
+name_display: "full",
 });
 
 useEffect(() => {
@@ -54,7 +54,7 @@ return;
 const { data, error } = await supabase
 .from("Providers")
 .select(
-"id,name,last_name,business_name,phone,email,city,state,bio,user_id"
+"id,name,last_name,business_name,phone,email,city,state,bio,name_display,us
 )
 .eq("user_id", user.id)
 .single();
@@ -78,7 +78,7 @@ email: provider.email || "",
 city: provider.city || "",
 state: provider.state || "",
 bio: provider.bio || "",
-display_name_option: "initial",
+name_display: provider.name_display || "full",
 });
 
 setLoading(false);
@@ -115,6 +115,7 @@ email: form.email,
 city: form.city,
 state: form.state,
 bio: form.bio,
+  name_display: form.name_display,
 })
 .eq("id", providerId);
 
@@ -291,8 +292,8 @@ style={fieldStyle}
 <label>
 Public name display
 <select
-name="display_name_option"
-value={form.display_name_option}
+name="name_display"
+value={form.name_display}
 onChange={updateField}
 style={fieldStyle}
 >
