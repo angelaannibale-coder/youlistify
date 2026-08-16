@@ -54,7 +54,7 @@ return;
 const { data, error } = await supabase
 .from("Providers")
 .select(
-"id,name,last_name,business_name,phone,email,city,state,bio,name_display,us
+  "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id"
 )
 .eq("user_id", user.id)
 .single();
