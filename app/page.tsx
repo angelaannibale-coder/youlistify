@@ -147,11 +147,14 @@ const searchableProviders: Provider[] = dbProviders.length
       </div>
       <div className="provider-grid">
         {(searched?filtered:providers).map(p=><article className="provider" key={p.name}>
-          {p.available_now && (
+         <div className="provider-visual">
+<span>{p.initials}</span>
+{p.available_now && (
 <div className="availability">
 <span className="green-dot" /> Available now
 </div>
 )}
+</div>
           <div className="provider-body"><span className="tag">{p.category}</span><h3>{p.name}</h3><p>⌖ {p.city}</p><div className="meta"><span>★ {p.rating.toFixed(1)} ({p.reviews})</span><span>{p.response}</span></div>
           <div className="provider-actions"><button onClick={()=>setSelected(p)}>View profile</button><button className="secondary" onClick={()=>alert("Messaging will be enabled with accounts.")}>Message</button></div></div>
         </article>)}
