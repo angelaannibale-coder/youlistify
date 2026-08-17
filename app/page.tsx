@@ -6,6 +6,7 @@ import { createClient } from "@supabase/supabase-js";
 type Provider = {
   name:string; category:string; city:string; rating:number; reviews:number;
   response:string; initials:string; phone:string; specialties:string[];
+available_now?: boolean;
 };
 
 const categories = [
@@ -63,6 +64,7 @@ const searchableProviders: Provider[] = dbProviders.length
         .slice(0, 2)
         .toUpperCase(),
       phone: p.phone || "",
+    available_now: p.available_now ?? false,
       specialties: p.specialties || [],
     }))
   : providers;
@@ -145,7 +147,11 @@ const searchableProviders: Provider[] = dbProviders.length
       </div>
       <div className="provider-grid">
         {(searched?filtered:providers).map(p=><article className="provider" key={p.name}>
-          <div className="provider-visual"><span>{p.initials}</span><div className="availability"><span className="green-dot"/> Available now</div></div>
+          {p.available_now && (
+<div className="availability">
+<span className="green-dot" /> Available now
+</div>
+)}
           <div className="provider-body"><span className="tag">{p.category}</span><h3>{p.name}</h3><p>⌖ {p.city}</p><div className="meta"><span>★ {p.rating.toFixed(1)} ({p.reviews})</span><span>{p.response}</span></div>
           <div className="provider-actions"><button onClick={()=>setSelected(p)}>View profile</button><button className="secondary" onClick={()=>alert("Messaging will be enabled with accounts.")}>Message</button></div></div>
         </article>)}
