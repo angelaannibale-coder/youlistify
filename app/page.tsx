@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 
 type Provider = {
   name:string; category:string; city:string; rating:number; reviews:number;
-  response:string; initials:string; phone:string; email:string; specialties:string[];
+  response:string; initials:string; phone:string; email?:string; specialties:string[];
 available_now?: boolean;
   contact_call?: boolean;
 contact_text?: boolean;
