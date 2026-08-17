@@ -7,6 +7,10 @@ type Provider = {
   name:string; category:string; city:string; rating:number; reviews:number;
   response:string; initials:string; phone:string; specialties:string[];
 available_now?: boolean;
+  contact_call?: boolean;
+contact_text?: boolean;
+contact_email?: boolean;
+contact_youlistify?: boolean;
 };
 
 const categories = [
@@ -65,6 +69,10 @@ const searchableProviders: Provider[] = dbProviders.length
         .toUpperCase(),
       phone: p.phone || "",
     available_now: p.available_now ?? false,
+    contact_call: p.contact_call ?? false,
+contact_text: p.contact_text ?? false,
+contact_email: p.contact_email ?? false,
+contact_youlistify: p.contact_youlistify ?? false,
       specialties: p.specialties || [],
     }))
   : providers;
