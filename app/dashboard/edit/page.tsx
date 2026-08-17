@@ -104,7 +104,7 @@ if (!providerId) return;
 setSaving(true);
 setMessage("");
 
-const { error } = await supabase
+const { data: updatedProvider, error } = await supabase
 .from("Providers")
 .update({
 name: form.name,
@@ -117,7 +117,9 @@ state: form.state,
 bio: form.bio,
   name_display: form.name_display,
 })
-.eq("id", providerId);
+.eq("id", providerId)
+  .select("name_display")
+.single();
 
 if (error) {
 setMessage("Could not save changes: " + error.message);
@@ -125,7 +127,9 @@ setSaving(false);
 return;
 }
 
-setMessage("Your listing has been updated!");
+setMessage(
+`Your listing has been updated! Saved as: ${updatedProvider?.name_display}`
+);
 setSaving(false);
 }
 
