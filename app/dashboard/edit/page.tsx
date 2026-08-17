@@ -24,6 +24,7 @@ user_id: string | null;
 contact_text?: boolean | null;
 contact_email?: boolean | null;
 contact_youlistify?: boolean | null;
+  available_now?: boolean | null;
 };
 
 export default function EditListingPage() {
@@ -46,6 +47,7 @@ name_display: "full",
 contact_text: false,
 contact_email: false,
 contact_youlistify: false,
+  available_now: false,
 });
 
 useEffect(() => {
@@ -62,7 +64,7 @@ return;
 const { data, error } = await supabase
 .from("Providers")
 .select(
-  "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id,contact_call,contact_text,contact_email,contact_youlistify"
+  "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id,contact_call,contact_text,contact_email,contact_youlistify,available_now"
 )
 .eq("user_id", user.id)
 .single();
@@ -91,6 +93,7 @@ name_display: provider.name_display || "full",
 contact_text: provider.contact_text ?? false,
 contact_email: provider.contact_email ?? false,
 contact_youlistify: provider.contact_youlistify ?? false,
+  available_now: provider.available_now ?? false,
 });
 
 setLoading(false);
@@ -132,9 +135,10 @@ bio: form.bio,
 contact_text: form.contact_text,
 contact_email: form.contact_email,
 contact_youlistify: form.contact_youlistify,
+  available_now: form.available_now,
 })
 .eq("id", providerId)
-  .select("name_display,contact_call,contact_text,contact_email,contact_youlistify")
+  .select("name_display,contact_call,contact_text,contact_email,contact_youlistify,available_now")
 .single();
 
 if (error) {
@@ -322,7 +326,36 @@ style={fieldStyle}
 <option value="first">First name only</option>
 </select>
 </label>
-<div style={{ marginTop: "24px" }}>
+<div style={{ marginTop: "24px", marginBottom: "24px" }}>
+<div style={{ fontWeight: "600", marginBottom: "10px" }}>
+Availability
+</div>
+
+<label style={{ display: "block", marginBottom: "10px" }}>
+<input
+type="radio"
+name="availability"
+checked={form.available_now === true}
+onChange={() =>
+setForm({ ...form, available_now: true })
+}
+/>{" "}
+Available now
+</label>
+
+<label style={{ display: "block" }}>
+<input
+type="radio"
+name="availability"
+checked={form.available_now === false}
+onChange={() =>
+setForm({ ...form, available_now: false })
+}
+/>{" "}
+Not available now
+</label>
+</div>
+  <div style={{ marginTop: "24px" }}>
 <div style={{ fontWeight: "600", marginBottom: "10px" }}>
 How would you like customers to contact you?
 </div>
