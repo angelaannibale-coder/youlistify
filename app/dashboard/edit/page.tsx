@@ -20,6 +20,10 @@ state: string | null;
 bio: string | null;
 name_display?: string | null;
 user_id: string | null;
+  contact_call?: boolean | null;
+contact_text?: boolean | null;
+contact_email?: boolean | null;
+contact_youlistify?: boolean | null;
 };
 
 export default function EditListingPage() {
@@ -38,6 +42,10 @@ city: "",
 state: "",
 bio: "",
 name_display: "full",
+  contact_call: false,
+contact_text: false,
+contact_email: false,
+contact_youlistify: false,
 });
 
 useEffect(() => {
@@ -54,7 +62,7 @@ return;
 const { data, error } = await supabase
 .from("Providers")
 .select(
-  "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id"
+  "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id,contact_call,contact_text,contact_email,contact_youlistify"
 )
 .eq("user_id", user.id)
 .single();
@@ -79,6 +87,10 @@ city: provider.city || "",
 state: provider.state || "",
 bio: provider.bio || "",
 name_display: provider.name_display || "full",
+  contact_call: provider.contact_call ?? false,
+contact_text: provider.contact_text ?? false,
+contact_email: provider.contact_email ?? false,
+contact_youlistify: provider.contact_youlistify ?? false,
 });
 
 setLoading(false);
@@ -116,9 +128,13 @@ city: form.city,
 state: form.state,
 bio: form.bio,
   name_display: form.name_display,
+  contact_call: form.contact_call,
+contact_text: form.contact_text,
+contact_email: form.contact_email,
+contact_youlistify: form.contact_youlistify,
 })
 .eq("id", providerId)
-  .select("name_display")
+  .select("name_display,contact_call,contact_text,contact_email,contact_youlistify")
 .single();
 
 if (error) {
@@ -306,7 +322,60 @@ style={fieldStyle}
 <option value="first">First name only</option>
 </select>
 </label>
+<div style={{ marginTop: "24px" }}>
+<div style={{ fontWeight: "600", marginBottom: "10px" }}>
+How would you like customers to contact you?
+</div>
 
+<label style={{ display: "block", marginBottom: "10px" }}>
+<input
+type="checkbox"
+checked={form.contact_call}
+onChange={(e) =>
+setForm({ ...form, contact_call: e.target.checked })
+}
+/>{" "}
+Call me
+</label>
+
+<label style={{ display: "block", marginBottom: "10px" }}>
+<input
+type="checkbox"
+checked={form.contact_text}
+onChange={(e) =>
+setForm({ ...form, contact_text: e.target.checked })
+}
+/>{" "}
+Text me
+</label>
+
+<label style={{ display: "block", marginBottom: "10px" }}>
+<input
+type="checkbox"
+checked={form.contact_email}
+onChange={(e) =>
+setForm({ ...form, contact_email: e.target.checked })
+}
+/>{" "}
+Email me
+</label>
+
+<label style={{ display: "block", marginBottom: "10px" }}>
+<input
+type="checkbox"
+checked={form.contact_youlistify}
+onChange={(e) =>
+setForm({ ...form, contact_youlistify: e.target.checked })
+}
+/>{" "}
+Contact me through YouListify
+</label>
+
+<div style={{ fontSize: "14px", color: "#667085", marginTop: "6px" }}>
+Messages sent through YouListify will be delivered to your email without
+displaying your email address to the customer.
+</div>
+</div>
 
 <button
 type="submit"
