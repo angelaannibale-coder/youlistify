@@ -18,6 +18,7 @@ phone: string | null;
 city: string | null;
 state: string | null;
 bio: string | null;
+  name_display?: string | null;
 user_id: string | null;
 };
 
@@ -40,7 +41,7 @@ return;
 const { data, error } = await supabase
 .from("Providers")
 .select(
-"id,name,last_name,business_name,email,phone,city,state,bio,user_id"
+"id,name,last_name,business_name,email,phone,city,state,bio,name_display,user_id"
 )
 .eq("user_id", user.id)
 .single();
@@ -244,8 +245,11 @@ background: "#f7f6ff",
 >
 <strong>Name display</strong>
 <p style={{ marginBottom: "0", color: "#667085" }}>
-Next we’ll add your privacy setting here: full name, first name
-+ last initial, or first name only.
+{provider.name_display === "initial"
+? "First name + last initial"
+: provider.name_display === "first"
+? "First name only"
+: "Full name"}
 </p>
 </div>
 </>
