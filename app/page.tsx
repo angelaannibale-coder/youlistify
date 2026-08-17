@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 
 type Provider = {
   name:string; category:string; city:string; rating:number; reviews:number;
-  response:string; initials:string; phone:string; specialties:string[];
+  response:string; initials:string; phone:string; email:string; specialties:string[];
 available_now?: boolean;
   contact_call?: boolean;
 contact_text?: boolean;
@@ -68,6 +68,7 @@ const searchableProviders: Provider[] = dbProviders.length
         .slice(0, 2)
         .toUpperCase(),
       phone: p.phone || "",
+    email: p.email || "",
     available_now: p.available_now ?? false,
     contact_call: p.contact_call ?? false,
 contact_text: p.contact_text ?? false,
@@ -199,7 +200,35 @@ contact_youlistify: p.contact_youlistify ?? false,
         <div className="modal-rating">★ {selected.rating.toFixed(1)} · {selected.reviews} reviews</div>
         <div className="chips">{selected.specialties.map(s=><span key={s}>{s}</span>)}</div>
         <p className="modal-copy">This is a preview of the provider mini-site experience. Real providers will manage their own services, photos, availability, and contact information.</p>
-        <a className="call-action" href={`tel:${selected.phone.replace(/\D/g,"")}`}>☎ Call {selected.phone}</a>
+       <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+{selected.contact_call && selected.phone && (
+<a className="call-action" href={`tel:${selected.phone.replace(/\D/g,"")}`}>
+☎ Call {selected.phone}
+</a>
+)}
+
+{selected.contact_text && selected.phone && (
+<a className="call-action" href={`sms:${selected.phone.replace(/\D/g,"")}`}>
+💬 Text
+</a>
+)}
+
+{selected.contact_email && selected.email && (
+<a className="call-action" href={`mailto:${selected.email}`}>
+✉ Email
+</a>
+)}
+
+{selected.contact_youlistify && (
+<button
+className="call-action"
+type="button"
+onClick={() => alert("YouListify private messaging is being connected next.")}
+>
+✉ Contact through YouListify
+</button>
+)}
+</div>
       </div>
     </div>}
   </main>
