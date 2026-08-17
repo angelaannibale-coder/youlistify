@@ -307,9 +307,6 @@ style={fieldStyle}
 </select>
 </label>
 
-<p style={{ color: "#667085", fontSize: "14px" }}>
-We’ll connect this privacy choice to the public profile next.
-</p>
 
 <button
 type="submit"
