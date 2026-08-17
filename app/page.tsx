@@ -185,7 +185,9 @@ const searchableProviders: Provider[] = dbProviders.length
     {selected && <div className="modal-backdrop" onClick={()=>setSelected(null)}>
       <div className="modal" onClick={e=>e.stopPropagation()}>
         <button className="close" onClick={()=>setSelected(null)}>×</button>
-        <div className="modal-head"><div className="avatar large">{selected.initials}</div><div><div className="availability"><span className="green-dot"/> Available now</div><h2>{selected.name}</h2><p>{selected.category} · {selected.city}</p></div></div>
+        <div className="modal-head"><div className="avatar large">{selected.initials}</div><div>{selected.available_now && (
+<div className="availability"><span className="green-dot"/> Available now</div>
+)}<h2>{selected.name}</h2><p>{selected.category} · {selected.city}</p></div></div>
         <div className="modal-rating">★ {selected.rating.toFixed(1)} · {selected.reviews} reviews</div>
         <div className="chips">{selected.specialties.map(s=><span key={s}>{s}</span>)}</div>
         <p className="modal-copy">This is a preview of the provider mini-site experience. Real providers will manage their own services, photos, availability, and contact information.</p>
