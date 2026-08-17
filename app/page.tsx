@@ -29,6 +29,7 @@ export default function Home(){
   const [location,setLocation]=useState("");
   const [searched,setSearched]=useState(false);
   const [selected,setSelected]=useState<Provider|null>(null);
+  const [contactOpen,setContactOpen]=useState(false);
   
   const [dbProviders, setDbProviders] = useState<any[]>([]);
 
@@ -223,7 +224,7 @@ contact_youlistify: p.contact_youlistify ?? false,
 <button
 className="call-action"
 type="button"
-onClick={() => alert("YouListify private messaging is being connected next.")}
+onClick={() => setContactOpen(true)}
 >
 ✉ Contact through YouListify
 </button>
@@ -231,5 +232,23 @@ onClick={() => alert("YouListify private messaging is being connected next.")}
 </div>
       </div>
     </div>}
+    {contactOpen && selected && (
+<div className="modal-backdrop" onClick={() => setContactOpen(false)}>
+<div className="modal" onClick={(e) => e.stopPropagation()}>
+<button className="close" onClick={() => setContactOpen(false)}>×</button>
+
+<h2>Contact {selected.name}</h2>
+<p>Send a private message through YouListify.</p>
+
+<input type="text" placeholder="Your name" />
+<input type="email" placeholder="Your email" />
+<textarea placeholder="Your message"></textarea>
+
+<button className="call-action" type="button">
+Send message
+</button>
+</div>
+</div>
+)}
   </main>
 }
