@@ -22,12 +22,23 @@ const id = slug.split("-").pop();
 
 const { data, error } = await supabase
 .from("Providers")
-.select("*")
+.select(`
+*,
+provider_services (
+services (
+name
+)
+)
+`)
 .eq("id", id)
 .single();
 
 if (!error && data) {
-setProvider(data);
+    setProvider({
+...data,
+specialties:
+data.provider_services?.map((ps: any) => ps.services?.name).filter(Boolean) || [],
+});
 }
 
 setLoading(false);
