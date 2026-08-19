@@ -4,6 +4,7 @@ import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 type Provider = {
+ id?:number;
   name:string; category:string; city:string; rating:number; reviews:number;
   response:string; initials:string; phone:string; email?:string; specialties:string[];
 available_now?: boolean;
@@ -58,7 +59,8 @@ useEffect(() => {
 }, []);
 const searchableProviders: Provider[] = dbProviders.length
   ? dbProviders.map((p: any) => ({
-      name: p.business_name || (p.name_display === "first" ? (p.name || "Provider") : p.name_display === "initial" ? `${p.name || "Provider"}${p.last_name ? " " + p.last_name.charAt(0) + "." : ""}` : ([p.name, p.last_name].filter(Boolean).join(" ") || "Provider")),
+      id: p.id,
+    name: p.business_name || (p.name_display === "first" ? (p.name || "Provider") : p.name_display === "initial" ? `${p.name || "Provider"}${p.last_name ? " " + p.last_name.charAt(0) + "." : ""}` : ([p.name, p.last_name].filter(Boolean).join(" ") || "Provider")),
       category: p.category || "",
       city: [p.city, p.state].filter(Boolean).join(", "),
       rating: 0,
@@ -94,7 +96,41 @@ contact_youlistify: p.contact_youlistify ?? false,
     setSearched(true);
     setTimeout(()=>document.getElementById("results")?.scrollIntoView({behavior:"smooth"}),50);
   }
+async function sendProviderMessage() {
+if (!selected?.id) {
+alert("Unable to identify this provider.");
+return;
+}
 
+if (!contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) {
+alert("Please complete your name, email, and message.");
+return;
+}
+
+const { data, error } = await supabase.functions.invoke(
+"send-provider-message",
+{
+body: {
+providerId: selected.id,
+customerName: contactName,
+customerEmail: contactEmail,
+message: contactMessage,
+},
+}
+);
+
+if (error) {
+console.error(error);
+alert("Your message could not be sent. Please try again.");
+return;
+}
+
+alert("Message sent!");
+setContactName("");
+setContactEmail("");
+setContactMessage("");
+setContactOpen(false);
+}
   return <main>
   
   
@@ -262,7 +298,7 @@ value={contactMessage}
 onChange={(e) => setContactMessage(e.target.value)}
 ></textarea>
 
-<button className="call-action" type="button">
+<button className="call-action" type="button" onClick={sendProviderMessage}>
 Send message
 </button>
 </div>
