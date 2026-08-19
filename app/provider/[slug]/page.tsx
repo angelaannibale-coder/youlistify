@@ -53,47 +53,188 @@ provider.business_name ||
 : provider.name);
 
 return (
-<main style={{ maxWidth: "800px", margin: "0 auto", padding: "40px 20px" }}>
-<a href="/" style={{ textDecoration: "none" }}>
+<main
+style={{
+minHeight: "100vh",
+background: "#f6f7fb",
+padding: "40px 20px",
+}}
+>
+<div style={{ maxWidth: "760px", margin: "0 auto" }}>
+<a
+href="/"
+style={{
+color: "#4f46e5",
+textDecoration: "none",
+fontWeight: "600",
+}}
+>
 ← Back to YouListify
 </a>
 
-<div style={{ marginTop: "30px" }}>
-<h1>{displayName}</h1>
+<div
+style={{
+background: "white",
+borderRadius: "28px",
+padding: "32px",
+marginTop: "24px",
+boxShadow: "0 18px 50px rgba(0,0,0,0.08)",
+}}
+>
+<div
+style={{
+display: "flex",
+alignItems: "center",
+gap: "18px",
+marginBottom: "22px",
+}}
+>
+<div
+style={{
+width: "82px",
+height: "82px",
+borderRadius: "24px",
+background: "linear-gradient(135deg, #5b5bf7, #8b5cf6)",
+color: "white",
+display: "flex",
+alignItems: "center",
+justifyContent: "center",
+fontSize: "28px",
+fontWeight: "700",
+flexShrink: 0,
+}}
+>
+{displayName?.charAt(0).toUpperCase()}
+</div>
 
-<p>
+<div>
+<h1
+style={{
+margin: 0,
+fontSize: "36px",
+lineHeight: 1.1,
+}}
+>
+{displayName}
+</h1>
+
+<p style={{ margin: "8px 0 0", color: "#6b7280" }}>
 {provider.city}
 {provider.state ? `, ${provider.state}` : ""}
 </p>
 
-{provider.available_now && <p>🟢 Available now</p>}
+{provider.available_now && (
+<div
+style={{
+marginTop: "10px",
+display: "inline-block",
+background: "#ecfdf3",
+color: "#15803d",
+borderRadius: "999px",
+padding: "6px 12px",
+fontWeight: "600",
+}}
+>
+● Available now
+</div>
+)}
+</div>
+</div>
 
-{provider.bio && <p>{provider.bio}</p>}
+{provider.bio && (
+<div style={{ marginTop: "24px" }}>
+<h3 style={{ marginBottom: "8px" }}>About</h3>
+<p
+style={{
+color: "#4b5563",
+lineHeight: 1.7,
+margin: 0,
+}}
+>
+{provider.bio}
+</p>
+</div>
+)}
 
 {provider.specialties?.length > 0 && (
-<div>
-<h3>Services</h3>
-<p>{provider.specialties.join(" • ")}</p>
+<div style={{ marginTop: "26px" }}>
+<h3 style={{ marginBottom: "10px" }}>Services</h3>
+<div
+style={{
+display: "flex",
+flexWrap: "wrap",
+gap: "8px",
+}}
+>
+{provider.specialties.map((service: string) => (
+<span
+key={service}
+style={{
+background: "#f3f4f6",
+borderRadius: "999px",
+padding: "8px 12px",
+fontSize: "14px",
+}}
+>
+{service}
+</span>
+))}
+</div>
 </div>
 )}
 
 {provider.pricing_methods?.length > 0 && (
-<div>
-<h3>Pricing</h3>
+<div style={{ marginTop: "26px" }}>
+<h3 style={{ marginBottom: "10px" }}>Pricing</h3>
 
+<div
+style={{
+display: "flex",
+flexWrap: "wrap",
+gap: "10px",
+}}
+>
 {provider.pricing_methods.includes("hourly") &&
 provider.starting_price != null && (
-<p>${provider.starting_price}/hour</p>
+<span
+style={{
+background: "#f5f3ff",
+padding: "9px 12px",
+borderRadius: "10px",
+fontWeight: "600",
+}}
+>
+${provider.starting_price}/hour
+</span>
 )}
 
 {provider.pricing_methods.includes("flat") &&
 provider.flat_price != null && (
-<p>Flat rate: ${provider.flat_price}</p>
+<span
+style={{
+background: "#f5f3ff",
+padding: "9px 12px",
+borderRadius: "10px",
+fontWeight: "600",
+}}
+>
+Flat rate: ${provider.flat_price}
+</span>
 )}
 
 {provider.pricing_methods.includes("contact") && (
-<p>Contact for pricing</p>
+<span
+style={{
+background: "#f5f3ff",
+padding: "9px 12px",
+borderRadius: "10px",
+fontWeight: "600",
+}}
+>
+Contact for pricing
+</span>
 )}
+</div>
 </div>
 )}
 
@@ -102,20 +243,85 @@ style={{
 display: "flex",
 flexWrap: "wrap",
 gap: "10px",
-marginTop: "25px",
+marginTop: "30px",
 }}
 >
 {provider.contact_call && provider.phone && (
-<a href={`tel:${provider.phone}`}>Call {provider.phone}</a>
+<a
+href={`tel:${provider.phone}`}
+style={{
+background: "#4f46e5",
+color: "white",
+padding: "12px 18px",
+borderRadius: "10px",
+textDecoration: "none",
+fontWeight: "600",
+}}
+>
+☎ Call {provider.phone}
+</a>
 )}
 
 {provider.contact_text && provider.phone && (
-<a href={`sms:${provider.phone}`}>Text</a>
+<a
+href={`sms:${provider.phone}`}
+style={{
+background: "#4f46e5",
+color: "white",
+padding: "12px 18px",
+borderRadius: "10px",
+textDecoration: "none",
+fontWeight: "600",
+}}
+>
+💬 Text
+</a>
 )}
 
 {provider.contact_email && provider.email && (
-<a href={`mailto:${provider.email}`}>Email</a>
+<a
+href={`mailto:${provider.email}`}
+style={{
+background: "#4f46e5",
+color: "white",
+padding: "12px 18px",
+borderRadius: "10px",
+textDecoration: "none",
+fontWeight: "600",
+}}
+>
+✉ Email
+</a>
 )}
+
+<button
+type="button"
+onClick={async () => {
+const url = window.location.href;
+
+if (navigator.share) {
+await navigator.share({
+title: `${displayName} on YouListify`,
+url,
+});
+} else {
+await navigator.clipboard.writeText(url);
+alert("Profile link copied!");
+}
+}}
+style={{
+background: "#4f46e5",
+color: "white",
+padding: "12px 18px",
+borderRadius: "10px",
+border: "none",
+fontWeight: "600",
+cursor: "pointer",
+}}
+>
+↗ Share profile
+</button>
+</div>
 </div>
 </div>
 </main>
