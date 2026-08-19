@@ -21,7 +21,7 @@ async function loadProvider() {
 const id = slug.split("-").pop();
 
 const { data, error } = await supabase
-.from("providers")
+.from("Providers")
 .select("*")
 .eq("id", id)
 .single();
