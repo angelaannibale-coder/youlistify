@@ -218,11 +218,11 @@ setContactOpen(false);
           {p.pricing_methods && p.pricing_methods.length > 0 && (
 <div className="pricing-display">
 {p.pricing_methods.includes("hourly") && p.starting_price != null && (
-<span>${p.starting_price}/hour</span>
+  <span>${p.starting_price}/hour | </span>
 )}
 
 {p.pricing_methods.includes("flat") && p.flat_price != null && (
-<span>Flat rate: ${p.flat_price}</span>
+<span>Flat rate: ${p.flat_price} | </span>
 )}
 
 {p.pricing_methods.includes("contact") && (
