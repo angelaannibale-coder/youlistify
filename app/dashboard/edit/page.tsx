@@ -25,6 +25,9 @@ contact_text?: boolean | null;
 contact_email?: boolean | null;
 contact_youlistify?: boolean | null;
   available_now?: boolean | null;
+  pricing_methods: string[] | null;
+starting_price: number | null;
+flat_price: number | null;
 };
 
 export default function EditListingPage() {
@@ -48,6 +51,9 @@ contact_text: false,
 contact_email: false,
 contact_youlistify: false,
   available_now: false,
+  pricing_methods: [] as string[],
+starting_price: "",
+flat_price: "",
 });
 
 useEffect(() => {
@@ -64,7 +70,7 @@ return;
 const { data, error } = await supabase
 .from("Providers")
 .select(
-  "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id,contact_call,contact_text,contact_email,contact_youlistify,available_now"
+  "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id,contact_call,contact_text,contact_email,contact_youlistify,available_now,pricing_methods,starting_price,flat_price"
 )
 .eq("user_id", user.id)
 .single();
@@ -94,6 +100,9 @@ contact_text: provider.contact_text ?? false,
 contact_email: provider.contact_email ?? false,
 contact_youlistify: provider.contact_youlistify ?? false,
   available_now: provider.available_now ?? false,
+  pricing_methods: provider.pricing_methods || [],
+starting_price: provider.starting_price?.toString() || "",
+flat_price: provider.flat_price?.toString() || "",
 });
 
 setLoading(false);
@@ -136,9 +145,12 @@ contact_text: form.contact_text,
 contact_email: form.contact_email,
 contact_youlistify: form.contact_youlistify,
   available_now: form.available_now,
+  pricing_methods: form.pricing_methods,
+starting_price: form.starting_price === "" ? null : Number(form.starting_price),
+flat_price: form.flat_price === "" ? null : Number(form.flat_price),
 })
 .eq("id", providerId)
-  .select("name_display,contact_call,contact_text,contact_email,contact_youlistify,available_now")
+  .select("name_display,contact_call,contact_text,contact_email,contact_youlistify,available_now,pricing_methods,starting_price,flat_price")
 .single();
 
 if (error) {
@@ -354,6 +366,72 @@ setForm({ ...form, available_now: false })
 />{" "}
 Not available now
 </label>
+</div>
+<div style={{ marginTop: "24px", marginBottom: "24px" }}>
+<div style={{ fontWeight: "600", marginBottom: "10px" }}>
+Pricing
+</div>
+<label style={{ display: "block", marginBottom: "10px" }}>
+<input
+type="checkbox"
+checked={form.pricing_methods.includes("hourly")}
+onChange={(e) =>
+setForm({
+...form,
+pricing_methods: e.target.checked
+? [...form.pricing_methods, "hourly"]
+: form.pricing_methods.filter((p) => p !== "hourly"),
+})
+}
+/>{" "}
+Hourly rate
+</label>
+{form.pricing_methods.includes("hourly") && (
+<input
+type="number"
+placeholder="Hourly rate $"
+value={form.starting_price}
+onChange={(e) =>
+setForm({ ...form, starting_price: e.target.value })
+}
+style={{
+width: "100%",
+padding: "12px",
+marginBottom: "12px",
+}}
+/>
+)}
+<label style={{ display: "block", marginBottom: "10px" }}>
+<input
+type="checkbox"
+checked={form.pricing_methods.includes("flat")}
+onChange={(e) =>
+setForm({
+...form,
+pricing_methods: e.target.checked
+? [...form.pricing_methods, "flat"]
+: form.pricing_methods.filter((p) => p !== "flat"),
+})
+}
+/>{" "}
+Flat rate
+</label>
+
+{form.pricing_methods.includes("flat") && (
+<input
+type="number"
+placeholder="Flat rate $"
+value={form.flat_price}
+onChange={(e) =>
+setForm({ ...form, flat_price: e.target.value })
+}
+style={{
+width: "100%",
+padding: "12px",
+marginBottom: "12px",
+}}
+/>
+)}
 </div>
   <div style={{ marginTop: "24px" }}>
 <div style={{ fontWeight: "600", marginBottom: "10px" }}>
