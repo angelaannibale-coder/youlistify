@@ -273,8 +273,23 @@ Message
 <div className="availability"><span className="green-dot"/> Available now</div>
 )}<h2>{selected.name}</h2><p>{selected.category} · {selected.city}</p></div></div>
         <div className="modal-rating">★ {selected.rating.toFixed(1)} · {selected.reviews} reviews</div>
+        {selected.pricing_methods && selected.pricing_methods.length > 0 && (
+<div className="pricing-display" style={{ marginTop: "10px", marginBottom: "10px" }}>
+{selected.pricing_methods.includes("hourly") && selected.starting_price != null && (
+<span>${selected.starting_price}/hour | </span>
+)}
+
+{selected.pricing_methods.includes("flat") && selected.flat_price != null && (
+<span>Flat rate: ${selected.flat_price} | </span>
+)}
+
+{selected.pricing_methods.includes("contact") && (
+<span>Contact for pricing</span>
+)}
+</div>
+)}
         <div className="chips">{selected.specialties.map(s=><span key={s}>{s}</span>)}</div>
-        <p className="modal-copy">This is a preview of the provider mini-site experience. Real providers will manage their own services, photos, availability, and contact information.</p>
+        <p className="modal-copy">{selected.response || "No description provided yet."}</p>
        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
 {selected.contact_call && selected.phone && (
 <a className="call-action" href={`tel:${selected.phone.replace(/\D/g,"")}`}>
