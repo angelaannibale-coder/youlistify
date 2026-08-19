@@ -204,7 +204,17 @@ setContactOpen(false);
 )}
 </div>
           <div className="provider-body"><span className="tag">{p.category}</span><h3>{p.name}</h3><p>⌖ {p.city}</p><div className="meta"><span>★ {p.rating.toFixed(1)} ({p.reviews})</span><span>{p.response}</span></div>
-          <div className="provider-actions"><button onClick={()=>setSelected(p)}>View profile</button><button className="secondary" onClick={()=>alert("Messaging will be enabled with accounts.")}>Message</button></div></div>
+          <div className="provider-actions"><button onClick={()=>setSelected(p)}>View profile</button>{p.contact_youlistify && (
+<button
+className="secondary"
+onClick={() => {
+setSelected(p);
+setContactOpen(true);
+}}
+>
+Message
+</button>
+)}</div></div>
         </article>)}
         {searched && filtered.length===0 && <div className="empty"><h3>No preview matches yet</h3><p>Try a different service or location.</p></div>}
       </div>
