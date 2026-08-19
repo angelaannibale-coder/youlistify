@@ -30,7 +30,9 @@ export default function Home(){
   const [searched,setSearched]=useState(false);
   const [selected,setSelected]=useState<Provider|null>(null);
   const [contactOpen,setContactOpen]=useState(false);
-  
+  const [contactName,setContactName]=useState("");
+const [contactEmail,setContactEmail]=useState("");
+const [contactMessage,setContactMessage]=useState("");
   const [dbProviders, setDbProviders] = useState<any[]>([]);
 
 const supabase = createClient(
@@ -240,9 +242,25 @@ onClick={() => setContactOpen(true)}
 <h2>Contact {selected.name}</h2>
 <p>Send a private message through YouListify.</p>
 
-<input type="text" placeholder="Your name" />
-<input type="email" placeholder="Your email" />
-<textarea placeholder="Your message"></textarea>
+<input
+type="text"
+placeholder="Your name"
+value={contactName}
+onChange={(e) => setContactName(e.target.value)}
+/>
+
+<input
+type="email"
+placeholder="Your email"
+value={contactEmail}
+onChange={(e) => setContactEmail(e.target.value)}
+/>
+
+<textarea
+placeholder="Your message"
+value={contactMessage}
+onChange={(e) => setContactMessage(e.target.value)}
+></textarea>
 
 <button className="call-action" type="button">
 Send message
