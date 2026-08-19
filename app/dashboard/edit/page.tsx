@@ -432,6 +432,21 @@ marginBottom: "12px",
 }}
 />
 )}
+<label style={{ display: "block", marginBottom: "10px" }}>
+<input
+type="checkbox"
+checked={form.pricing_methods.includes("contact")}
+onChange={(e) =>
+setForm({
+...form,
+pricing_methods: e.target.checked
+? [...form.pricing_methods, "contact"]
+: form.pricing_methods.filter((p) => p !== "contact"),
+})
+}
+/>{" "}
+Contact for pricing
+</label>
 </div>
   <div style={{ marginTop: "24px" }}>
 <div style={{ fontWeight: "600", marginBottom: "10px" }}>
