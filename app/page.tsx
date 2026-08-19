@@ -224,7 +224,26 @@ setContactOpen(false);
 </div>
 )}
 </div>
-          <div className="provider-body"><span className="tag">{p.category}</span><h3>{p.name}</h3><p>⌖ {p.city}</p><div className="meta"><span>★ {p.rating.toFixed(1)} ({p.reviews})</span><span>{p.response}</span></div>
+          <div className="provider-body">
+{p.specialties?.length > 0 && (
+<div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "10px" }}>
+{p.specialties.map((service: string) => (
+<span
+key={service}
+style={{
+background: "#f3f4f6",
+borderRadius: "999px",
+padding: "6px 10px",
+fontSize: "13px",
+}}
+>
+{service}
+</span>
+))}
+</div>
+)}
+
+            <span className="tag">{p.category}</span><h3>{p.name}</h3><p>⌖ {p.city}</p><div className="meta"><span>★ {p.rating.toFixed(1)} ({p.reviews})</span><span>{p.response}</span></div>
           {p.pricing_methods && p.pricing_methods.length > 0 && (
 <div className="pricing-display">
 {p.pricing_methods.includes("hourly") && p.starting_price != null && (
