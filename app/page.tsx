@@ -49,7 +49,14 @@ useEffect(() => {
   async function loadProviders() {
     const { data, error } = await supabase
       .from("Providers")
-      .select("*");
+      .select(`
+*,
+provider_services (
+services (
+name
+)
+)
+`);
 
     if (error) {
       console.error("Error loading providers:", error);
@@ -87,7 +94,8 @@ contact_youlistify: p.contact_youlistify ?? false,
 pricing_methods: p.pricing_methods || [],
 starting_price: p.starting_price ?? null,
 flat_price: p.flat_price ?? null,
-      specialties: p.specialties || [],
+      specialties:
+p.provider_services?.map((ps: any) => ps.services?.name).filter(Boolean) || [],
     }))
   : providers;
   const filtered = useMemo(()=>{
