@@ -12,6 +12,9 @@ available_now?: boolean;
 contact_text?: boolean;
 contact_email?: boolean;
 contact_youlistify?: boolean;
+pricing_methods?: string[];
+starting_price?: number | null;
+flat_price?: number | null;
 };
 
 const categories = [
@@ -79,6 +82,9 @@ const searchableProviders: Provider[] = dbProviders.length
 contact_text: p.contact_text ?? false,
 contact_email: p.contact_email ?? false,
 contact_youlistify: p.contact_youlistify ?? false,
+pricing_methods: p.pricing_methods || [],
+starting_price: p.starting_price ?? null,
+flat_price: p.flat_price ?? null,
       specialties: p.specialties || [],
     }))
   : providers;
@@ -209,6 +215,21 @@ setContactOpen(false);
 )}
 </div>
           <div className="provider-body"><span className="tag">{p.category}</span><h3>{p.name}</h3><p>⌖ {p.city}</p><div className="meta"><span>★ {p.rating.toFixed(1)} ({p.reviews})</span><span>{p.response}</span></div>
+          {p.pricing_methods && p.pricing_methods.length > 0 && (
+<div className="pricing-display">
+{p.pricing_methods.includes("hourly") && p.starting_price != null && (
+<span>${p.starting_price}/hour</span>
+)}
+
+{p.pricing_methods.includes("flat") && p.flat_price != null && (
+<span>Flat rate: ${p.flat_price}</span>
+)}
+
+{p.pricing_methods.includes("contact") && (
+<span>Contact for pricing</span>
+)}
+</div>
+)}
           <div className="provider-actions"><button onClick={()=>setSelected(p)}>View profile</button>{p.contact_youlistify && (
 <button
 className="secondary"
