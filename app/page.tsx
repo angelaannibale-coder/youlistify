@@ -106,7 +106,12 @@ if (!contactName.trim() || !contactEmail.trim() || !contactMessage.trim()) {
 alert("Please complete your name, email, and message.");
 return;
 }
+const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+if (!emailPattern.test(contactEmail.trim())) {
+alert("Please enter a valid email address.");
+return;
+}
 const { data, error } = await supabase.functions.invoke(
 "send-provider-message",
 {
