@@ -5,6 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 
 type Provider = {
  id?:number;
+ slug?: string;
   name:string; category:string; city:string; rating:number; reviews:number;
   response:string; initials:string; phone:string; email?:string; specialties:string[];
 available_now?: boolean;
@@ -63,6 +64,7 @@ useEffect(() => {
 const searchableProviders: Provider[] = dbProviders.length
   ? dbProviders.map((p: any) => ({
       id: p.id,
+      slug: `${(p.name || "provider").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}-${p.id}`,
     name: p.business_name || (p.name_display === "first" ? (p.name || "Provider") : p.name_display === "initial" ? `${p.name || "Provider"}${p.last_name ? " " + p.last_name.charAt(0) + "." : ""}` : ([p.name, p.last_name].filter(Boolean).join(" ") || "Provider")),
       category: p.category || "",
       city: [p.city, p.state].filter(Boolean).join(", "),
