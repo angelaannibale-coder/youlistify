@@ -320,6 +320,24 @@ onClick={() => setContactOpen(true)}
 ✉ Contact through YouListify
 </button>
 )}
+<button
+className="call-action"
+type="button"
+onClick={async () => {
+const url = `https://youlistify.com/provider/${selected.slug}`;
+if (navigator.share) {
+await navigator.share({
+title: `${selected.name} on YouListify`,
+url,
+});
+} else {
+await navigator.clipboard.writeText(url);
+alert("Profile link copied!");
+}
+}}
+>
+↗ Share profile
+</button>
 </div>
       </div>
     </div>}
