@@ -227,7 +227,7 @@ setContactOpen(false);
           <div className="provider-body">
 {p.specialties?.length > 0 && (
 <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", marginBottom: "10px" }}>
-{p.specialties.map((service: string) => (
+[...new Set(p.specialties)].map((service: string) => (
 <span
 key={service}
 style={{
