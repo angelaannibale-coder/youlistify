@@ -82,7 +82,7 @@ return;
 const { data, error } = await supabase
 .from("Providers")
 .select(
-  "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id,contact_call,contact_text,contact_email,contact_youlistify,available_now,pricing_methods,starting_price,flat_price,gallery-photos"
+ "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id,contact_call,contact_text,contact_email,contact_youlistify,available_now,pricing_methods,starting_price,flat_price,gallery_photos"
 )
 .eq("user_id", user.id)
 .single();
