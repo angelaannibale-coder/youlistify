@@ -37,7 +37,11 @@ if (!error && data) {
     setProvider({
 ...data,
 specialties:
-data.provider_services?.map((ps: any) => ps.services?.name).filter(Boolean) || [],
+Array.from(
+new Set(
+data.provider_services?.map((ps: any) => ps.services?.name).filter(Boolean) || []
+)
+),
 });
 }
 
@@ -152,30 +156,7 @@ fontWeight: "600",
 </div>
 </div>
 
-{provider.gallery_photos?.length > 0 && (
-<div
-style={{
-display: "grid",
-gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
-gap: "14px",
-marginBottom: "24px",
-}}
->
-{provider.gallery_photos.map((photo: string, index: number) => (
-<img
-key={index}
-src={photo}
-alt={`${displayName} gallery photo ${index + 1}`}
-style={{
-width: "100%",
-height: "180px",
-objectFit: "cover",
-borderRadius: "16px",
-}}
-/>
-))}
-</div>
-)}
+
 
 {provider.bio && (
 <div style={{ marginTop: "24px" }}>
@@ -192,33 +173,7 @@ margin: 0,
 </div>
 )}
 
-{provider.gallery_photos?.length > 0 && (
-<div style={{ marginTop: "26px" }}>
-<h3 style={{ marginBottom: "12px" }}>Photos</h3>
 
-<div
-style={{
-display: "grid",
-gridTemplateColumns: "repeat(3, 1fr)",
-gap: "10px",
-}}
->
-{provider.gallery_photos.map((photo: string, index: number) => (
-<img
-key={index}
-src={photo}
-alt={`${displayName} photo ${index + 1}`}
-style={{
-width: "100%",
-height: "180px",
-objectFit: "cover",
-borderRadius: "12px",
-}}
-/>
-))}
-</div>
-</div>
-)}
 
 {provider.specialties?.length > 0 && (
 <div style={{ marginTop: "26px" }}>
@@ -386,6 +341,33 @@ cursor: "pointer",
 ↗ Share profile
 </button>
 </div>
+{provider.gallery_photos?.length > 0 && (
+<div style={{ marginTop: "26px" }}>
+<h3 style={{ marginBottom: "12px" }}>Photos</h3>
+
+<div
+style={{
+display: "grid",
+gridTemplateColumns: "repeat(3, 1fr)",
+gap: "10px",
+}}
+>
+{provider.gallery_photos.map((photo: string, index: number) => (
+<img
+key={index}
+src={photo}
+alt={`${displayName} photo ${index + 1}`}
+style={{
+width: "100%",
+height: "180px",
+objectFit: "cover",
+borderRadius: "12px",
+}}
+/>
+))}
+</div>
+</div>
+)}
 </div>
 </div>
 </main>
