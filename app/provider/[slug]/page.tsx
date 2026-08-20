@@ -167,6 +167,34 @@ margin: 0,
 </div>
 )}
 
+{provider.gallery_photos?.length > 0 && (
+<div style={{ marginTop: "26px" }}>
+<h3 style={{ marginBottom: "12px" }}>Photos</h3>
+
+<div
+style={{
+display: "grid",
+gridTemplateColumns: "repeat(3, 1fr)",
+gap: "10px",
+}}
+>
+{provider.gallery_photos.map((photo: string, index: number) => (
+<img
+key={index}
+src={photo}
+alt={`${displayName} photo ${index + 1}`}
+style={{
+width: "100%",
+height: "180px",
+objectFit: "cover",
+borderRadius: "12px",
+}}
+/>
+))}
+</div>
+</div>
+)}
+
 {provider.specialties?.length > 0 && (
 <div style={{ marginTop: "26px" }}>
 <h3 style={{ marginBottom: "10px" }}>Services</h3>
