@@ -28,6 +28,7 @@ contact_youlistify?: boolean | null;
   pricing_methods: string[] | null;
 starting_price: number | null;
 flat_price: number | null;
+gallery_photos?: string[] | null;
 };
 
 export default function EditListingPage() {
@@ -37,6 +38,7 @@ const [saving, setSaving] = useState(false);
 const [message, setMessage] = useState("");
 const [selectedServiceIds, setSelectedServiceIds] = useState<number[]>([]);
 const [services, setServices] = useState<any[]>([]);
+const [galleryPhotos, setGalleryPhotos] = useState<string[]>([]);
 const [form, setForm] = useState({
 name: "",
 last_name: "",
@@ -80,7 +82,7 @@ return;
 const { data, error } = await supabase
 .from("Providers")
 .select(
-  "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id,contact_call,contact_text,contact_email,contact_youlistify,available_now,pricing_methods,starting_price,flat_price"
+  "id,name,last_name,business_name,phone,email,city,state,bio,name_display,user_id,contact_call,contact_text,contact_email,contact_youlistify,available_now,pricing_methods,starting_price,flat_price,gallery-photos"
 )
 .eq("user_id", user.id)
 .single();
@@ -94,6 +96,7 @@ return;
 const provider = data as Provider;
 
 setProviderId(provider.id);
+setGalleryPhotos(provider.gallery_photos ?? []);
 const { data: serviceLinks, error: serviceError } = await supabase
 .from("provider_services")
 .select("service_id")
@@ -139,6 +142,43 @@ setForm({
 });
 }
 
+async function uploadGalleryPhotos(files: FileList | null) {
+if (!files || !providerId) return;
+
+const remaining = 6 - galleryPhotos.length;
+const filesToUpload = Array.from(files).slice(0, remaining);
+
+if (filesToUpload.length === 0) {
+setMessage("You can add up to 6 photos.");
+return;
+}
+
+const newUrls: string[] = [];
+
+for (const file of filesToUpload) {
+const fileExt = file.name.split(".").pop();
+const fileName = `${crypto.randomUUID()}.${fileExt}`;
+const filePath = `${providerId}/${fileName}`;
+
+const { error } = await supabase.storage
+.from("provider-photos")
+.upload(filePath, file);
+
+if (error) {
+setMessage("One of the photos could not be uploaded.");
+continue;
+}
+
+const { data } = supabase.storage
+.from("provider-photos")
+.getPublicUrl(filePath);
+
+newUrls.push(data.publicUrl);
+}
+
+setGalleryPhotos((current) => [...current, ...newUrls]);
+}
+
 async function saveListing(e: React.FormEvent) {
 e.preventDefault();
 
@@ -167,6 +207,7 @@ contact_youlistify: form.contact_youlistify,
   pricing_methods: form.pricing_methods,
 starting_price: form.starting_price === "" ? null : Number(form.starting_price),
 flat_price: form.flat_price === "" ? null : Number(form.flat_price),
+gallery_photos: galleryPhotos,
 })
 .eq("id", providerId)
   .select("name_display,contact_call,contact_text,contact_email,contact_youlistify,available_now,pricing_methods,starting_price,flat_price")
@@ -585,6 +626,61 @@ Contact me through YouListify
 Messages sent through YouListify will be delivered to your email without
 displaying your email address to the customer.
 </div>
+</div>
+
+<div style={{ marginTop: "28px", marginBottom: "10px" }}>
+<label
+style={{
+display: "block",
+fontWeight: "700",
+fontSize: "17px",
+marginBottom: "8px",
+}}
+>
+Gallery Photos (optional)
+</label>
+
+<div
+style={{
+fontSize: "14px",
+color: "#667085",
+marginBottom: "12px",
+}}
+>
+Add up to 6 photos of your work, services, or business.
+</div>
+
+<input
+type="file"
+accept="image/*"
+multiple
+onChange={(e) => uploadGalleryPhotos(e.target.files)}
+/>
+
+{galleryPhotos.length > 0 && (
+<div
+style={{
+display: "grid",
+gridTemplateColumns: "repeat(3, 1fr)",
+gap: "10px",
+marginTop: "16px",
+}}
+>
+{galleryPhotos.map((photo, index) => (
+<img
+key={index}
+src={photo}
+alt={`Gallery photo ${index + 1}`}
+style={{
+width: "100%",
+height: "120px",
+objectFit: "cover",
+borderRadius: "10px",
+}}
+/>
+))}
+</div>
+)}
 </div>
 
 <button
