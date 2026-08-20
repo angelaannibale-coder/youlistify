@@ -312,7 +312,23 @@ fontWeight: "600",
 ✉ Email
 </a>
 )}
-
+{provider.contact_youlistify && (
+<button
+type="button"
+onClick={() => alert("YouListify messaging coming soon!")}
+style={{
+background: "#4f46e5",
+color: "white",
+padding: "12px 18px",
+borderRadius: "10px",
+border: "none",
+fontWeight: "600",
+cursor: "pointer",
+}}
+>
+✉ Contact through YouListify
+</button>
+)}
 <button
 type="button"
 onClick={async () => {
