@@ -246,12 +246,12 @@ fontSize: "13px",
             <span className="tag">{p.category}</span><h3>{p.name}</h3><p>⌖ {p.city}</p><div className="meta"><span>★ {p.rating.toFixed(1)} ({p.reviews})</span><span>{p.response}</span></div>
           {p.pricing_methods && p.pricing_methods.length > 0 && (
 <div className="pricing-display">
-{p.pricing_methods.includes("hourly") && p.starting_price != null && (
-  <span>${p.starting_price}/hour | </span>
+{p.pricing_methods.includes("hourly") && (
+  <span>{p.starting_price != null ? `$${p.starting_price}/hour` : "Hourly rate"} | </span>
 )}
 
-{p.pricing_methods.includes("flat") && p.flat_price != null && (
-<span>Flat rate: ${p.flat_price} | </span>
+{p.pricing_methods.includes("flat") && (
+<span>{p.flat_price != null ? `Flat rate: $${p.flat_price}` : "Flat rate"} | </span>
 )}
 
 {p.pricing_methods.includes("contact") && (
