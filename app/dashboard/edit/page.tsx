@@ -35,7 +35,8 @@ const [providerId, setProviderId] = useState<number | null>(null);
 const [loading, setLoading] = useState(true);
 const [saving, setSaving] = useState(false);
 const [message, setMessage] = useState("");
-
+const [selectedServiceIds, setSelectedServiceIds] = useState<number[]>([]);
+const [services, setServices] = useState<any[]>([]);
 const [form, setForm] = useState({
 name: "",
 last_name: "",
@@ -58,6 +59,15 @@ flat_price: "",
 
 useEffect(() => {
 async function loadProvider() {
+  const { data: allServices, error: servicesError } = await supabase
+.from("services")
+.select("id, name, category")
+.order("category")
+.order("name");
+
+if (!servicesError && allServices) {
+setServices(allServices);
+}
 const {
 data: { user },
 } = await supabase.auth.getUser();
@@ -84,7 +94,16 @@ return;
 const provider = data as Provider;
 
 setProviderId(provider.id);
+const { data: serviceLinks, error: serviceError } = await supabase
+.from("provider_services")
+.select("service_id")
+.eq("provider_id", provider.id);
 
+if (!serviceError && serviceLinks) {
+setSelectedServiceIds(
+serviceLinks.map((row: any) => row.service_id)
+);
+}
 setForm({
 name: provider.name || "",
 last_name: provider.last_name || "",
@@ -157,6 +176,33 @@ if (error) {
 setMessage("Could not save changes: " + error.message);
 setSaving(false);
 return;
+}
+const { error: deleteServicesError } = await supabase
+.from("provider_services")
+.delete()
+.eq("provider_id", providerId);
+
+if (deleteServicesError) {
+setMessage("Could not update services: " + deleteServicesError.message);
+setSaving(false);
+return;
+}
+
+if (selectedServiceIds.length > 0) {
+const { error: insertServicesError } = await supabase
+.from("provider_services")
+.insert(
+selectedServiceIds.map((serviceId) => ({
+provider_id: providerId,
+service_id: serviceId,
+}))
+);
+
+if (insertServicesError) {
+setMessage("Could not update services: " + insertServicesError.message);
+setSaving(false);
+return;
+}
 }
 
 setMessage(
@@ -366,6 +412,44 @@ setForm({ ...form, available_now: false })
 />{" "}
 Not available now
 </label>
+</div>
+
+<div style={{ marginTop: "24px", marginBottom: "24px" }}>
+<div style={{ fontWeight: "600", marginBottom: "10px" }}>
+Services
+</div>
+
+<div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+{services.map((service: any) => (
+<label
+key={service.id}
+style={{
+display: "flex",
+alignItems: "center",
+gap: "6px",
+padding: "8px 12px",
+border: "1px solid #ddd",
+borderRadius: "999px",
+cursor: "pointer",
+}}
+>
+<input
+type="checkbox"
+checked={selectedServiceIds.includes(service.id)}
+onChange={(e) => {
+if (e.target.checked) {
+setSelectedServiceIds([...selectedServiceIds, service.id]);
+} else {
+setSelectedServiceIds(
+selectedServiceIds.filter((id) => id !== service.id)
+);
+}
+}}
+/>
+{service.name}
+</label>
+))}
+</div>
 </div>
 <div style={{ marginTop: "24px", marginBottom: "24px" }}>
 <div style={{ fontWeight: "600", marginBottom: "10px" }}>
