@@ -214,7 +214,7 @@ gap: "10px",
 }}
 >
 {provider.pricing_methods.includes("hourly") &&
-provider.starting_price != null && (
+ (
 <span
 style={{
 background: "#f5f3ff",
@@ -223,12 +223,14 @@ borderRadius: "10px",
 fontWeight: "600",
 }}
 >
-${provider.starting_price}/hour
+{provider.starting_price != null
+? `$${provider.starting_price}/hour`
+: "Hourly rate"}
 </span>
 )}
 
 {provider.pricing_methods.includes("flat") &&
-provider.flat_price != null && (
+ (
 <span
 style={{
 background: "#f5f3ff",
@@ -237,7 +239,7 @@ borderRadius: "10px",
 fontWeight: "600",
 }}
 >
-Flat rate: ${provider.flat_price}
+{provider.flat_price != null ? `Flat rate: $${provider.flat_price}` : "Flat rate"}
 </span>
 )}
 
