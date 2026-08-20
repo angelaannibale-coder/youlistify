@@ -366,6 +366,22 @@ alert("Profile link copied!");
 ↗ Share profile
 </button>
 </div>
+    <a
+href={`/provider/${selected.slug}`}
+className="call-action"
+style={{
+display: "block",
+width: "100%",
+textAlign: "center",
+marginTop: "14px",
+fontSize: "17px",
+fontWeight: "700",
+textDecoration: "none",
+}}
+>
+View Full Listing
+</a> 
+     
       </div>
     </div>}
     {contactOpen && selected && (
