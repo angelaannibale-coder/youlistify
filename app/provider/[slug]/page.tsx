@@ -10,12 +10,20 @@ const slug = params.slug as string;
 
 const [provider, setProvider] = useState<any>(null);
 const [loading, setLoading] = useState(true);
+const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
 const supabase = createClient(
 process.env.NEXT_PUBLIC_SUPABASE_URL!,
 process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
+useEffect(() => {
+async function getCurrentUser() {
+const { data } = await supabase.auth.getUser();
+setCurrentUserId(data.user?.id ?? null);
+}
 
+getCurrentUser();
+}, []);
 useEffect(() => {
 async function loadProvider() {
 const id = slug.split("-").pop();
@@ -76,6 +84,18 @@ padding: "40px 20px",
 }}
 >
 <div style={{ maxWidth: "760px", margin: "0 auto" }}>
+{provider.user_id === currentUserId ? (
+<a
+href="/dashboard/edit"
+style={{
+color: "#4f46e5",
+textDecoration: "none",
+fontWeight: "600",
+}}
+>
+← Back to Edit Listing
+</a>
+) : (
 <a
 href="/"
 style={{
@@ -86,7 +106,7 @@ fontWeight: "600",
 >
 ← Back to YouListify
 </a>
-
+)}
 <div
 style={{
 background: "white",
