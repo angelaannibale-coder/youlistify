@@ -136,6 +136,20 @@ marginRight: "10px",
 >
 Edit My Listing
 </a> 
+<a
+href={`/provider/${provider?.id}`}
+style={{
+background: "#4f46e5",
+color: "white",
+padding: "12px 18px",
+borderRadius: "10px",
+textDecoration: "none",
+fontWeight: "600",
+marginRight: "10px",
+}}
+>
+View My Profile
+</a>
   <button
 onClick={handleSignOut}
 style={{
