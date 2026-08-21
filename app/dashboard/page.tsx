@@ -97,6 +97,7 @@ display: "flex",
 justifyContent: "space-between",
 alignItems: "center",
 gap: "20px",
+flexWrap: "wrap",
 marginBottom: "28px",
 }}
 >
