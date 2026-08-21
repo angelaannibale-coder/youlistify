@@ -247,7 +247,7 @@ return;
 }
 
 setMessage(
-`Your listing has been updated! Saved as: ${updatedProvider?.name_display}`
+`Your listing has been updated!`
 );
 setSaving(false);
 }
