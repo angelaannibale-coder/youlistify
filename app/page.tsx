@@ -176,7 +176,7 @@ setContactOpen(false);
       </nav>
       <div className="header-actions">
         <a className="list-link" href="/list-service">List your service</a>
-       isSignedIn ? (
+       {isSignedIn ? (
 <a className="sign-in" href="/dashboard">My Dashboard</a>
 ) : (
 <a className="sign-in" href="/sign-in">Sign in</a>
