@@ -152,19 +152,8 @@ marginRight: "10px",
 View My Profile
 </a>
 </div>
-  <button
-onClick={handleSignOut}
-style={{
-border: "1px solid #ddd",
-background: "white",
-padding: "12px 18px",
-borderRadius: "10px",
-cursor: "pointer",
-fontWeight: "600",
-}}
->
-Sign Out
-</button>
+ 
+ 
 </div>
 
 {message && (
@@ -283,6 +272,21 @@ fontWeight: "600",
 >
 ← Back to YouListify
 </a>
+<button
+onClick={handleSignOut}
+style={{
+display: "block",
+marginTop: "18px",
+border: "1px solid #ddd",
+background: "white",
+padding: "12px 18px",
+borderRadius: "10px",
+cursor: "pointer",
+fontWeight: "600",
+}}
+>
+Sign Out
+</button>
 </div>
 </main>
 );
