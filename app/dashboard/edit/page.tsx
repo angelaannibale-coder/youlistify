@@ -727,6 +727,26 @@ cursor: "pointer",
 {saving ? "Saving..." : "Save Changes"}
 </button>
 </form>
+{providerId && (
+<a
+href={`/provider/${providerId}`}
+style={{
+display: "block",
+width: "100%",
+marginTop: "14px",
+padding: "14px",
+background: "#4f46e5",
+color: "white",
+textAlign: "center",
+textDecoration: "none",
+borderRadius: "12px",
+fontSize: "17px",
+fontWeight: "700",
+}}
+>
+View My Profile →
+</a>
+)}
 
 {message && (
 <p style={{ marginTop: "18px", color: "#182033" }}>{message}</p>
