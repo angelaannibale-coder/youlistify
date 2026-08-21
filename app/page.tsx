@@ -319,7 +319,7 @@ Message
 )}
         <div className="chips">{[...new Set(selected.specialties)].map((s: string)=><span key={s}>{s}</span>)}</div>
         <p className="modal-copy">{selected.response || "No description provided yet."}</p>
-       <div style={{ display: "flex", flexWrap: "wrap", gap: "10px" }}>
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "10px", justifyContent: "center" }}>
 {selected.contact_call && selected.phone && (
 <a className="call-action" href={`tel:${selected.phone.replace(/\D/g,"")}`}>
 ☎ Call {selected.phone}
