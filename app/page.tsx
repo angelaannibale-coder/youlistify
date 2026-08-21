@@ -53,7 +53,10 @@ setIsSignedIn(!!data.user);
 
 checkAuth();
 }, []);
-
+async function handleSignOut() {
+await supabase.auth.signOut();
+setIsSignedIn(false);
+}
 useEffect(() => {
   async function loadProviders() {
     const { data, error } = await supabase
@@ -177,7 +180,22 @@ setContactOpen(false);
       <div className="header-actions">
         <a className="list-link" href="/list-service">List your service</a>
        {isSignedIn ? (
+<>
 <a className="sign-in" href="/dashboard">My Dashboard</a>
+<button
+type="button"
+onClick={handleSignOut}
+style={{
+background: "none",
+border: "none",
+color: "#4f46e5",
+fontWeight: "600",
+cursor: "pointer",
+}}
+>
+Sign out
+</button>
+</>
 ) : (
 <a className="sign-in" href="/sign-in">Sign in</a>
 )}
