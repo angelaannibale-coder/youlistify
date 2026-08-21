@@ -267,6 +267,18 @@ background: "#f7f6ff",
 </p>
 </div>
 </>
+<a
+href="/"
+style={{
+display: "inline-block",
+marginTop: "28px",
+color: "#4f46e5",
+textDecoration: "none",
+fontWeight: "600",
+}}
+>
+← Back to YouListify
+</a>
 )}
 </div>
 </main>
