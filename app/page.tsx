@@ -39,11 +39,20 @@ export default function Home(){
 const [contactEmail,setContactEmail]=useState("");
 const [contactMessage,setContactMessage]=useState("");
   const [dbProviders, setDbProviders] = useState<any[]>([]);
+  const [isSignedIn, setIsSignedIn] = useState(false);
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 );
+useEffect(() => {
+async function checkAuth() {
+const { data } = await supabase.auth.getUser();
+setIsSignedIn(!!data.user);
+}
+
+checkAuth();
+}, []);
 
 useEffect(() => {
   async function loadProviders() {
@@ -167,7 +176,11 @@ setContactOpen(false);
       </nav>
       <div className="header-actions">
         <a className="list-link" href="/list-service">List your service</a>
-       <a className="sign-in" href="/sign-in">Sign in</a>
+       isSignedIn ? (
+<a className="sign-in" href="/dashboard">My Dashboard</a>
+) : (
+<a className="sign-in" href="/sign-in">Sign in</a>
+)}
       </div>
     </header>
 
