@@ -264,6 +264,7 @@ style={{
 display: "flex",
 flexWrap: "wrap",
 gap: "10px",
+justifyContent: "center",
 marginTop: "30px",
 }}
 >
