@@ -64,8 +64,8 @@ provider.business_name ||
 (provider.name_display === "first"
 ? provider.name
 : provider.name_display === "initial"
-? `${provider.name?.split(" ")[0]} ${provider.name?.split(" ")[1]?.[0] || ""}.`
-: provider.name);
+? `${provider.name} ${provider.last_name?.charAt(0) || ""}.`
+: `${provider.name} ${provider.last_name || ""}`.trim());
 
 return (
 <main
