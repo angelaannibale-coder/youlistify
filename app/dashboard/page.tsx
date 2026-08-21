@@ -267,6 +267,8 @@ background: "#f7f6ff",
 </p>
 </div>
 </>
+
+)}
 <a
 href="/"
 style={{
@@ -279,7 +281,6 @@ fontWeight: "600",
 >
 ← Back to YouListify
 </a>
-)}
 </div>
 </main>
 );
