@@ -288,6 +288,14 @@ borderRadius: "24px",
 boxShadow: "0 10px 35px rgba(0,0,0,.08)",
 }}
 >
+<div
+style={{
+display: "flex",
+justifyContent: "space-between",
+alignItems: "center",
+marginBottom: "24px",
+}}
+>
 <a
 href="/dashboard"
 style={{
@@ -298,6 +306,23 @@ fontWeight: "600",
 >
 ← Back to Dashboard
 </a>
+
+{providerId && (
+<a
+href={`/provider/${providerId}`}
+style={{
+background: "#4f46e5",
+color: "white",
+textDecoration: "none",
+fontWeight: "600",
+padding: "10px 16px",
+borderRadius: "10px",
+}}
+>
+View My Profile →
+</a>
+)}
+</div>
 
 <h1
 style={{
