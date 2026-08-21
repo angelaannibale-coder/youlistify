@@ -122,7 +122,7 @@ color: "#182033",
 My Dashboard
 </h1>
 </div>
-
+<div style={{ display: "flex", gap: "10px", flexWrap: "wrap" }}>
 <a
 href="/dashboard/edit"
 style={{
@@ -151,6 +151,7 @@ marginRight: "10px",
 >
 View My Profile
 </a>
+</div>
   <button
 onClick={handleSignOut}
 style={{
