@@ -17,6 +17,7 @@ pricing_methods?: string[];
 starting_price?: number | null;
 flat_price?: number | null;
 service_mode?: string;
+zip_code? string;
 };
 
 
@@ -34,6 +35,7 @@ export default function Home(){
   const [searched,setSearched]=useState(false);
   const [allServices, setAllServices] = useState<any[]>([]);
   const [showServiceSuggestions, setShowServiceSuggestions] = useState(false);
+  const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const categories = useMemo(() => {
 const categoryMap: Record<string, string> = {
 "Home Services": "Home Repair & Improvement",
@@ -131,6 +133,7 @@ const searchableProviders: Provider[] = dbProviders.length
       category: p.category || "",
       city: [p.city, p.state].filter(Boolean).join(", "),
       service_mode: p.service_mode || "",
+      zip_code: p.zip_code || "",
       rating: 0,
       reviews: 0,
       response: p.bio || "",
@@ -154,6 +157,15 @@ flat_price: p.flat_price ?? null,
 p.provider_services?.map((ps: any) => ps.services?.name).filter(Boolean) || [],
     }))
   : providers;
+  const locationSuggestions = Array.from(
+new Set(
+searchableProviders
+.map((p) =>
+p.zip_code ? `${p.city} ${p.zip_code}` : p.city
+)
+.filter(Boolean)
+)
+);
   const filtered = useMemo(()=>{
     const s=service.trim().toLowerCase(), l=location.trim().toLowerCase();
     return searchableProviders.filter(p=>{
@@ -332,7 +344,65 @@ cursor: "pointer",
 </div>
 )}
 </label>
-          <label><span>WHERE?</span><div className="input-shell"><b>⌖</b><input value={location} onChange={e=>setLocation(e.target.value)} placeholder="City or ZIP code" /></div></label>
+          <label>
+<span>WHERE?</span>
+<div className="input-shell" style={{ position: "relative" }}>
+<b>✦</b>
+<input
+value={location}
+onChange={(e) => {
+setLocation(e.target.value);
+setShowLocationSuggestions(true);
+}}
+onFocus={() => setShowLocationSuggestions(true)}
+placeholder="City or ZIP code"
+/>
+</div>
+{showLocationSuggestions && location.trim() && (
+<div
+style={{
+position: "absolute",
+top: "100%",
+left: 0,
+right: 0,
+zIndex: 20,
+background: "white",
+border: "1px solid #e6e9f0",
+borderRadius: "14px",
+marginTop: "6px",
+padding: "10px 14px",
+boxShadow: "0 12px 30px rgba(0,0,0,.12)",
+}}
+>
+{locationSuggestions
+.filter((loc) =>
+loc.toLowerCase().includes(location.trim().toLowerCase())
+)
+.slice(0, 8)
+.map((loc) => (
+<button
+key={loc}
+type="button"
+onClick={() => {
+setLocation(loc);
+setShowLocationSuggestions(false);
+}}
+style={{
+display: "block",
+width: "100%",
+textAlign: "left",
+padding: "10px 4px",
+border: 0,
+background: "white",
+cursor: "pointer",
+}}
+>
+{loc}
+</button>
+))}
+</div>
+)}
+</label>
           <label
 style={{
 display: "flex",
