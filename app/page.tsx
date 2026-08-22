@@ -372,7 +372,7 @@ fontWeight: "600",
         <span className="live"><span className="green-dot"/> Live preview</span>
       </div>
       <div className="provider-grid">
-        {(searched?filtered:providers).map(p=><article className="provider" key={p.name}>
+        {(searched?filtered:providers).map(p=><article className="provider" key={p.id ?? p.slug ?? p.name}>
          <div className="provider-visual">
 <span>{p.initials}</span>
 {p.available_now && (
