@@ -346,6 +346,7 @@ cursor: "pointer",
 ))}
 </div>
 )}
+</label>
 <label style={{ position: "relative" }}>
           
 <span>WHERE?</span>
