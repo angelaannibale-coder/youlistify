@@ -346,8 +346,8 @@ cursor: "pointer",
 ))}
 </div>
 )}
-</label>
-          <label>
+<label style={{ position: "relative" }}>
+          
 <span>WHERE?</span>
 <div className="input-shell" style={{ position: "relative" }}>
 <b>✦</b>
