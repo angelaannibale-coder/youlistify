@@ -159,13 +159,12 @@ p.provider_services?.map((ps: any) => ps.services?.name).filter(Boolean) || [],
   : providers;
   const locationSuggestions = Array.from(
 new Set(
-searchableProviders
-.map((p) =>
-p.zip_code ? `${p.city} ${p.zip_code}` : p.city
+searchableProviders.flatMap((p) => [
+p.city,
+p.zip_code ? `${p.city} ${p.zip_code}` : null,
+]).filter(Boolean)
 )
-.filter(Boolean)
-)
-);
+) as string[];
   const filtered = useMemo(()=>{
     const s=service.trim().toLowerCase(), l=location.trim().toLowerCase();
     return searchableProviders.filter(p=>{
