@@ -33,6 +33,7 @@ export default function Home(){
   const [remoteSearch, setRemoteSearch] = useState(false);
   const [searched,setSearched]=useState(false);
   const [allServices, setAllServices] = useState<any[]>([]);
+  const [showServiceSuggestions, setShowServiceSuggestions] = useState(false);
   const categories = useMemo(() => {
 const categoryMap: Record<string, string> = {
 "Home Services": "Home Repair & Improvement",
@@ -264,7 +265,68 @@ Sign out
         <p>Search local services, see who is available, and connect directly—without filling out long forms or waiting for multiple quotes.</p>
 
         <form className="search-card" onSubmit={runSearch}>
-          <label><span>WHAT DO YOU NEED?</span><div className="input-shell"><b>⌕</b><input value={service} onChange={e=>setService(e.target.value)} placeholder="Handyman, DJ, cleaner..." /></div></label>
+          <label style={{ position: "relative" }}>
+<span>WHAT DO YOU NEED?</span>
+
+<div className="input-shell">
+<b>⌕</b>
+<input
+value={service}
+onChange={(e) => {
+setService(e.target.value);
+setShowServiceSuggestions(true);
+}}
+onFocus={() => setShowServiceSuggestions(true)}
+placeholder="Handyman, DJ, cleaner..."
+/>
+</div>
+
+{showServiceSuggestions && service.trim() && (
+<div
+style={{
+position: "absolute",
+top: "100%",
+left: 0,
+right: 0,
+zIndex: 20,
+background: "white",
+border: "1px solid #e6e9f0",
+borderRadius: "14px",
+marginTop: "6px",
+maxHeight: "260px",
+overflowY: "auto",
+boxShadow: "0 12px 30px rgba(0,0,0,.12)",
+}}
+>
+{allServices
+.filter((item: any) =>
+item.name.toLowerCase().includes(service.toLowerCase())
+)
+.slice(0, 10)
+.map((item: any) => (
+<button
+key={item.id}
+type="button"
+onClick={() => {
+setService(item.name);
+setShowServiceSuggestions(false);
+}}
+style={{
+display: "block",
+width: "100%",
+textAlign: "left",
+padding: "11px 14px",
+border: 0,
+background: "white",
+cursor: "pointer",
+}}
+>
+{item.name}
+</button>
+))}
+</div>
+)}
+</label>
           <label><span>WHERE?</span><div className="input-shell"><b>⌖</b><input value={location} onChange={e=>setLocation(e.target.value)} placeholder="City or ZIP code" /></div></label>
           <label
 style={{
