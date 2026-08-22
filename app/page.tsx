@@ -317,7 +317,17 @@ Message
 
     <section className="provider-cta" id="providers">
       <div><span className="kicker light">For local professionals</span><h2>Your own mini-site on YouListify.</h2><p>Create a profile, show your services, set your availability, and let nearby customers contact you directly.</p></div>
-      <div className="cta-card"><div className="brand-icon big">Y</div><h3>One simple listing.</h3><p>Get found. Get contacted. Get to work.</p><p>Next build: real provider sign-up, profile editing, availability, and search powered by a database.</p></div>
+      <div className="cta-card">
+<div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+<div className="brand-icon big">Y</div>
+<span className="brand-word">
+<span>You</span><span className="capital-l">L</span><span>istify</span>
+</span>
+</div>
+
+<h3>One simple listing.</h3>
+<p>Get found. Get contacted. Get to work.</p>
+</div>
     </section>
 
     <footer>
