@@ -325,7 +325,7 @@ Message
 </span>
 </div>
 
-<h3>One simple listing.</h3>
+<h3>One simple listing. Everything customers need to reach you.</h3>
 <p>Get found. Get contacted. Get to work.</p>
 </div>
     </section>
