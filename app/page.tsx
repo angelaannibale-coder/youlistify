@@ -176,8 +176,9 @@ const localMatch =
 !!l &&
 (mode === "local" || mode === "both") &&
 (
-p.city.toLowerCase().includes(l) ||
-(p.zip_code || "").toLowerCase().includes(l)
+`${p.city} ${p.zip_code || ""}`
+.toLowerCase()
+.includes(l)
 );
 
 const remoteMatch =
