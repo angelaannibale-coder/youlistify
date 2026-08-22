@@ -232,7 +232,8 @@ Sign out
     </section>
 
     <section className="categories" id="categories">
-      <div className="category-head"><h2>Popular categories</h2><a href="#results">View all categories</a></div>
+      <div className="category-head"><h2>Browse services</h2><a href="#results">View all categories</a></div>
+      <p>Find the type of help you need.</p>
       <div className="category-row">
         {categories.map(([icon,name])=><button key={name} className="category" onClick={()=>{setService(name==="More"?"":name);setSearched(true);setTimeout(()=>document.getElementById("results")?.scrollIntoView({behavior:"smooth"}),50)}}>
           <span className="category-icon">{icon}</span><span>{name}</span>
