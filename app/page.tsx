@@ -18,10 +18,7 @@ starting_price?: number | null;
 flat_price?: number | null;
 };
 
-const categories = [
-  ["⌂","Home Services"],["✧","Cleaning"],["⌕","Handyman"],["▣","Moving"],
-  ["□","Events"],["♡","Wellness"],["···","More"]
-];
+
 
 const providers: Provider[] = [
   {name:"Alex Morgan",category:"Home Services",city:"Boynton Beach, FL",rating:4.9,reviews:96,response:"Usually answers in 3 min",initials:"AM",phone:"(555) 013-2048",specialties:["Minor repairs","Furniture assembly","Mounting"]},
@@ -34,6 +31,29 @@ export default function Home(){
   const [location,setLocation]=useState("");
   const [searched,setSearched]=useState(false);
   const [allServices, setAllServices] = useState<any[]>([]);
+  const categories = useMemo(() => {
+const categoryMap: Record<string, string> = {
+"Home Services": "Home Repair & Improvement",
+"Lawn & Outdoor": "Lawn, Garden & Outdoor",
+"Moving": "Moving, Hauling & Delivery",
+"Events": "Events & Entertainment",
+"Technology": "Technology & Digital",
+"Professional Services": "Business & Professional Services",
+"Lessons & Tutoring": "Lessons, Coaching & Tutoring",
+"Personal & Local Help": "Personal, Family & Local Help",
+};
+
+const names = Array.from(
+new Set(
+allServices
+.map((item: any) => categoryMap[item.category] || item.category)
+.filter(Boolean)
+)
+);
+
+return names.map((name) => ["✦", name]);
+}, [allServices]);
+const [selectedCategory, setSelectedCategory] = useState("");
   const [selected,setSelected]=useState<Provider|null>(null);
   const [contactOpen,setContactOpen]=useState(false);
   const [contactName,setContactName]=useState("");
@@ -255,10 +275,64 @@ Sign out
       <div className="category-head"><h2>Browse services</h2><a href="#results">View all categories</a></div>
       <p>Find the type of help you need.</p>
       <div className="category-row">
-        {categories.map(([icon,name])=><button key={name} className="category" onClick={()=>{setService(name==="More"?"":name);setSearched(true);setTimeout(()=>document.getElementById("results")?.scrollIntoView({behavior:"smooth"}),50)}}>
+        {categories.map(([icon,name])=><button key={name} className="category"onClick={() => setSelectedCategory(name)} 
           <span className="category-icon">{icon}</span><span>{name}</span>
         </button>)}
       </div>
+      {selectedCategory && (
+<div style={{ marginTop: "36px" }}>
+<h3 style={{ marginBottom: "18px" }}>{selectedCategory}</h3>
+
+<div
+style={{
+display: "flex",
+flexWrap: "wrap",
+gap: "10px",
+}}
+>
+{allServices
+.filter((item: any) => {
+const categoryMap: Record<string, string> = {
+"Home Services": "Home Repair & Improvement",
+"Lawn & Outdoor": "Lawn, Garden & Outdoor",
+"Moving": "Moving, Hauling & Delivery",
+"Events": "Events & Entertainment",
+"Technology": "Technology & Digital",
+"Professional Services": "Business & Professional Services",
+"Lessons & Tutoring": "Lessons, Coaching & Tutoring",
+"Personal & Local Help": "Personal, Family & Local Help",
+};
+
+return (
+(categoryMap[item.category] || item.category) ===
+selectedCategory
+);
+})
+.map((item: any) => (
+<button
+key={item.id}
+type="button"
+onClick={() => {
+setService(item.name);
+document
+.getElementById("top")
+?.scrollIntoView({ behavior: "smooth" });
+}}
+style={{
+padding: "10px 14px",
+borderRadius: "999px",
+border: "1px solid #e6e9f0",
+background: "white",
+cursor: "pointer",
+fontWeight: "600",
+}}
+>
+{item.name}
+</button>
+))}
+</div>
+</div>
+)}
     </section>
 
     <section className="results" id="results">
