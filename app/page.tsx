@@ -175,7 +175,10 @@ p.zip_code ? `${p.city} ${p.zip_code}` : p.city
 const localMatch =
 !!l &&
 (mode === "local" || mode === "both") &&
-p.city.toLowerCase().includes(l);
+(
+p.city.toLowerCase().includes(l) ||
+(p.zip_code || "").toLowerCase().includes(l)
+);
 
 const remoteMatch =
 remoteSearch &&
