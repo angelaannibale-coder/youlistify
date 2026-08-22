@@ -33,6 +33,7 @@ export default function Home(){
   const [service,setService]=useState("");
   const [location,setLocation]=useState("");
   const [searched,setSearched]=useState(false);
+  const [allServices, setAllServices] = useState<any[]>([]);
   const [selected,setSelected]=useState<Provider|null>(null);
   const [contactOpen,setContactOpen]=useState(false);
   const [contactName,setContactName]=useState("");
@@ -79,6 +80,25 @@ name
   }
 
   loadProviders();
+}, []);
+
+useEffect(() => {
+async function loadServices() {
+const { data, error } = await supabase
+.from("services")
+.select("id, name, category")
+.order("category", { ascending: true })
+.order("name", { ascending: true });
+
+if (error) {
+console.error("Error loading services:", error);
+return;
+}
+
+setAllServices(data || []);
+}
+
+loadServices();
 }, []);
 const searchableProviders: Provider[] = dbProviders.length
   ? dbProviders.map((p: any) => ({
