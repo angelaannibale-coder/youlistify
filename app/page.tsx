@@ -17,7 +17,7 @@ pricing_methods?: string[];
 starting_price?: number | null;
 flat_price?: number | null;
 service_mode?: string;
-zip_code? string;
+zip_code?: string;
 };
 
 
