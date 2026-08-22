@@ -300,7 +300,12 @@ boxShadow: "0 12px 30px rgba(0,0,0,.12)",
 >
 {allServices
 .filter((item: any) =>
-item.name.toLowerCase().includes(service.toLowerCase())
+item.name
+.toLowerCase()
+.split(/\s+/)
+.some((word: string) =>
+word.startsWith(service.trim().toLowerCase())
+)
 )
 .slice(0, 10)
 .map((item: any) => (
