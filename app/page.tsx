@@ -30,6 +30,7 @@ const providers: Provider[] = [
 export default function Home(){
   const [service,setService]=useState("");
   const [location,setLocation]=useState("");
+  const [remoteSearch, setRemoteSearch] = useState(false);
   const [searched,setSearched]=useState(false);
   const [allServices, setAllServices] = useState<any[]>([]);
   const categories = useMemo(() => {
@@ -158,14 +159,20 @@ p.provider_services?.map((ps: any) => ps.services?.name).filter(Boolean) || [],
       const ms=!s || p.category.toLowerCase().includes(s) || p.name.toLowerCase().includes(s) || p.specialties.some(x=>x.toLowerCase().includes(s));
       const mode = (p.service_mode || "").toLowerCase();
 
-const ml = l
-? (mode === "local" || mode === "both") &&
-p.city.toLowerCase().includes(l)
-: mode === "remote" || mode === "both";
+const localMatch =
+!!l &&
+(mode === "local" || mode === "both") &&
+p.city.toLowerCase().includes(l);
+
+const remoteMatch =
+remoteSearch &&
+(mode === "remote" || mode === "both");
+
+const ml = localMatch || remoteMatch;
 
 return ms && ml;
     });
-  },[service,location, dbProviders]);
+  },[service,location, remoteSearch, dbProviders]);
 
   function runSearch(e?:FormEvent){
     e?.preventDefault();
@@ -259,6 +266,22 @@ Sign out
         <form className="search-card" onSubmit={runSearch}>
           <label><span>WHAT DO YOU NEED?</span><div className="input-shell"><b>⌕</b><input value={service} onChange={e=>setService(e.target.value)} placeholder="Handyman, DJ, cleaner..." /></div></label>
           <label><span>WHERE?</span><div className="input-shell"><b>⌖</b><input value={location} onChange={e=>setLocation(e.target.value)} placeholder="City or ZIP code" /></div></label>
+          <label
+style={{
+display: "flex",
+alignItems: "center",
+gap: "8px",
+fontWeight: "600",
+whiteSpace: "nowrap",
+}}
+>
+<input
+type="checkbox"
+checked={remoteSearch}
+onChange={(e) => setRemoteSearch(e.target.checked)}
+/>
+Remote / Online / Phone
+</label>
           <button type="submit" className="search-btn">Search now</button>
         </form>
 
