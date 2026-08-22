@@ -87,6 +87,7 @@ useEffect(() => {
       .select(`
 *,
 provider_services (
+service_mode,
 services (
 name
 )
@@ -129,7 +130,18 @@ const searchableProviders: Provider[] = dbProviders.length
     name: p.business_name || (p.name_display === "first" ? (p.name || "Provider") : p.name_display === "initial" ? `${p.name || "Provider"}${p.last_name ? " " + p.last_name.charAt(0) + "." : ""}` : ([p.name, p.last_name].filter(Boolean).join(" ") || "Provider")),
       category: p.category || "",
       city: [p.city, p.state].filter(Boolean).join(", "),
-      service_mode: p.service_mode || "",
+      service_mode:
+p.provider_services?.some(
+(ps: any) =>
+(ps.service_mode || "").toLowerCase() === "remote" ||
+(ps.service_mode || "").toLowerCase() === "both"
+)
+? "remote"
+: p.provider_services?.some(
+(ps: any) => (ps.service_mode || "").toLowerCase() === "local"
+)
+? "local"
+: "",
       rating: 0,
       reviews: 0,
       response: p.bio || "",
