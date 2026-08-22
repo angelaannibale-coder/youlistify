@@ -16,6 +16,7 @@ contact_youlistify?: boolean;
 pricing_methods?: string[];
 starting_price?: number | null;
 flat_price?: number | null;
+service_mode?: string;
 };
 
 
@@ -127,6 +128,7 @@ const searchableProviders: Provider[] = dbProviders.length
     name: p.business_name || (p.name_display === "first" ? (p.name || "Provider") : p.name_display === "initial" ? `${p.name || "Provider"}${p.last_name ? " " + p.last_name.charAt(0) + "." : ""}` : ([p.name, p.last_name].filter(Boolean).join(" ") || "Provider")),
       category: p.category || "",
       city: [p.city, p.state].filter(Boolean).join(", "),
+      service_mode: p.service_mode || "",
       rating: 0,
       reviews: 0,
       response: p.bio || "",
@@ -154,8 +156,14 @@ p.provider_services?.map((ps: any) => ps.services?.name).filter(Boolean) || [],
     const s=service.trim().toLowerCase(), l=location.trim().toLowerCase();
     return searchableProviders.filter(p=>{
       const ms=!s || p.category.toLowerCase().includes(s) || p.name.toLowerCase().includes(s) || p.specialties.some(x=>x.toLowerCase().includes(s));
-      const ml=!l || p.city.toLowerCase().includes(l);
-      return ms && ml;
+      const mode = (p.service_mode || "").toLowerCase();
+
+const ml = l
+? (mode === "local" || mode === "both") &&
+p.city.toLowerCase().includes(l)
+: mode === "remote" || mode === "both";
+
+return ms && ml;
     });
   },[service,location, dbProviders]);
 
