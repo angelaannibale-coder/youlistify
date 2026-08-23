@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./categories-polish.css";
 import SafetyFooterLink from "./SafetyFooterLink";
+import LaunchPolish from "./LaunchPolish";
 
 export const metadata: Metadata = {
   title: "YouListify | Find the right person. Call them in minutes.",
@@ -22,6 +23,7 @@ export default function RootLayout({ children }: Readonly<{children:React.ReactN
     <html lang="en">
       <body>
         {children}
+        <LaunchPolish />
         <SafetyFooterLink />
       </body>
     </html>
