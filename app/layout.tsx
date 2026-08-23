@@ -20,8 +20,8 @@ export default function RootLayout({ children }: Readonly<{children:React.ReactN
     <html lang="en">
       <body>
         {children}
-        <div style={{ textAlign: "center", padding: "14px 20px 22px", background: "#fff", borderTop: "1px solid #eef0f5" }}>
-          <a href="/safety" style={{ color: "#5b4df5", fontWeight: 700, textDecoration: "none", fontSize: "14px" }}>
+        <div style={{ textAlign: "center", padding: "18px 20px 26px", background: "#fff", borderTop: "1px solid #eef0f5" }}>
+          <a href="/safety" style={{ color: "#5b4df5", fontWeight: 800, textDecoration: "none", fontSize: "16px" }}>
             Safety &amp; Resources
           </a>
         </div>
