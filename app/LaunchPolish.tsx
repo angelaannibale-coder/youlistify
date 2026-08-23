@@ -36,6 +36,29 @@ function makeMount(id: string, after: HTMLElement) {
   return mount;
 }
 
+async function findProfilePhoto(id: string | number) {
+  const { data: files } = await supabase.storage
+    .from("provider-photos")
+    .list(String(id), { search: "profile-photo-" });
+
+  const profileFiles = (files || [])
+    .filter((file: any) => file.name?.startsWith("profile-photo-"))
+    .sort((a: any, b: any) => {
+      const aTime = new Date(a.created_at || a.updated_at || 0).getTime();
+      const bTime = new Date(b.created_at || b.updated_at || 0).getTime();
+      return bTime - aTime;
+    });
+
+  const newest = profileFiles[0];
+  if (!newest) return { url: "", fileName: "" };
+
+  const { data } = supabase.storage
+    .from("provider-photos")
+    .getPublicUrl(`${id}/${newest.name}`);
+
+  return { url: data.publicUrl, fileName: newest.name };
+}
+
 export default function LaunchPolish() {
   const pathname = usePathname();
   const [serviceMode, setServiceMode] = useState("local");
@@ -56,27 +79,39 @@ export default function LaunchPolish() {
 
   useEffect(() => {
     if (pathname !== "/dashboard/edit") return;
+
     (async () => {
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) return;
-      const { data } = await supabase.from("Providers").select("id,service_mode").eq("user_id", auth.user.id).single();
+
+      const { data } = await supabase
+        .from("Providers")
+        .select("id,service_mode")
+        .eq("user_id", auth.user.id)
+        .single();
+
       if (data) {
         setProviderId(data.id);
         setServiceMode(data.service_mode || "local");
-        const { data: files } = await supabase.storage.from("provider-photos").list(String(data.id), { search: "profile-photo" });
-        if (files?.some((file) => file.name === "profile-photo")) {
-          const { data: publicData } = supabase.storage.from("provider-photos").getPublicUrl(`${data.id}/profile-photo`);
-          setProfilePhotoUrl(`${publicData.publicUrl}?v=${Date.now()}`);
-        }
+        const profile = await findProfilePhoto(data.id);
+        if (profile.url) setProfilePhotoUrl(`${profile.url}?v=${Date.now()}`);
       }
     })();
 
     const findTargets = () => {
-      const serviceHeading = Array.from(document.querySelectorAll<HTMLElement>("div")).find((el) => el.textContent?.trim() === "Services");
-      if (serviceHeading?.parentElement) setServiceTarget(makeMount("youlistify-service-mode-mount", serviceHeading.parentElement));
-      const galleryHeading = Array.from(document.querySelectorAll<HTMLElement>("label,div")).find((el) => el.textContent?.trim() === "Gallery Photos (optional)");
-      if (galleryHeading?.parentElement) setProfileTarget(makeMount("youlistify-profile-photo-mount", galleryHeading.parentElement));
+      const serviceHeading = Array.from(document.querySelectorAll<HTMLElement>("div"))
+        .find((el) => el.textContent?.trim() === "Services");
+      if (serviceHeading?.parentElement) {
+        setServiceTarget(makeMount("youlistify-service-mode-mount", serviceHeading.parentElement));
+      }
+
+      const galleryHeading = Array.from(document.querySelectorAll<HTMLElement>("label,div"))
+        .find((el) => el.textContent?.trim() === "Gallery Photos (optional)");
+      if (galleryHeading?.parentElement) {
+        setProfileTarget(makeMount("youlistify-profile-photo-mount", galleryHeading.parentElement));
+      }
     };
+
     findTargets();
     const observer = new MutationObserver(findTargets);
     observer.observe(document.body, { childList: true, subtree: true });
@@ -103,7 +138,6 @@ export default function LaunchPolish() {
         wrap.className = "youlistify-gallery-photo-wrap";
         wrap.style.position = "relative";
         wrap.style.minWidth = "0";
-
         img.parentNode?.insertBefore(wrap, img);
         wrap.appendChild(img);
         img.style.display = "block";
@@ -113,20 +147,11 @@ export default function LaunchPolish() {
         button.textContent = "×";
         button.setAttribute("aria-label", "Remove photo");
         button.title = "Remove photo";
-        button.style.position = "absolute";
-        button.style.top = "6px";
-        button.style.right = "6px";
-        button.style.width = "28px";
-        button.style.height = "28px";
-        button.style.borderRadius = "999px";
-        button.style.border = "none";
-        button.style.background = "rgba(17,24,39,.82)";
-        button.style.color = "white";
-        button.style.fontSize = "20px";
-        button.style.lineHeight = "28px";
-        button.style.cursor = "pointer";
-        button.style.padding = "0";
-        button.style.zIndex = "2";
+        Object.assign(button.style, {
+          position: "absolute", top: "6px", right: "6px", width: "28px", height: "28px",
+          borderRadius: "999px", border: "none", background: "rgba(17,24,39,.82)", color: "white",
+          fontSize: "20px", lineHeight: "28px", cursor: "pointer", padding: "0", zIndex: "2"
+        });
 
         button.onclick = async () => {
           if (working) return;
@@ -170,9 +195,7 @@ export default function LaunchPolish() {
 
           const marker = "/storage/v1/object/public/provider-photos/";
           const storagePath = decodeURIComponent(cleanUrl.split(marker)[1] || "");
-          if (storagePath) {
-            await supabase.storage.from("provider-photos").remove([storagePath]);
-          }
+          if (storagePath) await supabase.storage.from("provider-photos").remove([storagePath]);
 
           wrap.remove();
           working = false;
@@ -189,36 +212,31 @@ export default function LaunchPolish() {
   }, [pathname, providerId]);
 
   useEffect(() => {
-    const recolor = () => {
+    const applyAvatars = async () => {
       document.querySelectorAll<HTMLElement>(".avatar").forEach((avatar) => {
         const key = avatar.textContent?.trim() || "YouListify";
         avatar.style.background = colorFor(key);
       });
-      if (pathname.startsWith("/provider/")) {
-        const h1 = document.querySelector("main h1");
-        const avatar = h1?.parentElement?.previousElementSibling as HTMLElement | null;
-        const raw = pathname.split("/").filter(Boolean).pop() || "";
-        const id = raw.split("-").pop() || "";
-        if (avatar) {
-          avatar.style.background = colorFor(id || avatar.textContent?.trim() || "YouListify");
-          if (id) {
-            const { data } = supabase.storage.from("provider-photos").getPublicUrl(`${id}/profile-photo`);
-            const img = new Image();
-            img.onload = () => {
-              avatar.style.backgroundImage = `url(${data.publicUrl})`;
-              avatar.style.backgroundSize = "cover";
-              avatar.style.backgroundPosition = "center";
-              avatar.textContent = "";
-            };
-            img.src = `${data.publicUrl}?v=1`;
-          }
-        }
+
+      if (!pathname.startsWith("/provider/")) return;
+
+      const h1 = document.querySelector("main h1");
+      const avatar = h1?.parentElement?.previousElementSibling as HTMLElement | null;
+      const raw = pathname.split("/").filter(Boolean).pop() || "";
+      const id = raw.split("-").pop() || "";
+      if (!avatar || !id) return;
+
+      avatar.style.background = colorFor(id || avatar.textContent?.trim() || "YouListify");
+      const profile = await findProfilePhoto(id);
+      if (profile.url) {
+        avatar.style.backgroundImage = `url(${profile.url})`;
+        avatar.style.backgroundSize = "cover";
+        avatar.style.backgroundPosition = "center";
+        avatar.textContent = "";
       }
     };
-    recolor();
-    const observer = new MutationObserver(recolor);
-    observer.observe(document.body, { childList: true, subtree: true });
-    return () => observer.disconnect();
+
+    applyAvatars();
   }, [pathname]);
 
   useEffect(() => {
@@ -226,7 +244,10 @@ export default function LaunchPolish() {
     const intercept = (event: MouseEvent) => {
       const button = (event.target as HTMLElement | null)?.closest("button");
       if (button?.textContent?.includes("Contact through YouListify")) {
-        event.preventDefault(); event.stopPropagation(); setStatus(""); setContactOpen(true);
+        event.preventDefault();
+        event.stopPropagation();
+        setStatus("");
+        setContactOpen(true);
       }
     };
     document.addEventListener("click", intercept, true);
@@ -235,57 +256,138 @@ export default function LaunchPolish() {
 
   async function saveMode() {
     if (!providerId) return setModeMessage("We could not find your listing.");
-    setSavingMode(true); setModeMessage("");
-    const { error } = await supabase.from("Providers").update({ service_mode: serviceMode }).eq("id", providerId);
-    setSavingMode(false); setModeMessage(error ? "Could not save this change." : "Saved!");
+    setSavingMode(true);
+    setModeMessage("");
+    const { error } = await supabase
+      .from("Providers")
+      .update({ service_mode: serviceMode })
+      .eq("id", providerId);
+    setSavingMode(false);
+    setModeMessage(error ? "Could not save this change." : "Saved!");
   }
 
   async function uploadProfilePhoto(file: File | undefined) {
     if (!file || !providerId) return;
-    setUploadingProfile(true); setProfileMessage("");
-    const { error } = await supabase.storage.from("provider-photos").upload(`${providerId}/profile-photo`, file, { upsert: true, contentType: file.type || "image/jpeg" });
-    setUploadingProfile(false);
-    if (error) return setProfileMessage("Could not upload profile photo. Please try again.");
-    const { data } = supabase.storage.from("provider-photos").getPublicUrl(`${providerId}/profile-photo`);
+
+    setUploadingProfile(true);
+    setProfileMessage("");
+
+    const extension = (file.name.split(".").pop() || "jpg").toLowerCase();
+    const fileName = `profile-photo-${crypto.randomUUID()}.${extension}`;
+    const filePath = `${providerId}/${fileName}`;
+
+    const { error } = await supabase.storage
+      .from("provider-photos")
+      .upload(filePath, file);
+
+    if (error) {
+      console.error("Profile photo upload error:", error);
+      setUploadingProfile(false);
+      setProfileMessage("Could not upload profile photo. Please try again.");
+      return;
+    }
+
+    const { data: files } = await supabase.storage
+      .from("provider-photos")
+      .list(String(providerId), { search: "profile-photo-" });
+
+    const oldProfileFiles = (files || [])
+      .filter((item: any) => item.name?.startsWith("profile-photo-") && item.name !== fileName)
+      .map((item: any) => `${providerId}/${item.name}`);
+
+    if (oldProfileFiles.length) {
+      await supabase.storage.from("provider-photos").remove(oldProfileFiles);
+    }
+
+    const { data } = supabase.storage
+      .from("provider-photos")
+      .getPublicUrl(filePath);
+
     setProfilePhotoUrl(`${data.publicUrl}?v=${Date.now()}`);
     setProfileMessage("Profile photo saved!");
+    setUploadingProfile(false);
   }
 
   async function sendMessage(e: FormEvent) {
     e.preventDefault();
     const raw = pathname.split("/").filter(Boolean).pop() || "";
     const id = Number(raw.split("-").pop());
-    if (!id || !name.trim() || !email.trim() || !message.trim()) return setStatus("Please complete your name, email, and message.");
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) return setStatus("Please enter a valid email address.");
-    setSending(true); setStatus("");
-    const { error } = await supabase.functions.invoke("send-provider-message", { body: { providerId: id, customerName: name.trim(), customerEmail: email.trim(), message: message.trim() } });
+    if (!id || !name.trim() || !email.trim() || !message.trim()) {
+      return setStatus("Please complete your name, email, and message.");
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      return setStatus("Please enter a valid email address.");
+    }
+
+    setSending(true);
+    setStatus("");
+    const { error } = await supabase.functions.invoke("send-provider-message", {
+      body: { providerId: id, customerName: name.trim(), customerEmail: email.trim(), message: message.trim() }
+    });
     setSending(false);
     if (error) return setStatus("Your message could not be sent. Please try again.");
-    setName(""); setEmail(""); setMessage(""); setStatus("Message sent!");
+    setName("");
+    setEmail("");
+    setMessage("");
+    setStatus("Message sent!");
   }
 
-  const serviceModeBlock = <div style={{ margin:"10px 0 24px",padding:"14px 16px",background:"#f8f8fb",border:"1px solid #e7e9f0",borderRadius:"14px" }}>
-    <div style={{fontWeight:700,marginBottom:"4px"}}>How do you provide your service?</div>
-    <div style={{fontSize:"13px",color:"#667085",marginBottom:"10px"}}>Local, remote, or both.</div>
-    <div style={{display:"flex",gap:"10px",alignItems:"center",flexWrap:"wrap"}}>
-      <select value={serviceMode} onChange={e=>setServiceMode(e.target.value)} style={{flex:"1 1 260px",padding:"10px 12px",border:"1px solid #ddd",borderRadius:"10px",fontSize:"15px",background:"white"}}><option value="local">Local / In-person</option><option value="remote">Remote / Online / Phone</option><option value="both">Local + Remote</option></select>
-      <button type="button" onClick={saveMode} disabled={savingMode} style={{padding:"10px 18px",border:0,borderRadius:"10px",background:"#4f46e5",color:"white",fontWeight:700,cursor:"pointer"}}>{savingMode?"Saving...":"Save"}</button>
-    </div>{modeMessage&&<div style={{fontSize:"13px",marginTop:"8px",color:"#667085"}}>{modeMessage}</div>}
-  </div>;
-
-  const profilePhotoBlock = <div style={{margin:"18px 0 24px",paddingTop:"18px",borderTop:"1px solid #eceef2"}}>
-    <div style={{fontWeight:700,fontSize:"17px",marginBottom:"5px"}}>Profile Photo (optional)</div>
-    <div style={{fontSize:"14px",color:"#667085",marginBottom:"12px"}}>Add one if you want. If not, YouListify will show your initials.</div>
-    <div style={{display:"flex",alignItems:"center",gap:"14px",flexWrap:"wrap"}}>
-      {profilePhotoUrl&&<img src={profilePhotoUrl} alt="Profile preview" style={{width:"72px",height:"72px",objectFit:"cover",borderRadius:"18px",border:"1px solid #e5e7eb"}} />}
-      <div><input type="file" accept="image/*" onChange={e=>uploadProfilePhoto(e.target.files?.[0])}/><div style={{fontSize:"13px",color:"#667085",marginTop:"6px"}}>{uploadingProfile?"Uploading...":"You can add or replace this anytime."}</div></div>
+  const serviceModeBlock = (
+    <div style={{ margin: "10px 0 24px", padding: "14px 16px", background: "#f8f8fb", border: "1px solid #e7e9f0", borderRadius: "14px" }}>
+      <div style={{ fontWeight: 700, marginBottom: "4px" }}>How do you provide your service?</div>
+      <div style={{ fontSize: "13px", color: "#667085", marginBottom: "10px" }}>Local, remote, or both.</div>
+      <div style={{ display: "flex", gap: "10px", alignItems: "center", flexWrap: "wrap" }}>
+        <select value={serviceMode} onChange={(e) => setServiceMode(e.target.value)} style={{ flex: "1 1 260px", padding: "10px 12px", border: "1px solid #ddd", borderRadius: "10px", fontSize: "15px", background: "white" }}>
+          <option value="local">Local / In-person</option>
+          <option value="remote">Remote / Online / Phone</option>
+          <option value="both">Local + Remote</option>
+        </select>
+        <button type="button" onClick={saveMode} disabled={savingMode} style={{ padding: "10px 18px", border: 0, borderRadius: "10px", background: "#4f46e5", color: "white", fontWeight: 700, cursor: "pointer" }}>
+          {savingMode ? "Saving..." : "Save"}
+        </button>
+      </div>
+      {modeMessage && <div style={{ fontSize: "13px", marginTop: "8px", color: "#667085" }}>{modeMessage}</div>}
     </div>
-    {profileMessage&&<div style={{marginTop:"9px",fontSize:"13px",color:profileMessage.includes("saved")?"#15803d":"#b91c1c"}}>{profileMessage}</div>}
-  </div>;
+  );
 
-  return <>
-    {serviceTarget&&pathname==="/dashboard/edit"&&createPortal(serviceModeBlock,serviceTarget)}
-    {profileTarget&&pathname==="/dashboard/edit"&&createPortal(profilePhotoBlock,profileTarget)}
-    {contactOpen&&<div onClick={()=>setContactOpen(false)} style={{position:"fixed",inset:0,zIndex:100,background:"rgba(12,16,35,.56)",display:"grid",placeItems:"center",padding:"20px"}}><form onSubmit={sendMessage} onClick={e=>e.stopPropagation()} style={{width:"min(100%,560px)",background:"white",borderRadius:"24px",padding:"30px",boxShadow:"0 35px 100px rgba(0,0,0,.25)"}}><div style={{display:"flex",justifyContent:"space-between",gap:"16px"}}><h2 style={{margin:"0 0 18px"}}>Contact through YouListify</h2><button type="button" onClick={()=>setContactOpen(false)} style={{border:0,background:"transparent",fontSize:"26px",cursor:"pointer"}}>×</button></div><input value={name} onChange={e=>setName(e.target.value)} placeholder="Your name" style={{width:"100%",padding:"13px 14px",border:"1px solid #d9dce5",borderRadius:"12px",marginBottom:"12px"}}/><input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Your email" style={{width:"100%",padding:"13px 14px",border:"1px solid #d9dce5",borderRadius:"12px",marginBottom:"12px"}}/><textarea value={message} onChange={e=>setMessage(e.target.value)} placeholder="Your message" style={{width:"100%",minHeight:"120px",padding:"13px 14px",border:"1px solid #d9dce5",borderRadius:"12px",marginBottom:"14px",resize:"vertical",font:"inherit"}}/><button type="submit" disabled={sending} style={{width:"100%",padding:"14px",border:0,borderRadius:"12px",background:"#4f46e5",color:"white",fontWeight:700,cursor:"pointer"}}>{sending?"Sending...":"Send Message"}</button>{status&&<p style={{margin:"14px 0 0",textAlign:"center",color:status==="Message sent!"?"#15803d":"#b91c1c"}}>{status}</p>}</form></div>}
-  </>;
+  const profilePhotoBlock = (
+    <div style={{ margin: "18px 0 24px", paddingTop: "18px", borderTop: "1px solid #eceef2" }}>
+      <div style={{ fontWeight: 700, fontSize: "17px", marginBottom: "5px" }}>Profile Photo (optional)</div>
+      <div style={{ fontSize: "14px", color: "#667085", marginBottom: "12px" }}>Add one if you want. If not, YouListify will show your initials.</div>
+      <div style={{ display: "flex", alignItems: "center", gap: "14px", flexWrap: "wrap" }}>
+        {profilePhotoUrl && <img src={profilePhotoUrl} alt="Profile preview" style={{ width: "72px", height: "72px", objectFit: "cover", borderRadius: "18px", border: "1px solid #e5e7eb" }} />}
+        <div>
+          <input type="file" accept="image/*" onChange={(e) => uploadProfilePhoto(e.target.files?.[0])} />
+          <div style={{ fontSize: "13px", color: "#667085", marginTop: "6px" }}>
+            {uploadingProfile ? "Uploading..." : "You can add or replace this anytime."}
+          </div>
+        </div>
+      </div>
+      {profileMessage && <div style={{ marginTop: "9px", fontSize: "13px", color: profileMessage.includes("saved") ? "#15803d" : "#b91c1c" }}>{profileMessage}</div>}
+    </div>
+  );
+
+  return (
+    <>
+      {serviceTarget && pathname === "/dashboard/edit" && createPortal(serviceModeBlock, serviceTarget)}
+      {profileTarget && pathname === "/dashboard/edit" && createPortal(profilePhotoBlock, profileTarget)}
+      {contactOpen && (
+        <div onClick={() => setContactOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(12,16,35,.56)", display: "grid", placeItems: "center", padding: "20px" }}>
+          <form onSubmit={sendMessage} onClick={(e) => e.stopPropagation()} style={{ width: "min(100%,560px)", background: "white", borderRadius: "24px", padding: "30px", boxShadow: "0 35px 100px rgba(0,0,0,.25)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", gap: "16px" }}>
+              <h2 style={{ margin: "0 0 18px" }}>Contact through YouListify</h2>
+              <button type="button" onClick={() => setContactOpen(false)} style={{ border: 0, background: "transparent", fontSize: "26px", cursor: "pointer" }}>×</button>
+            </div>
+            <input value={name} onChange={(e) => setName(e.target.value)} placeholder="Your name" style={{ width: "100%", padding: "13px 14px", border: "1px solid #d9dce5", borderRadius: "12px", marginBottom: "12px" }} />
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Your email" style={{ width: "100%", padding: "13px 14px", border: "1px solid #d9dce5", borderRadius: "12px", marginBottom: "12px" }} />
+            <textarea value={message} onChange={(e) => setMessage(e.target.value)} placeholder="Your message" style={{ width: "100%", minHeight: "120px", padding: "13px 14px", border: "1px solid #d9dce5", borderRadius: "12px", marginBottom: "14px", resize: "vertical", font: "inherit" }} />
+            <button type="submit" disabled={sending} style={{ width: "100%", padding: "14px", border: 0, borderRadius: "12px", background: "#4f46e5", color: "white", fontWeight: 700, cursor: "pointer" }}>
+              {sending ? "Sending..." : "Send Message"}
+            </button>
+            {status && <p style={{ margin: "14px 0 0", textAlign: "center", color: status === "Message sent!" ? "#15803d" : "#b91c1c" }}>{status}</p>}
+          </form>
+        </div>
+      )}
+    </>
+  );
 }
