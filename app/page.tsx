@@ -669,7 +669,7 @@ onClick={() => setSuggestionOpen(false)}
 </button>
 
 <h2>What should we add?</h2>
-<p>Tell us the service, category, or idea you'd like to see on YouListify.</p>
+
 
 {!suggestionSent ? (
 <>
