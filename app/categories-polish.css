@@ -1,57 +1,55 @@
 /* Homepage category polish */
 .categories {
-  text-align: center;
-  padding-top: 52px;
-  padding-bottom: 58px;
-  min-height: auto;
+  padding-top: 42px;
+  padding-bottom: 60px;
+  scroll-margin-top: 100px;
 }
 
+/* Keep the original header layout: title left, link right. */
 .category-head {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
+  justify-content: space-between;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 8px;
+  gap: 18px;
+  margin-bottom: 22px;
 }
 
 .category-head h2 {
-  font-size: clamp(1.9rem, 3vw, 2.7rem);
-  letter-spacing: -0.035em;
+  font-size: 1.2rem;
+  margin: 0;
 }
 
 .category-head a {
-  order: 3;
-  margin-top: 6px;
+  margin: 0;
 }
 
 .categories > p {
-  margin: 0 auto 28px;
+  margin: 0 0 24px;
   color: #667085;
 }
 
+/* Let the cards fill the section more like the original layout. */
 .category-row {
-  max-width: 1040px;
-  margin: 0 auto;
+  width: 100%;
+  margin: 0;
   display: grid;
-  grid-template-columns: repeat(4, minmax(180px, 230px));
-  justify-content: center;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 16px;
 }
 
 .category {
-  min-height: 132px;
-  padding: 20px 14px;
-  border-radius: 18px;
-  font-size: 0.98rem;
+  min-height: 120px;
+  padding: 18px 14px;
+  border-radius: 14px;
   text-align: center;
 }
 
-/* Turn the generic symbol into a small YouListify brand mark. */
+/* Small YouListify brand mark instead of the generic star. */
 .category-icon {
-  width: 42px;
-  height: 42px;
-  border-radius: 13px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   background: linear-gradient(145deg, #5b4df5, #6f57eb);
   color: #fff;
   box-shadow: 0 8px 18px rgba(91, 77, 245, 0.18);
@@ -60,44 +58,48 @@
 
 .category-icon::before {
   content: "Y";
-  font-size: 1rem;
+  font-size: .95rem;
   font-weight: 900;
   line-height: 1;
 }
 
-/* Current categories arrive alphabetically from Supabase.
-   Reorder the cards by broad consumer demand without changing the data. */
-.category-row .category:nth-child(1) { order: 5; } /* Events */
-.category-row .category:nth-child(2) { order: 1; } /* Home Repair & Improvement */
-.category-row .category:nth-child(3) { order: 3; } /* Lawn, Garden & Outdoor */
-.category-row .category:nth-child(4) { order: 7; } /* Lessons, Coaching & Tutoring */
-.category-row .category:nth-child(5) { order: 4; } /* Moving, Hauling & Delivery */
-.category-row .category:nth-child(6) { order: 2; } /* Personal, Family & Local Help */
-.category-row .category:nth-child(7) { order: 6; } /* Business & Professional Services */
-.category-row .category:nth-child(8) { order: 8; } /* Technology & Digital */
+/* Supabase currently returns these 16 categories alphabetically.
+   Reorder them by broad consumer demand without changing the data. */
+.category-row .category:nth-child(8)  { order: 1; }  /* Home Repair & Improvement */
+.category-row .category:nth-child(4)  { order: 2; }  /* Cleaning */
+.category-row .category:nth-child(9)  { order: 3; }  /* Lawn, Garden & Outdoor */
+.category-row .category:nth-child(11) { order: 4; }  /* Moving, Hauling & Delivery */
+.category-row .category:nth-child(13) { order: 5; }  /* Pet Services */
+.category-row .category:nth-child(12) { order: 6; }  /* Personal, Family & Local Help */
+.category-row .category:nth-child(1)  { order: 7; }  /* Automotive */
+.category-row .category:nth-child(2)  { order: 8; }  /* Beauty & Personal Care */
+.category-row .category:nth-child(14) { order: 9; }  /* Real Estate & Property Services */
+.category-row .category:nth-child(3)  { order: 10; } /* Business & Professional Services */
+.category-row .category:nth-child(6)  { order: 11; } /* Events & Entertainment */
+.category-row .category:nth-child(15) { order: 12; } /* Repairs, Crafts & Specialty Services */
+.category-row .category:nth-child(16) { order: 13; } /* Technology & Digital */
+.category-row .category:nth-child(10) { order: 14; } /* Lessons, Coaching & Tutoring */
+.category-row .category:nth-child(7)  { order: 15; } /* Fitness & Wellness */
+.category-row .category:nth-child(5)  { order: 16; } /* Creative & Media */
 
 .categories > div[style] {
-  max-width: 1040px;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  text-align: center;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
 }
 
-.categories > div[style] > div {
-  justify-content: center;
-}
-
-@media (max-width: 900px) {
+@media (max-width: 1050px) {
   .category-row {
-    grid-template-columns: repeat(2, minmax(150px, 1fr));
-    max-width: 620px;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
   }
 }
 
-@media (max-width: 520px) {
+@media (max-width: 720px) {
   .categories {
-    padding-top: 38px;
-    padding-bottom: 42px;
+    scroll-margin-top: 82px;
+  }
+
+  .category-head {
+    align-items: flex-start;
   }
 
   .category-row {
@@ -106,14 +108,13 @@
   }
 
   .category {
-    min-height: 118px;
+    min-height: 116px;
     padding: 16px 10px;
-    font-size: 0.88rem;
+    font-size: .9rem;
   }
 
   .category-icon {
     width: 38px;
     height: 38px;
-    border-radius: 12px;
   }
 }
