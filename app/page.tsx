@@ -668,7 +668,7 @@ onClick={() => setSuggestionOpen(false)}
 ✕
 </button>
 
-<h2>What should we add?</h2>
+{!suggestionSent && <h2>What should we add?</h2>}
 
 
 {!suggestionSent ? (
@@ -695,7 +695,7 @@ Send Suggestion
 </button>
 </>
 ) : (
-<p>Thanks! Your suggestion has been sent.</p>
+<h2 style={{ textAlign: "center", fontSize: "30px", margin: "24px 0" }}>🎉 Thanks! Your suggestion has been sent!</h2>
 )}
 </div>
 </div>
