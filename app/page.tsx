@@ -510,7 +510,7 @@ fontWeight: "600",
 
     <section className="results" id="results">
       <div className="section-title">
-        <div><span className="kicker">Ready when you are</span><h2>{searched?`${filtered.length} match${filtered.length===1?"":"es"} found`:"Available now near you"}</h2></div>
+        <div><span className="kicker">Ready when you are</span><h2>{searched?`${filtered.length} match${filtered.length===1?"":"es"} found`:"Available now"}</h2></div>
         <span className="live"><span className="green-dot"/> Live preview</span>
       </div>
       <div className="provider-grid">
