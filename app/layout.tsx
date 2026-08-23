@@ -16,5 +16,16 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: Readonly<{children:React.ReactNode}>) {
-  return <html lang="en"><body>{children}</body></html>;
+  return (
+    <html lang="en">
+      <body>
+        {children}
+        <div style={{ textAlign: "center", padding: "14px 20px 22px", background: "#fff", borderTop: "1px solid #eef0f5" }}>
+          <a href="/safety" style={{ color: "#5b4df5", fontWeight: 700, textDecoration: "none", fontSize: "14px" }}>
+            Safety &amp; Resources
+          </a>
+        </div>
+      </body>
+    </html>
+  );
 }
