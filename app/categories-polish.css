@@ -45,21 +45,22 @@
   text-align: center;
 }
 
-/* Small YouListify brand mark instead of the generic star. */
+/* Polished diamond category mark. */
 .category-icon {
   width: 40px;
   height: 40px;
-  border-radius: 12px;
-  background: linear-gradient(145deg, #5b4df5, #6f57eb);
-  color: #fff;
-  box-shadow: 0 8px 18px rgba(91, 77, 245, 0.18);
+  display: grid;
+  place-items: center;
+  color: #5b4df5;
   font-size: 0;
+  background: transparent;
+  box-shadow: none;
 }
 
 .category-icon::before {
-  content: "Y";
-  font-size: .95rem;
-  font-weight: 900;
+  content: "❖";
+  font-size: 1.65rem;
+  font-weight: 700;
   line-height: 1;
 }
 
