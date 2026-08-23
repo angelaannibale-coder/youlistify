@@ -1,20 +1,25 @@
-/* Restore the original playful tilt on the homepage sample provider card only. */
+/* Keep the homepage sample provider card polished, straight, and slightly more prominent. */
 .hero .profile-card {
-  transform: rotate(2.2deg);
+  width: min(100%, 500px);
+  transform: none;
   transform-origin: center;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .hero .profile-card:hover {
-  transform: rotate(1deg) translateY(-3px);
+  transform: translateY(-3px);
+}
+
+@media (max-width: 1050px) {
+  .hero .profile-card {
+    width: min(100%, 500px);
+  }
 }
 
 @media (max-width: 720px) {
-  .hero .profile-card {
-    transform: rotate(1.2deg);
-  }
-
+  .hero .profile-card,
   .hero .profile-card:hover {
-    transform: rotate(1.2deg);
+    width: 100%;
+    transform: none;
   }
 }
