@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import "./categories-polish.css";
 
 export const metadata: Metadata = {
   title: "YouListify | Find the right person. Call them in minutes.",
