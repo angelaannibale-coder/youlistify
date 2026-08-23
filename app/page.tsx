@@ -66,7 +66,10 @@ const [contactEmail,setContactEmail]=useState("");
 const [contactMessage,setContactMessage]=useState("");
   const [dbProviders, setDbProviders] = useState<any[]>([]);
   const [isSignedIn, setIsSignedIn] = useState(false);
-
+const [suggestionOpen, setSuggestionOpen] = useState(false);
+const [suggestionText, setSuggestionText] = useState("");
+const [suggestionEmail, setSuggestionEmail] = useState("");
+const [suggestionSent, setSuggestionSent] = useState(false);
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -605,7 +608,14 @@ Message
 Can't find the service or category you need? Send us a suggestion.
 We're always adding new ways to connect people with the right person for the job.
 </p>
-<button type="button" className="suggestion-button">
+<button
+type="button"
+className="suggestion-button"
+onClick={() => {
+setSuggestionSent(false);
+setSuggestionOpen(true);
+}}
+>
 Suggest a Service
 </button>
 <p className="suggestion-note">
@@ -618,6 +628,54 @@ Have another idea for YouListify? You can send that too.
       <p>Find the right person. Call them in minutes. Get the job done.</p>
       <small>© {new Date().getFullYear()} YouListify. All rights reserved.</small>
     </footer>
+
+    {suggestionOpen && (
+<div
+className="modal-backdrop"
+onClick={() => setSuggestionOpen(false)}
+>
+<div
+className="modal"
+onClick={(e) => e.stopPropagation()}
+>
+<button
+className="close"
+onClick={() => setSuggestionOpen(false)}
+>
+✕
+</button>
+
+<h2>What should we add?</h2>
+<p>Tell us the service, category, or idea you'd like to see on YouListify.</p>
+
+{!suggestionSent ? (
+<>
+<textarea
+placeholder="What are you looking for?"
+value={suggestionText}
+onChange={(e) => setSuggestionText(e.target.value)}
+/>
+
+<input
+type="email"
+placeholder="Your email (optional)"
+value={suggestionEmail}
+onChange={(e) => setSuggestionEmail(e.target.value)}
+/>
+
+<button
+type="button"
+className="call-action"
+>
+Send Suggestion
+</button>
+</>
+) : (
+<p>Thanks! Your suggestion has been sent.</p>
+)}
+</div>
+</div>
+)}
 
     {selected && <div className="modal-backdrop" onClick={()=>setSelected(null)}>
       <div className="modal" onClick={e=>e.stopPropagation()}>
