@@ -86,6 +86,29 @@ async function handleSignOut() {
 await supabase.auth.signOut();
 setIsSignedIn(false);
 }
+async function sendSuggestion() {
+if (!suggestionText.trim()) {
+alert("Please enter a service or suggestion.");
+return;
+}
+
+const { error } = await supabase
+.from("suggestions")
+.insert({
+suggestion: suggestionText.trim(),
+email: suggestionEmail.trim() || null,
+});
+
+if (error) {
+console.error(error);
+alert("Something went wrong. Please try again.");
+return;
+}
+
+setSuggestionSent(true);
+setSuggestionText("");
+setSuggestionEmail("");
+}
 useEffect(() => {
   async function loadProviders() {
     const { data, error } = await supabase
@@ -635,7 +658,7 @@ className="modal-backdrop"
 onClick={() => setSuggestionOpen(false)}
 >
 <div
-className="modal"
+className="modal suggestion-model"
 onClick={(e) => e.stopPropagation()}
 >
 <button
@@ -666,6 +689,7 @@ onChange={(e) => setSuggestionEmail(e.target.value)}
 <button
 type="button"
 className="call-action"
+onClick={sendSuggestion}
 >
 Send Suggestion
 </button>
