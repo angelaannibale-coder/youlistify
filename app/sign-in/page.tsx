@@ -62,9 +62,12 @@ Welcome back
 Sign in to your YouListify account.
 </p>
 
-<form onSubmit={handleSignIn}>
+<form onSubmit={handleSignIn} autoComplete="on">
 <input
 type="email"
+name="email"
+autoComplete="email"
+inputMode="email"
 placeholder="Email address"
 value={email}
 onChange={(e) => setEmail(e.target.value)}
@@ -81,6 +84,8 @@ fontSize: "16px",
 
 <input
 type="password"
+name="password"
+autoComplete="current-password"
 placeholder="Password"
 value={password}
 onChange={(e) => setPassword(e.target.value)}
