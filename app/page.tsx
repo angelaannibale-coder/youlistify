@@ -693,6 +693,22 @@ View Full Listing
      
       </div>
     </div>}
+    <section className="suggestion-section">
+<div className="suggestion-card">
+<span className="kicker">DON'T SEE WHAT YOU NEED?</span>
+<h2>Tell us what you're looking for.</h2>
+<p>
+Can't find the service or category you need? Send us a suggestion.
+We're always adding new ways to connect people with the right person for the job.
+</p>
+<button type="button" className="suggestion-button">
+Suggest a Service
+</button>
+<p className="suggestion-note">
+Have another idea for YouListify? You can send that too.
+</p>
+</div>
+</section>
     {contactOpen && selected && (
 <div className="modal-backdrop" onClick={() => setContactOpen(false)}>
 <div className="modal" onClick={(e) => e.stopPropagation()}>
