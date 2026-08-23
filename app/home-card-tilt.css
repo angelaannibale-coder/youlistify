@@ -1,0 +1,20 @@
+/* Restore the original playful tilt on the homepage sample provider card only. */
+.hero .profile-card {
+  transform: rotate(2.2deg);
+  transform-origin: center;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.hero .profile-card:hover {
+  transform: rotate(1deg) translateY(-3px);
+}
+
+@media (max-width: 720px) {
+  .hero .profile-card {
+    transform: rotate(1.2deg);
+  }
+
+  .hero .profile-card:hover {
+    transform: rotate(1.2deg);
+  }
+}
