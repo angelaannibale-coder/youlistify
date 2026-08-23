@@ -84,7 +84,7 @@ padding: "40px 20px",
 }}
 >
 <div style={{ maxWidth: "760px", margin: "0 auto" }}>
-{provider.user_id === currentUserId ? (
+{currentUserId && provider.user_id === currentUserId ? (
 <a
 href="/dashboard/edit"
 style={{
