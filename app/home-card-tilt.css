@@ -1,18 +1,22 @@
-/* Keep the homepage sample provider card polished, straight, and slightly more prominent. */
+/* Keep the homepage sample provider card polished, straight, and more prominent. */
 .hero .profile-card {
-  width: min(100%, 500px);
-  transform: none;
+  width: min(100%, 540px);
+  transform: translateY(-24px);
   transform-origin: center;
   transition: transform 0.25s ease, box-shadow 0.25s ease;
 }
 
 .hero .profile-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-28px);
 }
 
 @media (max-width: 1050px) {
   .hero .profile-card {
-    width: min(100%, 500px);
+    width: min(100%, 520px);
+    transform: translateY(-14px);
+  }
+  .hero .profile-card:hover {
+    transform: translateY(-18px);
   }
 }
 
