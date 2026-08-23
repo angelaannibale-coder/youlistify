@@ -658,7 +658,7 @@ className="modal-backdrop"
 onClick={() => setSuggestionOpen(false)}
 >
 <div
-className="modal suggestion-model"
+className="modal suggestion-modal"
 onClick={(e) => e.stopPropagation()}
 >
 <button
@@ -677,7 +677,6 @@ onClick={() => setSuggestionOpen(false)}
 placeholder="What are you looking for?"
 value={suggestionText}
 onChange={(e) => setSuggestionText(e.target.value)}
-style={{ display: "block", width: "100%", minHeight: "110px", boxSizing: "border-box", marginBottom: "12px", padding: "13px 14px", borderRadius: "12px" }}
 />
 
 <input
@@ -685,7 +684,6 @@ type="email"
 placeholder="Your email (optional)"
 value={suggestionEmail}
 onChange={(e) => setSuggestionEmail(e.target.value)}
-style={{ display: "block", width: "100%", minHeight: "110px", boxSizing: "border-box", marginBottom: "12px", padding: "13px 14px", borderRadius: "12px" }}
 />
 
 <button
@@ -695,7 +693,6 @@ onClick={sendSuggestion}
 >
 Send Suggestion
 </button>
-style={{ display: "block", width: "100%" }}
 </>
 ) : (
 <p>Thanks! Your suggestion has been sent.</p>
