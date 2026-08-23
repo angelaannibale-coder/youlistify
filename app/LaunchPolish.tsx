@@ -84,6 +84,111 @@ export default function LaunchPolish() {
   }, [pathname]);
 
   useEffect(() => {
+    if (pathname !== "/dashboard/edit" || !providerId) return;
+
+    let working = false;
+
+    const decorateGallery = () => {
+      const galleryHeading = Array.from(document.querySelectorAll<HTMLElement>("label,div"))
+        .find((el) => el.textContent?.trim() === "Gallery Photos (optional)");
+      const galleryBlock = galleryHeading?.parentElement;
+      if (!galleryBlock) return;
+
+      const images = Array.from(galleryBlock.querySelectorAll<HTMLImageElement>('img[alt^="Gallery photo"]'));
+
+      images.forEach((img) => {
+        if (img.parentElement?.classList.contains("youlistify-gallery-photo-wrap")) return;
+
+        const wrap = document.createElement("div");
+        wrap.className = "youlistify-gallery-photo-wrap";
+        wrap.style.position = "relative";
+        wrap.style.minWidth = "0";
+
+        img.parentNode?.insertBefore(wrap, img);
+        wrap.appendChild(img);
+        img.style.display = "block";
+
+        const button = document.createElement("button");
+        button.type = "button";
+        button.textContent = "×";
+        button.setAttribute("aria-label", "Remove photo");
+        button.title = "Remove photo";
+        button.style.position = "absolute";
+        button.style.top = "6px";
+        button.style.right = "6px";
+        button.style.width = "28px";
+        button.style.height = "28px";
+        button.style.borderRadius = "999px";
+        button.style.border = "none";
+        button.style.background = "rgba(17,24,39,.82)";
+        button.style.color = "white";
+        button.style.fontSize = "20px";
+        button.style.lineHeight = "28px";
+        button.style.cursor = "pointer";
+        button.style.padding = "0";
+        button.style.zIndex = "2";
+
+        button.onclick = async () => {
+          if (working) return;
+          const photoUrl = img.src;
+          if (!window.confirm("Remove this photo from your listing?")) return;
+
+          working = true;
+          button.disabled = true;
+          button.textContent = "…";
+
+          const { data: provider, error: loadError } = await supabase
+            .from("Providers")
+            .select("gallery_photos")
+            .eq("id", providerId)
+            .single();
+
+          if (loadError || !provider) {
+            alert("Could not remove the photo. Please try again.");
+            working = false;
+            button.disabled = false;
+            button.textContent = "×";
+            return;
+          }
+
+          const currentPhotos: string[] = provider.gallery_photos || [];
+          const cleanUrl = photoUrl.split("?")[0];
+          const updatedPhotos = currentPhotos.filter((url) => url.split("?")[0] !== cleanUrl);
+
+          const { error: updateError } = await supabase
+            .from("Providers")
+            .update({ gallery_photos: updatedPhotos })
+            .eq("id", providerId);
+
+          if (updateError) {
+            alert("Could not remove the photo. Please try again.");
+            working = false;
+            button.disabled = false;
+            button.textContent = "×";
+            return;
+          }
+
+          const marker = "/storage/v1/object/public/provider-photos/";
+          const storagePath = decodeURIComponent(cleanUrl.split(marker)[1] || "");
+          if (storagePath) {
+            await supabase.storage.from("provider-photos").remove([storagePath]);
+          }
+
+          wrap.remove();
+          working = false;
+        };
+
+        wrap.appendChild(button);
+      });
+    };
+
+    decorateGallery();
+    const observer = new MutationObserver(decorateGallery);
+    observer.observe(document.body, { childList: true, subtree: true });
+    return () => observer.disconnect();
+  }, [pathname, providerId]);
+
+  useEffect(() => {
     const recolor = () => {
       document.querySelectorAll<HTMLElement>(".avatar").forEach((avatar) => {
         const key = avatar.textContent?.trim() || "YouListify";
