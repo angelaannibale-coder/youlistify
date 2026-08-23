@@ -15,15 +15,21 @@ function makeMount(id: string, anchor: Element, position: "beforebegin" | "after
 
 function OfferCard({ compact = false, showButton = true }: { compact?: boolean; showButton?: boolean }) {
   return (
-    <section style={{ maxWidth: "1040px", margin: compact ? "14px auto 18px" : "28px auto", padding: "0 20px", boxSizing: "border-box" }}>
+    <section style={compact
+      ? { width: "100%", margin: "0 0 22px", padding: 0, boxSizing: "border-box" }
+      : { maxWidth: "1040px", margin: "28px auto", padding: "0 20px", boxSizing: "border-box" }
+    }>
       <div
         style={{
           background: "linear-gradient(135deg,#f5f3ff,#ffffff)",
-          border: "1px solid #ddd8ff",
-          borderRadius: compact ? "14px" : "18px",
-          padding: compact ? "12px 18px" : "18px 22px",
+          borderTop: compact ? "1px solid #e7e3ff" : "1px solid #ddd8ff",
+          borderBottom: compact ? "1px solid #e7e3ff" : "1px solid #ddd8ff",
+          borderLeft: compact ? "none" : "1px solid #ddd8ff",
+          borderRight: compact ? "none" : "1px solid #ddd8ff",
+          borderRadius: compact ? 0 : "18px",
+          padding: compact ? "14px 24px" : "18px 22px",
           textAlign: "center",
-          boxShadow: "0 8px 24px rgba(79,70,229,.07)",
+          boxShadow: compact ? "none" : "0 8px 24px rgba(79,70,229,.07)",
         }}
       >
         <div style={{ color: "#5b4cf0", fontWeight: 800, fontSize: compact ? "12px" : "14px", letterSpacing: ".04em", marginBottom: "4px" }}>
