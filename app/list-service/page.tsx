@@ -1,5 +1,6 @@
 "use client";
 
+import "./mobile.css";
 import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 const supabase = createClient(
@@ -509,63 +510,62 @@ style={{
 display: "flex",
 alignItems: "center",
 gap: "10px",
-marginBottom: "10px",
+padding: "8px 0",
+cursor: "pointer"
 }}
 >
 <input
 type="checkbox"
 checked={form.pricing_methods.includes(method)}
-onChange={(e) =>
+onChange={(e) => {
 setForm({
 ...form,
 pricing_methods: e.target.checked
 ? [...form.pricing_methods, method]
-: form.pricing_methods.filter((item) => item !== method),
-})
-}
+: form.pricing_methods.filter((m) => m !== method)
+});
+}}
 />
 {method}
 </label>
 ))}
 
 {form.pricing_methods.includes("Hourly rate") && (
+<div style={{ marginTop: "12px" }}>
+<div style={{ fontSize: "14px", marginBottom: "6px" }}>
+Hourly rate (optional)
+</div>
 <input
-type="number"
-min="0"
-step="0.01"
-placeholder="Hourly rate (optional)"
+placeholder="Example: 75"
 value={form.starting_price}
-onChange={(e) =>
-setForm({ ...form, starting_price: e.target.value })
-}
+onChange={(e) => setForm({ ...form, starting_price: e.target.value })}
 style={{
-width: "100%",
-padding: "14px",
+padding: "12px",
 borderRadius: "10px",
 border: "1px solid #ddd",
-marginTop: "4px",
+width: "180px"
 }}
 />
+</div>
 )}
 
 {form.pricing_methods.includes("Flat rate") && (
+<div style={{ marginTop: "12px" }}>
+<div style={{ fontSize: "14px", marginBottom: "6px" }}>
+Flat rate (optional)
+</div>
 <input
-type="number"
-min="0"
-step="0.01"
-placeholder="Flat rate (optional)"
-  value={form.flat_price}
-onChange={(e) =>
-setForm({ ...form, flat_price: e.target.value })
-}
+placeholder="Example: 250"
+value={form.flat_price}
+onChange={(e) => setForm({ ...form, flat_price: e.target.value })}
 style={{
-width: "100%",
-padding: "14px",
+padding: "12px",
 borderRadius: "10px",
 border: "1px solid #ddd",
-marginTop: "8px",
+width: "180px"
 }}
 />
+</div>
 )}
 </div>
 
@@ -581,11 +581,12 @@ marginTop: "8px",
       fontWeight: "700",
       fontSize: "16px",
       cursor: "pointer",
+      marginTop: "8px"
     }}
   >
-    Continue
+    Create my listing
   </button>
-</form> 
-    </main>
+</form>
+</main>
   );
 }
