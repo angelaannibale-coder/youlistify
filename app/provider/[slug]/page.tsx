@@ -12,6 +12,7 @@ const [provider, setProvider] = useState<any>(null);
 const [loading, setLoading] = useState(true);
 const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 const [profilePhotoUrl, setProfilePhotoUrl] = useState("");
+const [linkCopied, setLinkCopied] = useState(false);
 
 const supabase = createClient(
 process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -89,6 +90,24 @@ provider.business_name ||
 ? `${provider.name} ${provider.last_name?.charAt(0) || ""}.`
 : `${provider.name} ${provider.last_name || ""}`.trim());
 
+async function copyProfileLink() {
+const url = window.location.href;
+try {
+await navigator.clipboard.writeText(url);
+setLinkCopied(true);
+window.setTimeout(() => setLinkCopied(false), 2200);
+} catch {
+const input = document.createElement("input");
+input.value = url;
+document.body.appendChild(input);
+input.select();
+document.execCommand("copy");
+document.body.removeChild(input);
+setLinkCopied(true);
+window.setTimeout(() => setLinkCopied(false), 2200);
+}
+}
+
 return (
 <main style={{minHeight:"100vh",background:"#f6f7fb",padding:"40px 20px"}}>
 <div style={{ maxWidth: "760px", margin: "0 auto" }}>
@@ -124,7 +143,8 @@ return (
 {provider.contact_text && provider.phone && <a href={`sms:${provider.phone}`} style={{background:"#4f46e5",color:"white",padding:"12px 18px",borderRadius:"10px",textDecoration:"none",fontWeight:"600"}}>💬 Text</a>}
 {provider.contact_email && provider.email && <a href={`mailto:${provider.email}`} style={{background:"#4f46e5",color:"white",padding:"12px 18px",borderRadius:"10px",textDecoration:"none",fontWeight:"600"}}>✉ Email</a>}
 {provider.contact_youlistify && <button type="button" onClick={()=>alert("YouListify messaging coming soon!")} style={{background:"#4f46e5",color:"white",padding:"12px 18px",borderRadius:"10px",border:"none",fontWeight:"600",cursor:"pointer"}}>✉ Contact through YouListify</button>}
-<button type="button" onClick={async()=>{const url=window.location.href;if(navigator.share){await navigator.share({title:`${displayName} on YouListify`,url});}else{await navigator.clipboard.writeText(url);alert("Profile link copied!");}}} style={{background:"#4f46e5",color:"white",padding:"12px 18px",borderRadius:"10px",border:"none",fontWeight:"600",cursor:"pointer"}}>↗ Share profile</button>
+<button type="button" onClick={copyProfileLink} style={{background:"#f5f3ff",color:"#4f46e5",padding:"12px 18px",borderRadius:"10px",border:"1px solid #ddd6fe",fontWeight:"700",cursor:"pointer"}}>{linkCopied ? "✓ Link Copied" : "🔗 Copy Profile Link"}</button>
+<button type="button" onClick={async()=>{const url=window.location.href;if(navigator.share){await navigator.share({title:`${displayName} on YouListify`,url});}else{await copyProfileLink();}}} style={{background:"#4f46e5",color:"white",padding:"12px 18px",borderRadius:"10px",border:"none",fontWeight:"600",cursor:"pointer"}}>↗ Share profile</button>
 </div>
 
 {provider.gallery_photos?.length > 0 && <div style={{ marginTop: "26px" }}><h3 style={{ marginBottom: "12px" }}>Photos</h3><div style={{display:"grid",gridTemplateColumns:"repeat(3, 1fr)",gap:"10px"}}>{provider.gallery_photos.map((photo:string,index:number)=><img key={index} src={photo} alt={`${displayName} photo ${index+1}`} style={{width:"100%",height:"180px",objectFit:"cover",borderRadius:"12px"}} />)}</div></div>}
