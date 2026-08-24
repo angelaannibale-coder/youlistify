@@ -16,9 +16,32 @@ export default function SampleProfileSafety() {
     };
 
     const polish = () => {
-      // All categories are already visible, so the old link to Available Now is redundant.
       document.querySelectorAll<HTMLAnchorElement>(".category-head a").forEach((link) => {
         if (/view all categories|browse all categories/i.test(link.textContent || "")) link.remove();
+      });
+
+      // Modernize only the provider contact-message modal while preserving its bold heading/layout.
+      document.querySelectorAll<HTMLElement>(".modal").forEach((modal) => {
+        const heading = modal.querySelector("h2");
+        if (!heading || !/^Contact /i.test(heading.textContent || "")) return;
+        const fields = modal.querySelectorAll<HTMLElement>("input, textarea");
+        fields.forEach((field) => {
+          field.style.display = "block";
+          field.style.width = "100%";
+          field.style.boxSizing = "border-box";
+          field.style.border = "1px solid #dfe3eb";
+          field.style.borderRadius = "14px";
+          field.style.padding = "14px 16px";
+          field.style.marginTop = "12px";
+          field.style.background = "#fff";
+          field.style.outline = "none";
+          field.style.fontSize = "16px";
+        });
+        const textarea = modal.querySelector<HTMLTextAreaElement>("textarea");
+        if (textarea) {
+          textarea.style.minHeight = "130px";
+          textarea.style.resize = "vertical";
+        }
       });
 
       const heroCard = document.querySelector(".profile-card");
@@ -31,17 +54,12 @@ export default function SampleProfileSafety() {
           badge.style.cssText = "display:inline-block;width:max-content;margin-top:4px;color:#777;font-size:10px;font-weight:600;letter-spacing:.02em;";
           title.appendChild(badge);
         }
-
-        const sampleButton = Array.from(heroCard.querySelectorAll("button")).find((button) =>
-          /call now|view sample|view full sample profile/i.test(button.textContent || "")
-        );
+        const sampleButton = Array.from(heroCard.querySelectorAll("button")).find((button) => /call now|view sample|view full sample profile/i.test(button.textContent || ""));
         if (sampleButton && !sampleButton.hasAttribute("data-sample-safe")) {
           sampleButton.setAttribute("data-sample-safe", "true");
           sampleButton.textContent = "View profile";
           sampleButton.addEventListener("click", explainSample, true);
-        } else if (sampleButton) {
-          sampleButton.textContent = "View profile";
-        }
+        } else if (sampleButton) sampleButton.textContent = "View profile";
       }
 
       const headings = Array.from(document.querySelectorAll("h1,h2,h3,h4"));
