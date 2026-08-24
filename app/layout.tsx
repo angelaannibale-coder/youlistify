@@ -7,6 +7,7 @@ import SafetyFooterLink from "./SafetyFooterLink";
 import LaunchPolish from "./LaunchPolish";
 import FoundingProviderOffer from "./FoundingProviderOffer";
 import HomepageProviderPriority from "./HomepageProviderPriority";
+import ProviderAccountLinker from "./ProviderAccountLinker";
 
 export const metadata: Metadata = {
   title: "YouListify | Find the right person. Call them in minutes.",
@@ -27,6 +28,7 @@ export default function RootLayout({ children }: Readonly<{children:React.ReactN
     <html lang="en">
       <body>
         {children}
+        <ProviderAccountLinker />
         <FoundingProviderOffer />
         <LaunchPolish />
         <HomepageProviderPriority />
