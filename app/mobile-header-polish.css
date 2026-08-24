@@ -37,8 +37,12 @@
     min-height: 46px;
     padding: 0 16px;
     margin: 0 !important;
+    border: 1px solid #d8d2ff !important;
     border-radius: 13px;
+    background: #f1efff !important;
+    color: #5546e8 !important;
     font-size: 14px;
+    font-weight: 800;
     line-height: 1 !important;
     white-space: nowrap;
   }
