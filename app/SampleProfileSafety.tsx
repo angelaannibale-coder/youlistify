@@ -15,8 +15,13 @@ export default function SampleProfileSafety() {
       alert("This is a sample YouListify profile. Real provider listings let customers call, text, email, or contact providers directly.");
     };
 
+    const openSampleProfile = (event: Event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      window.location.href = "/sample-provider";
+    };
+
     const polish = () => {
-      // Homepage hero sample card.
       const heroCard = document.querySelector(".profile-card");
       if (heroCard && heroCard.textContent?.includes("Alex Morgan")) {
         const title = heroCard.querySelector(".profile-title");
@@ -28,18 +33,16 @@ export default function SampleProfileSafety() {
           title.appendChild(badge);
         }
 
-        const callButton = Array.from(heroCard.querySelectorAll("button")).find((button) =>
-          /call now/i.test(button.textContent || "")
+        const sampleButton = Array.from(heroCard.querySelectorAll("button")).find((button) =>
+          /call now|view sample/i.test(button.textContent || "")
         );
-        if (callButton && !callButton.hasAttribute("data-sample-safe")) {
-          callButton.setAttribute("data-sample-safe", "true");
-          callButton.textContent = "View sample";
-          callButton.addEventListener("click", explainSample, true);
+        if (sampleButton && !sampleButton.hasAttribute("data-sample-safe")) {
+          sampleButton.setAttribute("data-sample-safe", "true");
+          sampleButton.textContent = "View Full Sample Profile";
+          sampleButton.addEventListener("click", openSampleProfile, true);
         }
       }
 
-      // If the fallback Alex sample ever appears in search results or its popup,
-      // clearly label it and prevent fake phone/text/email actions.
       const containers = Array.from(document.querySelectorAll("article.provider, .modal"));
       containers.forEach((container) => {
         if (!container.textContent?.includes("Alex Morgan")) return;
@@ -60,6 +63,14 @@ export default function SampleProfileSafety() {
           link.style.cursor = "pointer";
           link.addEventListener("click", explainSample, true);
         });
+
+        const fullListing = Array.from(container.querySelectorAll<HTMLAnchorElement>("a")).find((link) =>
+          /view full listing/i.test(link.textContent || "")
+        );
+        if (fullListing && !fullListing.hasAttribute("data-sample-profile-link")) {
+          fullListing.setAttribute("data-sample-profile-link", "true");
+          fullListing.href = "/sample-provider";
+        }
       });
     };
 
