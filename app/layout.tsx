@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import "./categories-polish.css";
 import "./home-card-tilt.css";
+import "./mobile-header-polish.css";
 import SafetyFooterLink from "./SafetyFooterLink";
 import LaunchPolish from "./LaunchPolish";
 import FoundingProviderOffer from "./FoundingProviderOffer";
