@@ -16,6 +16,11 @@ export default function SampleProfileSafety() {
     };
 
     const polish = () => {
+      // All categories are already visible, so the old link to Available Now is redundant.
+      document.querySelectorAll<HTMLAnchorElement>(".category-head a").forEach((link) => {
+        if (/view all categories|browse all categories/i.test(link.textContent || "")) link.remove();
+      });
+
       const heroCard = document.querySelector(".profile-card");
       if (heroCard && heroCard.textContent?.includes("Alex Morgan")) {
         const title = heroCard.querySelector(".profile-title");
