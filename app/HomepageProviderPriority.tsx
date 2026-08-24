@@ -10,10 +10,17 @@ export default function HomepageProviderPriority() {
     if (pathname !== "/") return;
 
     const placeProviderSection = () => {
-      const hero = document.querySelector("section.hero");
       const providerSection = document.querySelector("section.provider-cta");
-      if (hero && providerSection && hero.nextElementSibling !== providerSection) {
-        hero.insertAdjacentElement("afterend", providerSection);
+      if (providerSection) {
+        const headings = Array.from(document.querySelectorAll("h1,h2,h3"));
+        const browseHeading = headings.find((el) =>
+          /browse (by )?(service|categor)/i.test(el.textContent?.trim() || "")
+        );
+        const browseSection = browseHeading?.closest("section");
+
+        if (browseSection && browseSection.nextElementSibling !== providerSection) {
+          browseSection.insertAdjacentElement("afterend", providerSection);
+        }
       }
 
       const listLink = document.querySelector<HTMLAnchorElement>(".header-actions .list-link");
