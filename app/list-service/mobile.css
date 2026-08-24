@@ -1,0 +1,50 @@
+@media (max-width: 720px) {
+  main:has(form) {
+    width: calc(100% - 28px) !important;
+    max-width: 100% !important;
+    margin: 24px auto 40px !important;
+    padding: 24px 18px !important;
+    box-sizing: border-box !important;
+    overflow: hidden !important;
+  }
+
+  main:has(form) form {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) !important;
+    gap: 14px !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  main:has(form) form > * {
+    grid-column: 1 / -1 !important;
+    min-width: 0 !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  main:has(form) input,
+  main:has(form) select,
+  main:has(form) textarea,
+  main:has(form) button {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    box-sizing: border-box !important;
+  }
+
+  main:has(form) h1 {
+    font-size: 40px !important;
+    line-height: 1.05 !important;
+  }
+
+  main:has(form) div,
+  main:has(form) p,
+  main:has(form) h1,
+  main:has(form) h2,
+  main:has(form) h3,
+  main:has(form) label {
+    max-width: 100% !important;
+    overflow-wrap: anywhere;
+  }
+}
