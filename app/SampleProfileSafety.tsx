@@ -16,7 +16,6 @@ export default function SampleProfileSafety() {
     };
 
     const polish = () => {
-      // Keep the hero feeling like a marketplace. Only a tiny transparency label remains.
       const heroCard = document.querySelector(".profile-card");
       if (heroCard && heroCard.textContent?.includes("Alex Morgan")) {
         const title = heroCard.querySelector(".profile-title");
@@ -40,7 +39,6 @@ export default function SampleProfileSafety() {
         }
       }
 
-      // Put the real sample-profile invitation in the provider-focused mini-site section.
       const headings = Array.from(document.querySelectorAll("h1,h2,h3,h4"));
       const miniHeading = headings.find((el) => /your own.*mini.*site|mini.*site.*youlistify/i.test(el.textContent || ""));
       const miniSection = miniHeading?.closest("section,div");
@@ -48,12 +46,11 @@ export default function SampleProfileSafety() {
         const link = document.createElement("a");
         link.setAttribute("data-example-profile-link", "true");
         link.href = "/sample-provider";
-        link.textContent = "See an example profile →";
-        link.style.cssText = "display:inline-block;margin-top:14px;color:#5b4df5;font-weight:800;text-decoration:none;";
+        link.textContent = "See an Example Profile →";
+        link.style.cssText = "display:inline-flex;align-items:center;justify-content:center;width:max-content;margin-top:18px;padding:11px 17px;background:#ffffff;color:#342b87;border-radius:999px;font-weight:800;font-size:15px;line-height:1.2;text-decoration:none;box-shadow:0 5px 16px rgba(0,0,0,.12);";
         miniSection.appendChild(link);
       }
 
-      // Safety for any fallback Alex result: never allow fake contact details to launch.
       const containers = Array.from(document.querySelectorAll("article.provider, .modal"));
       containers.forEach((container) => {
         if (!container.textContent?.includes("Alex Morgan")) return;
