@@ -15,13 +15,35 @@ export default function SampleProfileSafety() {
       alert("This is an example YouListify listing. Real provider listings let customers contact providers directly.");
     };
 
+    const initialsFor = (displayName: string) => {
+      const words = displayName
+        .replace(/[^A-Za-z0-9\s.]/g, " ")
+        .split(/\s+/)
+        .map((word) => word.replace(/\./g, ""))
+        .filter(Boolean);
+      if (words.length === 0) return "P";
+      if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+      return `${words[0][0]}${words[1][0]}`.toUpperCase();
+    };
+
     const polish = () => {
       document.querySelectorAll<HTMLAnchorElement>(".category-head a").forEach((link) => {
         if (/view all categories|browse all categories/i.test(link.textContent || "")) link.remove();
       });
 
-      // Modernize only the provider contact-message modal while preserving its bold heading/layout.
+      // Always derive provider-card initials from the exact public name shown on that card.
+      document.querySelectorAll<HTMLElement>("article.provider").forEach((card) => {
+        const name = card.querySelector("h3")?.textContent?.trim();
+        const avatar = card.querySelector<HTMLElement>(".provider-visual > span:first-child");
+        if (name && avatar) avatar.textContent = initialsFor(name);
+      });
+
+      // Keep popup initials synchronized with the exact public name shown there too.
       document.querySelectorAll<HTMLElement>(".modal").forEach((modal) => {
+        const popupName = modal.querySelector(".modal-head h2")?.textContent?.trim();
+        const popupAvatar = modal.querySelector<HTMLElement>(".modal-head .avatar.large");
+        if (popupName && popupAvatar) popupAvatar.textContent = initialsFor(popupName);
+
         const heading = modal.querySelector("h2");
         if (!heading || !/^Contact /i.test(heading.textContent || "")) return;
         const fields = modal.querySelectorAll<HTMLElement>("input, textarea");
