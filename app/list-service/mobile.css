@@ -23,7 +23,7 @@
     box-sizing: border-box !important;
   }
 
-  main:has(form) input,
+  main:has(form) input:not([type="checkbox"]),
   main:has(form) select,
   main:has(form) textarea,
   main:has(form) button {
@@ -31,6 +31,15 @@
     max-width: 100% !important;
     min-width: 0 !important;
     box-sizing: border-box !important;
+  }
+
+  main:has(form) input[type="checkbox"] {
+    width: 24px !important;
+    min-width: 24px !important;
+    max-width: 24px !important;
+    height: 24px !important;
+    flex: 0 0 24px !important;
+    margin: 0 !important;
   }
 
   main:has(form) h1 {
