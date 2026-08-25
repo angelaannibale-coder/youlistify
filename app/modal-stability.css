@@ -1,0 +1,68 @@
+/* Stable modal behavior and polished YouListify contact form. */
+.modal-backdrop {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.modal {
+  max-height: calc(100dvh - 40px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* When the contact modal is stacked after the provider modal, hide the older
+   provider backdrop so only one dialog is visible to the customer. */
+body:has(.modal-backdrop + .modal-backdrop) .modal-backdrop:first-of-type {
+  visibility: hidden;
+}
+
+/* Contact-through-YouListify fields */
+.modal h2 + p + input,
+.modal h2 + p + input + input,
+.modal h2 + p + input + input + textarea {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #dfe3eb;
+  border-radius: 14px;
+  background: #fff;
+  color: #101a38;
+  font: inherit;
+  font-size: 16px;
+  padding: 14px 16px;
+  margin: 12px 0 0;
+  outline: none;
+  appearance: none;
+}
+
+.modal h2 + p + input:focus,
+.modal h2 + p + input + input:focus,
+.modal h2 + p + input + input + textarea:focus {
+  border-color: #7568f7;
+  box-shadow: 0 0 0 3px rgba(91,77,245,.10);
+}
+
+.modal h2 + p + input + input + textarea {
+  min-height: 132px;
+  line-height: 1.45;
+  resize: vertical;
+}
+
+.modal h2 + p + input + input + textarea + .call-action {
+  margin-top: 18px;
+}
+
+@media (max-width: 720px) {
+  .modal-backdrop {
+    padding: 18px;
+    align-items: center;
+  }
+
+  .modal {
+    width: 100%;
+    max-width: 560px;
+    max-height: calc(100dvh - 36px);
+    padding: 28px 24px;
+    border-radius: 24px;
+  }
+}
