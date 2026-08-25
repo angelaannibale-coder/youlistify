@@ -1,15 +1,7 @@
 "use client";
 
-import { useState } from "react";
-
 export default function SampleProviderPage() {
-  const [copied, setCopied] = useState(false);
-  const sampleNotice = () => alert("This is a sample YouListify profile. Real provider listings let customers contact providers directly.");
-  const copyLink = async () => {
-    await navigator.clipboard.writeText(window.location.href);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const sampleNotice = () => alert("This is a sample YouListify profile. Real provider listings let customers contact providers directly and share their profile link.");
 
   return (
     <main style={{minHeight:"100vh",background:"#f6f7fb",padding:"28px 16px 48px"}}>
@@ -27,7 +19,7 @@ export default function SampleProviderPage() {
           <section style={{marginTop:24}}><h2>Availability</h2><p style={{color:"#4b5563"}}>Weekday and weekend appointments available. Same-day availability may be offered for smaller jobs.</p></section>
           <div style={{display:"flex",flexWrap:"wrap",gap:10,justifyContent:"center",marginTop:28}}>
             {['☎ Call','💬 Text','✉ Email','✉ Contact through YouListify'].map(x=><button key={x} onClick={sampleNotice} style={{background:"#4f46e5",color:"white",padding:"12px 16px",borderRadius:10,border:0,fontWeight:700}}>{x}</button>)}
-            <button onClick={copyLink} style={{background:"#f5f3ff",color:"#4f46e5",padding:"12px 16px",borderRadius:10,border:"1px solid #ddd6fe",fontWeight:700}}>{copied?'✓ Link Copied':'🔗 Copy Profile Link'}</button>
+            <button onClick={sampleNotice} style={{background:"#f5f3ff",color:"#4f46e5",padding:"12px 16px",borderRadius:10,border:"1px solid #ddd6fe",fontWeight:700}}>🔗 Copy Profile Link</button>
           </div>
           <div style={{marginTop:32,padding:20,borderRadius:18,background:"#faf9ff",textAlign:"center"}}><strong>Example of a full YouListify provider profile</strong><p style={{color:"#667085",lineHeight:1.6}}>Providers can show their services, pricing, availability and contact options in one shareable profile.</p><a href="/list-service" style={{display:"inline-block",background:"#5b4df5",color:"white",padding:"12px 18px",borderRadius:11,textDecoration:"none",fontWeight:800}}>Create Your Listing</a></div>
         </div>
