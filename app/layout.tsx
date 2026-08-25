@@ -3,12 +3,14 @@ import "./globals.css";
 import "./categories-polish.css";
 import "./home-card-tilt.css";
 import "./mobile-header-polish.css";
+import "./modal-stability.css";
 import SafetyFooterLink from "./SafetyFooterLink";
 import LaunchPolish from "./LaunchPolish";
 import FoundingProviderOffer from "./FoundingProviderOffer";
 import HomepageProviderPriority from "./HomepageProviderPriority";
 import ProviderAccountLinker from "./ProviderAccountLinker";
 import ProviderSignupPolish from "./ProviderSignupPolish";
+import ContactModalCleanup from "./ContactModalCleanup";
 
 export const metadata: Metadata = {
   title: "YouListify | Find the right person. Call them in minutes.",
@@ -29,6 +31,7 @@ export default function RootLayout({ children }: Readonly<{children:React.ReactN
     <html lang="en">
       <body>
         {children}
+        <ContactModalCleanup />
         <ProviderAccountLinker />
         <ProviderSignupPolish />
         <FoundingProviderOffer />
