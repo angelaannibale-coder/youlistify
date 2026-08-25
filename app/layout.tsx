@@ -13,6 +13,7 @@ import ProviderSignupPolish from "./ProviderSignupPolish";
 import ContactModalCleanup from "./ContactModalCleanup";
 import JobBoardComingSoon from "./JobBoardComingSoon";
 import SearchVocabularyBridge from "./SearchVocabularyBridge";
+import ProviderNotificationBridge from "./ProviderNotificationBridge";
 
 export const metadata: Metadata = {
   title: "YouListify | Find the right person. Call them in minutes.",
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: Readonly<{children:React.ReactN
         <SafetyFooterLink />
         <JobBoardComingSoon />
         <SearchVocabularyBridge />
+        <ProviderNotificationBridge />
       </body>
     </html>
   );
