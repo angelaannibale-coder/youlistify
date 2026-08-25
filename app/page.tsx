@@ -26,6 +26,17 @@ const providers: Provider[] = [
   {name:"Fresh Start Cleaning",category:"Cleaning",city:"Boca Raton, FL",rating:4.8,reviews:203,response:"Usually answers in 5 min",initials:"FS",phone:"(555) 013-9024",specialties:["Deep cleaning","Move-out cleaning","Recurring service"]}
 ];
 
+function publicProviderName(p: any) {
+  return p.business_name || (p.name_display === "first" ? (p.name || "Provider") : p.name_display === "initial" ? `${p.name || "Provider"}${p.last_name ? " " + p.last_name.charAt(0) + "." : ""}` : ([p.name, p.last_name].filter(Boolean).join(" ") || "Provider"));
+}
+
+function initialsFor(displayName: string) {
+  const words = displayName.replace(/[^A-Za-z0-9\s.]/g, " ").split(/\s+/).map((word) => word.replace(/\./g, "")).filter(Boolean);
+  if (words.length === 0) return "P";
+  if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
+  return `${words[0][0]}${words[1][0]}`.toUpperCase();
+}
+
 export default function Home(){
   const [service,setService]=useState("");
   const [location,setLocation]=useState("");
@@ -123,10 +134,12 @@ loadServices();
 }, []);
 
 const searchableProviders: Provider[] = dbProviders.length
-  ? dbProviders.map((p: any) => ({
+  ? dbProviders.map((p: any) => {
+      const displayName = publicProviderName(p);
+      return {
       id: p.id,
       slug: `${(p.name || "provider").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}-${p.id}`,
-      name: p.business_name || (p.name_display === "first" ? (p.name || "Provider") : p.name_display === "initial" ? `${p.name || "Provider"}${p.last_name ? " " + p.last_name.charAt(0) + "." : ""}` : ([p.name, p.last_name].filter(Boolean).join(" ") || "Provider")),
+      name: displayName,
       category: p.category || "",
       city: [p.city, p.state].filter(Boolean).join(", "),
       service_mode: p.service_mode || "",
@@ -134,7 +147,7 @@ const searchableProviders: Provider[] = dbProviders.length
       rating: 0,
       reviews: 0,
       response: p.bio || "",
-      initials: (p.name || "P").split(" ").map((x: string) => x[0]).join("").slice(0, 2).toUpperCase(),
+      initials: initialsFor(displayName),
       phone: p.phone || "",
       email: p.email || "",
       available_now: p.available_now ?? false,
@@ -146,7 +159,8 @@ const searchableProviders: Provider[] = dbProviders.length
       starting_price: p.starting_price ?? null,
       flat_price: p.flat_price ?? null,
       specialties: p.provider_services?.map((ps: any) => ps.services?.name).filter(Boolean) || [],
-    }))
+    };
+  })
   : providers;
 
 const locationSuggestions = Array.from(new Set(searchableProviders.flatMap((p) => [p.city, p.zip_code ? `${p.city} ${p.zip_code}` : null]).filter(Boolean))) as string[];
@@ -161,7 +175,6 @@ const filtered = useMemo(()=>{
 
     const mode = (p.service_mode || "").toLowerCase();
 
-    // If no location is entered, do not exclude otherwise-matching providers.
     if (!l) {
       if (remoteSearch) return mode === "remote" || mode === "both";
       return true;
@@ -232,16 +245,16 @@ return <main>
 </form>
 <div className="trust"><span>✓ Direct contact</span><span>✓ Availability badges</span><span>✓ Local professionals</span></div>
 </div>
-<div className="profile-card"><div className="profile-top"><div className="avatar">AM</div><div className="profile-title"><strong>Alex Morgan</strong><span>Home Services</span></div><div className="availability"><span className="green-dot"/> Available now</div></div><div className="profile-image"><div className="tool-icon">🛠️</div></div><div className="profile-bottom"><div className="rating"><strong>★★★★★ 4.9</strong><span>Based on 96 reviews</span></div><button onClick={()=>setSelected(providers[0])}>☎ Call now</button></div></div>
+<div className="profile-card"><div className="profile-top"><div className="avatar">AM</div><div className="profile-title"><strong>Alex Morgan</strong><span>Home Services · Example</span></div><div className="availability"><span className="green-dot"/> Available now</div></div><div className="profile-image"><div className="tool-icon">🛠️</div></div><div className="profile-bottom"><div className="rating"><strong>★★★★★ 4.9</strong><span>Based on 96 reviews</span></div><button onClick={()=>setSelected(providers[0])}>View profile</button></div></div>
 </section>
 
-<section className="categories" id="categories"><div className="category-head"><h2>Browse services</h2><a href="#results">View all categories</a></div><p>Find the type of help you need.</p><div className="category-row">{categories.map(([icon,name])=><button key={name} className="category" onClick={()=>setSelectedCategory(name)}><span className="category-icon">{icon}</span><span>{name}</span></button>)}</div>{selectedCategory && (<div style={{marginTop:"36px"}}><h3 style={{marginBottom:"18px"}}>{selectedCategory}</h3><div style={{display:"flex",flexWrap:"wrap",gap:"10px"}}>{allServices.filter((item:any)=>{const categoryMap:Record<string,string>={"Home Services":"Home Repair & Improvement","Lawn & Outdoor":"Lawn, Garden & Outdoor","Moving":"Moving, Hauling & Delivery","Events":"Events & Entertainment","Technology":"Technology & Digital","Professional Services":"Business & Professional Services","Lessons & Tutoring":"Lessons, Coaching & Tutoring","Personal & Local Help":"Personal, Family & Local Help"};return (categoryMap[item.category]||item.category)===selectedCategory;}).map((item:any)=><button key={item.id} type="button" onClick={()=>{setService(item.name);document.getElementById("top")?.scrollIntoView({behavior:"smooth"});}} style={{padding:"10px 14px",borderRadius:"999px",border:"1px solid #e6e9f0",background:"white",cursor:"pointer",fontWeight:"600"}}>{item.name}</button>)}</div></div>)}</section>
+<section className="categories" id="categories"><div className="category-head"><h2>Browse services</h2></div><p>Find the type of help you need.</p><div className="category-row">{categories.map(([icon,name])=><button key={name} className="category" onClick={()=>setSelectedCategory(name)}><span className="category-icon">{icon}</span><span>{name}</span></button>)}</div>{selectedCategory && (<div style={{marginTop:"36px"}}><h3 style={{marginBottom:"18px"}}>{selectedCategory}</h3><div style={{display:"flex",flexWrap:"wrap",gap:"10px"}}>{allServices.filter((item:any)=>{const categoryMap:Record<string,string>={"Home Services":"Home Repair & Improvement","Lawn & Outdoor":"Lawn, Garden & Outdoor","Moving":"Moving, Hauling & Delivery","Events":"Events & Entertainment","Technology":"Technology & Digital","Professional Services":"Business & Professional Services","Lessons & Tutoring":"Lessons, Coaching & Tutoring","Personal & Local Help":"Personal, Family & Local Help"};return (categoryMap[item.category]||item.category)===selectedCategory;}).map((item:any)=><button key={item.id} type="button" onClick={()=>{setService(item.name);document.getElementById("top")?.scrollIntoView({behavior:"smooth"});}} style={{padding:"10px 14px",borderRadius:"999px",border:"1px solid #e6e9f0",background:"white",cursor:"pointer",fontWeight:"600"}}>{item.name}</button>)}</div></div>)}</section>
 
 <section className="results" id="results"><div className="section-title"><div><span className="kicker">Ready when you are</span><h2>{searched?`${filtered.length} match${filtered.length===1?"":"es"} found`:"Available now"}</h2></div><span className="live"><span className="green-dot"/> Live preview</span></div><div className="provider-grid">{(searched ? filtered : searchableProviders.filter((p)=>p.available_now)).map(p=><article className="provider" key={p.id ?? p.slug ?? p.name}><div className="provider-visual"><span>{p.initials}</span>{p.available_now && <div className="availability"><span className="green-dot"/> Available now</div>}</div><div className="provider-body">{p.specialties?.length>0 && <div style={{display:"flex",flexWrap:"wrap",gap:"6px",marginBottom:"10px"}}>{[...new Set(p.specialties)].map((service:string)=><span key={service} style={{background:"#f3f4f6",borderRadius:"999px",padding:"6px 10px",fontSize:"13px"}}>{service}</span>)}</div>}<span className="tag">{p.category}</span><h3>{p.name}</h3><p>⌖ {p.city}</p><div className="meta"><span>★ {p.rating.toFixed(1)} ({p.reviews})</span><span>{p.response}</span></div>{p.pricing_methods && p.pricing_methods.length>0 && <div className="pricing-display">{p.pricing_methods.includes("hourly") && <span>{p.starting_price!=null?`$${p.starting_price}/hour`:"Hourly rate"} | </span>}{p.pricing_methods.includes("flat") && <span>{p.flat_price!=null?`Flat rate: $${p.flat_price}`:"Flat rate"} | </span>}{p.pricing_methods.includes("contact") && <span>Contact for pricing</span>}</div>}<div className="provider-actions"><button onClick={()=>setSelected(p)}>View profile</button>{p.contact_youlistify && <button className="secondary" onClick={()=>{setSelected(p);setContactOpen(true);}}>Message</button>}</div></div></article>)}{searched && filtered.length===0 && <div className="empty"><h3>No preview matches yet</h3><p>Try a different service or location.</p></div>}</div></section>
 
 <section className="how" id="how"><div className="center-head"><span className="kicker">Simple by design</span><h2>Search. Connect. Get it done.</h2><p>YouListify is designed to move people from searching to speaking with the right professional quickly.</p></div><div className="steps"><article><span>01</span><h3>Search what you need</h3><p>Choose a service and enter your location.</p></article><article><span>02</span><h3>See who is ready</h3><p>Compare profiles, ratings, specialties, and availability.</p></article><article><span>03</span><h3>Call and get it done</h3><p>Connect directly instead of submitting a request and waiting.</p></article></div></section>
 
-<section className="provider-cta" id="providers"><div><span className="kicker light">For local professionals</span><h2>Your own mini-site on YouListify.</h2><p>Create a profile, show your services, set your availability, and let nearby customers contact you directly.</p></div><div className="cta-card"><div style={{display:"flex",alignItems:"center",gap:"10px"}}><div className="brand-icon big">Y</div><span className="brand-word"><span>You</span><span className="capital-l">L</span><span>istify</span></span></div><h3>One simple listing. Everything customers need to reach you.</h3><p>Get found. Get contacted. Get to work.</p></div></section>
+<section className="provider-cta" id="providers"><div><span className="kicker light">For local professionals</span><h2>Your own mini-site on YouListify.</h2><p>Create a profile, show your services, set your availability, and let nearby customers contact you directly.</p><a href="/sample-provider" className="example-profile-link">See an Example Profile →</a></div><div className="cta-card"><div style={{display:"flex",alignItems:"center",gap:"10px"}}><div className="brand-icon big">Y</div><span className="brand-word"><span>You</span><span className="capital-l">L</span><span>istify</span></span></div><h3>One simple listing. Everything customers need to reach you.</h3><p>Get found. Get contacted. Get to work.</p></div></section>
 
 <section className="suggestion-section"><div className="suggestion-card"><span className="kicker">DON'T SEE WHAT YOU NEED?</span><h2>Tell us what you're looking for.</h2><p>Can't find the service or category you need? Send us a suggestion. We're always adding new ways to connect people with the right person for the job.</p><button type="button" className="suggestion-button" onClick={()=>{setSuggestionSent(false);setSuggestionOpen(true);}}>Suggest a Service</button><p className="suggestion-note">Have another idea for YouListify? You can send that too.</p></div></section>
 
@@ -251,6 +264,6 @@ return <main>
 
 {selected && <div className="modal-backdrop" onClick={()=>setSelected(null)}><div className="modal" onClick={e=>e.stopPropagation()}><button className="close" onClick={()=>setSelected(null)}>×</button><div className="modal-head"><div className="avatar large">{selected.initials}</div><div>{selected.available_now && <div className="availability"><span className="green-dot"/> Available now</div>}<h2>{selected.name}</h2><p>{selected.category} · {selected.city}</p></div></div><div className="modal-rating">★ {selected.rating.toFixed(1)} · {selected.reviews} reviews</div>{selected.pricing_methods && selected.pricing_methods.length>0 && <div className="pricing-display" style={{marginTop:"10px",marginBottom:"10px"}}>{selected.pricing_methods.includes("hourly") && selected.starting_price!=null && <span>${selected.starting_price}/hour | </span>}{selected.pricing_methods.includes("flat") && selected.flat_price!=null && <span>Flat rate: ${selected.flat_price} | </span>}{selected.pricing_methods.includes("contact") && <span>Contact for pricing</span>}</div>}<div className="chips">{[...new Set(selected.specialties)].map((s:string)=><span key={s}>{s}</span>)}</div><p className="modal-copy">{selected.response || "No description provided yet."}</p><div style={{display:"flex",flexWrap:"wrap",gap:"10px",justifyContent:"center"}}>{selected.contact_call && selected.phone && <a className="call-action" href={`tel:${selected.phone.replace(/\D/g,"")}`}>☎ Call {selected.phone}</a>}{selected.contact_text && selected.phone && <a className="call-action" href={`sms:${selected.phone.replace(/\D/g,"")}`}>💬 Text</a>}{selected.contact_email && selected.email && <a className="call-action" href={`mailto:${selected.email}`}>✉ Email</a>}{selected.contact_youlistify && <button className="call-action" type="button" onClick={()=>setContactOpen(true)}>✉ Contact through YouListify</button>}<button className="call-action" type="button" onClick={async()=>{const url=`https://youlistify.com/provider/${selected.slug}`;if(navigator.share){await navigator.share({title:`${selected.name} on YouListify`,url});}else{await navigator.clipboard.writeText(url);alert("Profile link copied!");}}}>↗ Share profile</button></div><a href={`/provider/${selected.slug}`} className="call-action" style={{display:"block",width:"100%",textAlign:"center",marginTop:"14px",fontSize:"17px",fontWeight:"700",textDecoration:"none"}}>View Full Listing</a></div></div>}
 
-{contactOpen && selected && <div className="modal-backdrop" onClick={()=>setContactOpen(false)}><div className="modal" onClick={(e)=>e.stopPropagation()}><button className="close" onClick={()=>setContactOpen(false)}>×</button><h2>Contact {selected.name}</h2><p>Send a private message through YouListify.</p><input type="text" placeholder="Your name" value={contactName} onChange={(e)=>setContactName(e.target.value)}/><input type="email" placeholder="Your email" value={contactEmail} onChange={(e)=>setContactEmail(e.target.value)}/><textarea placeholder="Your message" value={contactMessage} onChange={(e)=>setContactMessage(e.target.value)}></textarea><button className="call-action" type="button" onClick={sendProviderMessage}>Send message</button></div></div>}
+{contactOpen && selected && <div className="modal-backdrop" onClick={()=>setContactOpen(false)}><div className="modal provider-contact-modal" onClick={(e)=>e.stopPropagation()}><button className="close" onClick={()=>setContactOpen(false)}>×</button><h2>Contact {selected.name}</h2><p>Send a private message through YouListify.</p><input type="text" placeholder="Your name" value={contactName} onChange={(e)=>setContactName(e.target.value)}/><input type="email" placeholder="Your email" value={contactEmail} onChange={(e)=>setContactEmail(e.target.value)}/><textarea placeholder="Your message" value={contactMessage} onChange={(e)=>setContactMessage(e.target.value)}></textarea><button className="call-action" type="button" onClick={sendProviderMessage}>Send message</button></div></div>}
 </main>
 }
