@@ -18,15 +18,53 @@ export default function ProviderSignupPolish() {
       { selector: 'textarea[placeholder="Describe your services..."]', message: "Please tell customers about your services." },
     ];
 
-    const markRequiredFields = () => {
+    const findState = (root: ParentNode = document) => Array.from(root.querySelectorAll<HTMLSelectElement>("select")).find((select) => Array.from(select.options).some((option) => option.textContent === "Select state"));
+    const findMode = (root: ParentNode = document) => Array.from(root.querySelectorAll<HTMLSelectElement>("select")).find((select) => Array.from(select.options).some((option) => option.value === "remote"));
+
+    const polish = () => {
       requiredFields.forEach(({ selector }) => {
         const field = document.querySelector<HTMLInputElement | HTMLTextAreaElement>(selector);
         if (field) field.required = true;
       });
 
-      const stateSelect = Array.from(document.querySelectorAll<HTMLSelectElement>("select"))
-        .find((select) => Array.from(select.options).some((option) => option.textContent === "Select state"));
-      if (stateSelect) stateSelect.required = true;
+      const state = findState();
+      if (state) {
+        state.required = true;
+        state.style.minHeight = "54px";
+        state.style.fontSize = "16px";
+        state.style.fontWeight = "600";
+        state.style.width = "100%";
+        if (!state.previousElementSibling?.matches('[data-field-label="state"]')) {
+          const label = document.createElement("div");
+          label.dataset.fieldLabel = "state";
+          label.textContent = "State";
+          label.style.fontWeight = "700";
+          label.style.color = "#344054";
+          label.style.marginBottom = "6px";
+          state.insertAdjacentElement("beforebegin", label);
+        }
+      }
+
+      const mode = findMode();
+      if (mode) {
+        mode.style.minHeight = "54px";
+        mode.style.fontSize = "16px";
+        mode.style.fontWeight = "600";
+        mode.style.width = "100%";
+        if (!mode.previousElementSibling?.matches('[data-field-label="mode"]')) {
+          const label = document.createElement("div");
+          label.dataset.fieldLabel = "mode";
+          label.textContent = "How do you provide this service?";
+          label.style.fontWeight = "700";
+          label.style.color = "#344054";
+          label.style.marginBottom = "6px";
+          mode.insertAdjacentElement("beforebegin", label);
+        }
+      }
+
+      const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("button"));
+      const accountButton = buttons.find((button) => button.textContent?.trim() === "Create My Account");
+      if (accountButton) accountButton.textContent = "Create My Free Account";
     };
 
     const validateBeforeSubmit = (event: Event) => {
@@ -36,68 +74,39 @@ export default function ProviderSignupPolish() {
       for (const { selector, message } of requiredFields) {
         const field = form.querySelector<HTMLInputElement | HTMLTextAreaElement>(selector);
         if (field && !field.value.trim()) {
-          event.preventDefault();
-          event.stopImmediatePropagation();
-          alert(message);
-          field.focus();
-          field.scrollIntoView({ behavior: "smooth", block: "center" });
-          return;
+          event.preventDefault(); event.stopImmediatePropagation(); alert(message); field.focus(); field.scrollIntoView({ behavior: "smooth", block: "center" }); return;
         }
       }
 
       const email = form.querySelector<HTMLInputElement>('input[placeholder="Email"]');
       if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim())) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        alert("Please enter a valid email address.");
-        email.focus();
-        return;
+        event.preventDefault(); event.stopImmediatePropagation(); alert("Please enter a valid email address."); email.focus(); return;
       }
 
-      const stateSelect = Array.from(form.querySelectorAll<HTMLSelectElement>("select"))
-        .find((select) => Array.from(select.options).some((option) => option.textContent === "Select state"));
-      if (stateSelect && !stateSelect.value) {
-        event.preventDefault();
-        event.stopImmediatePropagation();
-        alert("Please select your state.");
-        stateSelect.focus();
-        stateSelect.scrollIntoView({ behavior: "smooth", block: "center" });
-        return;
+      const state = findState(form);
+      if (state && !state.value) {
+        event.preventDefault(); event.stopImmediatePropagation(); alert("Please select your state."); state.focus(); state.scrollIntoView({ behavior: "smooth", block: "center" }); return;
       }
 
-      // The page's existing save handler separately requires at least one service.
-      // service_mode always has Local / Remote / Both selected by default.
-    };
+      const checkedService = Array.from(form.querySelectorAll<HTMLInputElement>('input[type="checkbox"]:checked')).some((box) => !/Hourly rate|Flat rate|Contact for pricing/i.test(box.closest("label")?.textContent || ""));
+      if (!checkedService) return;
 
-    const polish = () => {
-      markRequiredFields();
-
-      const buttons = Array.from(document.querySelectorAll("button"));
-      const createButton = buttons.find((button) => button.textContent?.trim() === "Create My Account");
-      if (!createButton) return;
-
-      createButton.textContent = "Create My Free Account";
-
-      const main = createButton.closest("main");
-      if (!main) return;
-
-      const paragraphs = Array.from(main.querySelectorAll("p"));
-      const benefitParagraph = paragraphs.find((p) =>
-        p.textContent?.includes("Create your free provider account to manage your listing")
-      );
-      if (benefitParagraph) {
-        benefitParagraph.textContent =
-          "Create your free account so you can come back anytime to edit your listing, add services, update pricing, change availability, upload photos, and manage your profile.";
-      }
-
-      if (!main.querySelector("[data-existing-provider-signin]")) {
-        const signIn = document.createElement("p");
-        signIn.setAttribute("data-existing-provider-signin", "true");
-        signIn.style.marginTop = "14px";
-        signIn.style.fontSize = "14px";
-        signIn.style.color = "#667085";
-        signIn.innerHTML = 'Already have an account? <a href="/sign-in" style="color:#5b4cf0;font-weight:700;text-decoration:none">Sign in</a>';
-        createButton.insertAdjacentElement("afterend", signIn);
+      const submit = form.querySelector<HTMLButtonElement>('button[type="submit"]');
+      if (submit && !submit.disabled) {
+        submit.disabled = true;
+        submit.dataset.originalText = submit.textContent || "Create Listing";
+        submit.textContent = "Creating your listing…";
+        submit.style.opacity = "0.72";
+        submit.style.cursor = "wait";
+        // Safety reset if a network request fails and the page remains on the form.
+        window.setTimeout(() => {
+          if (document.body.contains(submit)) {
+            submit.disabled = false;
+            submit.textContent = submit.dataset.originalText || "Create Listing";
+            submit.style.opacity = "1";
+            submit.style.cursor = "pointer";
+          }
+        }, 12000);
       }
     };
 
@@ -105,11 +114,7 @@ export default function ProviderSignupPolish() {
     document.addEventListener("submit", validateBeforeSubmit, true);
     const observer = new MutationObserver(polish);
     observer.observe(document.body, { childList: true, subtree: true });
-
-    return () => {
-      observer.disconnect();
-      document.removeEventListener("submit", validateBeforeSubmit, true);
-    };
+    return () => { observer.disconnect(); document.removeEventListener("submit", validateBeforeSubmit, true); };
   }, [pathname]);
 
   return null;
