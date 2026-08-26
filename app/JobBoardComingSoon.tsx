@@ -13,11 +13,11 @@ export default function JobBoardComingSoon() {
 
   useEffect(() => {
     if (window.location.pathname !== "/") return;
-    const footer = document.querySelector("footer");
-    if (!footer?.parentElement) return;
+    const suggestionSection = document.querySelector(".suggestion-section");
+    if (!suggestionSection?.parentElement) return;
     const node = document.createElement("div");
     node.id = "job-board-coming-soon";
-    footer.parentElement.insertBefore(node, footer);
+    suggestionSection.parentElement.insertBefore(node, suggestionSection);
     setMountNode(node);
     return () => node.remove();
   }, []);
