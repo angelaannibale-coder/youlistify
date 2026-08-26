@@ -18,7 +18,7 @@ function OfferCard({ compact = false, showButton = true }: { compact?: boolean; 
     <section style={compact ? { maxWidth: "1040px", margin: "18px auto 22px", padding: "0 20px", boxSizing: "border-box" } : { maxWidth: "1040px", margin: "28px auto", padding: "0 20px", boxSizing: "border-box" }}>
       <div style={{ background: "linear-gradient(135deg,#f5f3ff,#ffffff)", border: "1px solid #ddd8ff", borderRadius: "18px", padding: compact ? "14px 18px" : "18px 22px", textAlign: "center", boxShadow: "0 8px 24px rgba(79,70,229,.07)" }}>
         <div style={{ color: "#5b4cf0", fontWeight: 800, fontSize: compact ? "12px" : "14px", letterSpacing: ".04em", marginBottom: "4px" }}>
-          CREATE YOUR FREE LISTING
+          CREATE YOUR FREE LISTING 🎉
         </div>
         <div style={{ color: "#182033", fontWeight: 800, fontSize: compact ? "18px" : "22px", marginBottom: compact ? "3px" : "6px" }}>
           Free for your first 3 months
