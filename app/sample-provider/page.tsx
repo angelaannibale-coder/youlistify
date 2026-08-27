@@ -8,7 +8,7 @@ export default function SampleProviderPage() {
       <div style={{maxWidth:760,margin:"0 auto"}}>
         <a href="/" style={{color:"#4f46e5",fontWeight:700,textDecoration:"none"}}>← Back to YouListify</a>
         <div style={{background:"white",borderRadius:28,padding:"clamp(22px,5vw,34px)",marginTop:18,boxShadow:"0 18px 50px rgba(0,0,0,.08)"}}>
-          <div style={{display:"block",background:"linear-gradient(135deg,#4f46e5,#7c3aed)",color:"white",padding:"12px 16px",borderRadius:14,fontSize:14,fontWeight:900,textAlign:"center",letterSpacing:".05em",boxShadow:"0 8px 20px rgba(79,70,229,.2)"}}>SAMPLE PROFILE · DEMO ONLY</div>
+          <div style={{display:"block",background:"linear-gradient(135deg,#4f46e5,#7c3aed)",color:"white",padding:"12px 16px",borderRadius:14,fontSize:14,fontWeight:900,textAlign:"center",letterSpacing:".05em",boxShadow:"0 8px 20px rgba(79,70,229,.2)"}}>SAMPLE PROFILE</div>
           <div style={{display:"flex",alignItems:"center",gap:18,marginTop:18,flexWrap:"wrap"}}>
             <div style={{width:86,height:86,borderRadius:24,background:"linear-gradient(135deg,#5b5bf7,#8b5cf6)",color:"white",display:"grid",placeItems:"center",fontSize:28,fontWeight:800}}>AM</div>
             <div><h1 style={{margin:0,fontSize:"clamp(34px,8vw,46px)"}}>Alex Morgan</h1><p style={{color:"#667085",margin:"7px 0"}}>Handyman · Pittsburgh, PA</p><span style={{background:"#ecfdf3",color:"#15803d",padding:"6px 11px",borderRadius:999,fontWeight:700}}>● Available now</span></div>
