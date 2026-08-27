@@ -16,6 +16,7 @@ import SearchVocabularyBridge from "./SearchVocabularyBridge";
 import ProviderNotificationBridge from "./ProviderNotificationBridge";
 import ReviewDisplayCleanup from "./ReviewDisplayCleanup";
 import ProviderAccountSignOutBridge from "./ProviderAccountSignOutBridge";
+import SampleProfilePolish from "./SampleProfilePolish";
 
 export const metadata: Metadata = {
   title: "YouListify | Find the right person. Call them in minutes.",
@@ -48,6 +49,7 @@ export default function RootLayout({ children }: Readonly<{children:React.ReactN
         <ProviderNotificationBridge />
         <ReviewDisplayCleanup />
         <ProviderAccountSignOutBridge />
+        <SampleProfilePolish />
       </body>
     </html>
   );
