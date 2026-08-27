@@ -46,11 +46,12 @@ export default function HomepageProviderPriority() {
         badge.setAttribute("data-home-sample-badge", "true");
         badge.textContent = "SAMPLE PROFILE";
         Object.assign(badge.style, {
-          display: "inline-flex",
+          display: "flex",
+          width: "max-content",
           alignItems: "center",
           justifyContent: "center",
-          margin: "0 0 14px 0",
-          padding: "9px 14px",
+          margin: "0 auto 14px",
+          padding: "9px 26px",
           borderRadius: "999px",
           background: "#4f46e5",
           color: "white",
