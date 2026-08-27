@@ -42,6 +42,7 @@ function setReactInput(input: HTMLInputElement, value: string) {
   const setter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value")?.set;
   setter?.call(input, value);
   input.dispatchEvent(new Event("input", { bubbles: true }));
+  input.dispatchEvent(new Event("change", { bubbles: true }));
 }
 
 export default function SearchVocabularyBridge() {
@@ -53,6 +54,7 @@ export default function SearchVocabularyBridge() {
     const inputs = form.querySelectorAll("input");
     const serviceInput = inputs[0] as HTMLInputElement | undefined;
     const remoteInput = Array.from(inputs).find((el) => (el as HTMLInputElement).type === "checkbox") as HTMLInputElement | undefined;
+    const searchButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     if (!serviceInput) return;
 
     let resubmitting = false;
@@ -61,6 +63,19 @@ export default function SearchVocabularyBridge() {
     const closeSuggestions = () => {
       suggestionBox?.remove();
       suggestionBox = null;
+    };
+
+    const applyCanonicalSearch = () => {
+      const original = serviceInput.value;
+      const canonical = canonicalService(original);
+      const wantsRemote = queryRequestsRemote(original);
+      const needsServiceRewrite = !!canonical && normalizeSearch(canonical) !== normalizeSearch(original);
+      const needsRemoteToggle = wantsRemote && !!remoteInput && !remoteInput.checked;
+
+      if (needsServiceRewrite && canonical) setReactInput(serviceInput, canonical);
+      if (needsRemoteToggle && remoteInput) remoteInput.click();
+
+      return needsServiceRewrite || needsRemoteToggle;
     };
 
     const renderSuggestions = () => {
@@ -74,17 +89,9 @@ export default function SearchVocabularyBridge() {
       suggestionBox = document.createElement("div");
       suggestionBox.setAttribute("data-smart-search-suggestions", "true");
       Object.assign(suggestionBox.style, {
-        position: "absolute",
-        top: "100%",
-        left: "0",
-        right: "0",
-        zIndex: "50",
-        background: "white",
-        border: "1px solid #e6e9f0",
-        borderRadius: "14px",
-        marginTop: "6px",
-        boxShadow: "0 12px 30px rgba(0,0,0,.12)",
-        overflow: "hidden",
+        position: "absolute", top: "100%", left: "0", right: "0", zIndex: "50",
+        background: "white", border: "1px solid #e6e9f0", borderRadius: "14px",
+        marginTop: "6px", boxShadow: "0 12px 30px rgba(0,0,0,.12)", overflow: "hidden",
       });
 
       const title = document.createElement("div");
@@ -97,17 +104,9 @@ export default function SearchVocabularyBridge() {
         btn.type = "button";
         btn.textContent = name;
         Object.assign(btn.style, {
-          display: "block",
-          width: "100%",
-          textAlign: "left",
-          padding: "11px 14px",
-          border: "0",
-          borderTop: "1px solid #f0f1f5",
-          background: "white",
-          color: "#101a38",
-          cursor: "pointer",
-          fontSize: "15px",
-          fontWeight: "700",
+          display: "block", width: "100%", textAlign: "left", padding: "11px 14px",
+          border: "0", borderTop: "1px solid #f0f1f5", background: "white",
+          color: "#101a38", cursor: "pointer", fontSize: "15px", fontWeight: "700",
         });
         btn.addEventListener("click", () => {
           setReactInput(serviceInput, name);
@@ -127,6 +126,12 @@ export default function SearchVocabularyBridge() {
       if (target !== serviceInput && !suggestionBox?.contains(target)) closeSuggestions();
     };
 
+    // Canonicalize as soon as the user presses the Search button, before React reads the form value.
+    const onSearchPointerDown = () => {
+      closeSuggestions();
+      applyCanonicalSearch();
+    };
+
     const onSubmit = (event: Event) => {
       closeSuggestions();
       if (resubmitting) {
@@ -134,27 +139,21 @@ export default function SearchVocabularyBridge() {
         return;
       }
 
-      const original = serviceInput.value;
-      const canonical = canonicalService(original);
-      const wantsRemote = queryRequestsRemote(original);
-      const needsServiceRewrite = !!canonical && normalizeSearch(canonical) !== normalizeSearch(original);
-      const needsRemoteToggle = wantsRemote && !!remoteInput && !remoteInput.checked;
-      if (!needsServiceRewrite && !needsRemoteToggle) return;
+      const changed = applyCanonicalSearch();
+      if (!changed) return;
 
       event.preventDefault();
       event.stopImmediatePropagation();
-      if (needsServiceRewrite && canonical) setReactInput(serviceInput, canonical);
-      if (needsRemoteToggle && remoteInput) remoteInput.click();
-
       window.setTimeout(() => {
         resubmitting = true;
         form.requestSubmit();
-      }, 40);
+      }, 0);
     };
 
     serviceInput.addEventListener("input", onInput);
     serviceInput.addEventListener("focus", onFocus);
     document.addEventListener("click", onDocumentClick, true);
+    searchButton?.addEventListener("pointerdown", onSearchPointerDown, true);
     form.addEventListener("submit", onSubmit, true);
 
     return () => {
@@ -162,6 +161,7 @@ export default function SearchVocabularyBridge() {
       serviceInput.removeEventListener("input", onInput);
       serviceInput.removeEventListener("focus", onFocus);
       document.removeEventListener("click", onDocumentClick, true);
+      searchButton?.removeEventListener("pointerdown", onSearchPointerDown, true);
       form.removeEventListener("submit", onSubmit, true);
     };
   }, []);
