@@ -44,7 +44,7 @@ export default function HomepageProviderPriority() {
       if (sampleCard && !sampleCard.querySelector("[data-home-sample-badge]")) {
         const badge = document.createElement("div");
         badge.setAttribute("data-home-sample-badge", "true");
-        badge.textContent = "SAMPLE PROFILE · DEMO ONLY";
+        badge.textContent = "SAMPLE PROFILE";
         Object.assign(badge.style, {
           display: "inline-flex",
           alignItems: "center",
