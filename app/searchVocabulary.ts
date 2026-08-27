@@ -8,7 +8,7 @@ export const SEARCH_VOCABULARY: Record<string, string[]> = {
   "Move-Out Cleaning": ["move out cleaner", "moving cleaning", "end of lease cleaning", "vacant home cleaning"],
   "Auto Detailing": ["car detailing", "car detailer", "detail my car", "vehicle detailing", "mobile detailing", "mobile car detailing", "car cleaning at my house"],
   "Notary": ["notary public", "mobile notary", "notarize", "notarization", "notary at my house"],
-  "Dog Walking": ["dog walker", "walk my dog", "pet walking"],
+  "Dog Walker": ["dog walking", "walk my dog", "pet walking", "someone to walk my dog"],
   "Dog Grooming": ["dog groomer", "pet grooming", "mobile dog grooming", "mobile groomer"],
   "DJ": ["disc jockey", "party dj", "wedding dj", "event dj", "mobile dj"],
   "Bartending": ["bartender", "mobile bartender", "party bartender", "event bartender", "wedding bartender"],
