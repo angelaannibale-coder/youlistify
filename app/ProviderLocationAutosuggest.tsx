@@ -66,9 +66,10 @@ export default function ProviderLocationAutosuggest() {
         item.textContent = name;
         Object.assign(item.style, {
           display: "block", width: "100%", padding: "11px 13px", border: "0",
-          borderBottom: "1px solid #eee", background: "white", textAlign: "left", cursor: "pointer"
+          borderBottom: "1px solid #eee", background: "white", textAlign: "left", cursor: "pointer",
+          fontSize: "16px", color: "#182033"
         });
-        item.addEventListener("mousedown", (event) => {
+        item.addEventListener("pointerdown", (event) => {
           event.preventDefault();
           const setter = Object.getOwnPropertyDescriptor(HTMLInputElement.prototype, "value")?.set;
           setter?.call(city, name);
@@ -87,12 +88,15 @@ export default function ProviderLocationAutosuggest() {
       if (!fips) return;
       const thisRequest = ++requestId;
       try {
-        const response = await fetch(`https://api.census.gov/data/2020/dec/pl?get=NAME&for=place:*&in=state:${fips}`);
+        const params = new URLSearchParams({ get: "NAME", for: "place:*", in: `state:${fips}` });
+        const response = await fetch(`https://api.census.gov/data/2020/dec/pl?${params.toString()}`);
         if (!response.ok) return;
         const rows: string[][] = await response.json();
         if (thisRequest !== requestId) return;
         cities = Array.from(new Set(rows.slice(1).map((row) => cleanPlaceName(row[0])).filter(Boolean)))
           .sort((a, b) => a.localeCompare(b));
+        const { city } = findFields();
+        if (city && document.activeElement === city && city.value.trim()) showMatches(city);
       } catch { cities = []; }
     };
 
@@ -126,7 +130,7 @@ export default function ProviderLocationAutosuggest() {
         city.addEventListener("blur", () => setTimeout(() => {
           const box = document.getElementById("youlistify-city-suggestions-box");
           if (box) box.style.display = "none";
-        }, 150));
+        }, 200));
       }
     };
 
