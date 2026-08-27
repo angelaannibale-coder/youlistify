@@ -21,6 +21,23 @@ export default function HomepageProviderPriority() {
         if (browseSection && browseSection.nextElementSibling !== providerSection) {
           browseSection.insertAdjacentElement("afterend", providerSection);
         }
+
+        const exampleLink = providerSection.querySelector<HTMLAnchorElement>(".example-profile-link");
+        if (exampleLink) {
+          Object.assign(exampleLink.style, {
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            marginTop: "12px",
+            padding: "13px 18px",
+            borderRadius: "12px",
+            background: "white",
+            color: "#3f35c8",
+            fontWeight: "800",
+            textDecoration: "none",
+            boxShadow: "0 8px 22px rgba(0,0,0,.16)"
+          });
+        }
       }
 
       const listLink = document.querySelector<HTMLAnchorElement>(".header-actions .list-link");
@@ -29,10 +46,24 @@ export default function HomepageProviderPriority() {
       }
     };
 
+    const openSampleProfile = (event: MouseEvent) => {
+      const target = event.target as HTMLElement | null;
+      const button = target?.closest<HTMLButtonElement>(".profile-card .profile-bottom button");
+      if (!button) return;
+      event.preventDefault();
+      event.stopPropagation();
+      window.location.href = "/sample-provider";
+    };
+
     placeProviderSection();
     const observer = new MutationObserver(placeProviderSection);
     observer.observe(document.body, { childList: true, subtree: true });
-    return () => observer.disconnect();
+    document.addEventListener("click", openSampleProfile, true);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("click", openSampleProfile, true);
+    };
   }, [pathname]);
 
   return null;
