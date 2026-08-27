@@ -40,6 +40,28 @@ export default function HomepageProviderPriority() {
         }
       }
 
+      const sampleCard = document.querySelector<HTMLElement>(".profile-card");
+      if (sampleCard && !sampleCard.querySelector("[data-home-sample-badge]")) {
+        const badge = document.createElement("div");
+        badge.setAttribute("data-home-sample-badge", "true");
+        badge.textContent = "SAMPLE PROFILE · DEMO ONLY";
+        Object.assign(badge.style, {
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+          margin: "0 0 14px 0",
+          padding: "9px 14px",
+          borderRadius: "999px",
+          background: "#4f46e5",
+          color: "white",
+          fontSize: "13px",
+          fontWeight: "900",
+          letterSpacing: ".03em",
+          boxShadow: "0 6px 16px rgba(79,70,229,.22)"
+        });
+        sampleCard.insertBefore(badge, sampleCard.firstChild);
+      }
+
       const listLink = document.querySelector<HTMLAnchorElement>(".header-actions .list-link");
       if (listLink && listLink.textContent !== "List Your Service") {
         listLink.textContent = "List Your Service";
