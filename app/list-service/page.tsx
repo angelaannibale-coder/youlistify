@@ -1,7 +1,7 @@
 "use client";
 
 import "./mobile.css";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -37,8 +37,7 @@ export default function ListService() {
   const [submitted, setSubmitted] = useState(false);
   const [password, setPassword] = useState("");
   const [showAccountForm, setShowAccountForm] = useState(false);
-  const [cityOptions, setCityOptions] = useState<string[]>([]);
-  const [cityLoading, setCityLoading] = useState(false);
+  const [locationSuggestions, setLocationSuggestions] = useState<Array<{ city: string; state: string }>>([]);
   const [cityOpen, setCityOpen] = useState(false);
   const [form, setForm] = useState({
     name: "",
@@ -70,40 +69,39 @@ export default function ListService() {
   }, []);
 
   useEffect(() => {
-    let cancelled = false;
+    async function loadExistingLocations() {
+      const { data, error } = await supabase
+        .from("Providers")
+        .select("city, state")
+        .not("city", "is", null);
 
-    async function loadCities() {
-      setCityOptions([]);
-      setCityOpen(false);
-      if (!form.state) return;
+      if (error || !data) return;
 
-      setCityLoading(true);
-      try {
-        const response = await fetch(`/api/cities?state=${encodeURIComponent(form.state)}`);
-        const data = await response.json();
-        if (!cancelled) {
-          setCityOptions(Array.isArray(data.cities) ? data.cities : []);
-        }
-      } catch {
-        if (!cancelled) setCityOptions([]);
-      } finally {
-        if (!cancelled) setCityLoading(false);
+      const seen = new Set<string>();
+      const locations: Array<{ city: string; state: string }> = [];
+
+      for (const row of data) {
+        const city = String(row.city || "").trim();
+        const state = String(row.state || "").trim().toUpperCase();
+        if (!city) continue;
+        const key = `${city.toLowerCase()}|${state}`;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        locations.push({ city, state });
       }
+
+      locations.sort((a, b) => a.city.localeCompare(b.city) || a.state.localeCompare(b.state));
+      setLocationSuggestions(locations);
     }
 
-    void loadCities();
-    return () => {
-      cancelled = true;
-    };
-  }, [form.state]);
+    void loadExistingLocations();
+  }, []);
 
-  const filteredCities = useMemo(() => {
-    const query = form.city.trim().toLowerCase();
-    if (!query) return [];
-    return cityOptions
-      .filter((name) => name.toLowerCase().startsWith(query))
-      .slice(0, 10);
-  }, [cityOptions, form.city]);
+  const cityMatches = form.city.trim()
+    ? locationSuggestions
+        .filter((location) => location.city.toLowerCase().includes(form.city.trim().toLowerCase()))
+        .slice(0, 8)
+    : [];
 
   async function createAccount() {
     if (!form.email || !password) {
@@ -111,11 +109,7 @@ export default function ListService() {
       return;
     }
 
-    const { error } = await supabase.auth.signUp({
-      email: form.email,
-      password
-    });
-
+    const { error } = await supabase.auth.signUp({ email: form.email, password });
     if (error) {
       alert("Could not create account: " + error.message);
       return;
@@ -153,12 +147,7 @@ export default function ListService() {
 
     const { error: serviceError } = await supabase
       .from("provider_services")
-      .insert(
-        service_ids.map((serviceId) => ({
-          provider_id: newProvider.id,
-          service_id: serviceId
-        }))
-      );
+      .insert(service_ids.map((serviceId) => ({ provider_id: newProvider.id, service_id: serviceId })));
 
     if (serviceError) {
       alert("Provider saved, but service could not be added: " + serviceError.message);
@@ -205,24 +194,10 @@ export default function ListService() {
         <input placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} style={fieldStyle} />
         <input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} style={fieldStyle} />
 
-        <select
-          value={form.state}
-          autoComplete="address-level1"
-          onChange={(e) => {
-            setForm({ ...form, state: e.target.value, city: "" });
-            setCityOpen(false);
-          }}
-          style={fieldStyle}
-        >
-          <option value="">Select state</option>
-          {STATES.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
-        </select>
-
         <div style={{ position: "relative", width: "100%" }}>
           <input
-            placeholder={form.state ? "City" : "Select a state first"}
+            placeholder="City"
             value={form.city}
-            disabled={!form.state}
             autoComplete="off"
             onFocus={() => setCityOpen(true)}
             onChange={(e) => {
@@ -230,33 +205,33 @@ export default function ListService() {
               setCityOpen(true);
             }}
             onBlur={() => window.setTimeout(() => setCityOpen(false), 180)}
-            style={{ ...fieldStyle, width: "100%", boxSizing: "border-box", opacity: form.state ? 1 : 0.65 }}
+            style={{ ...fieldStyle, width: "100%", boxSizing: "border-box" }}
           />
 
-          {cityLoading && form.state && (
-            <div style={{ fontSize: "13px", color: "#667085", marginTop: "6px" }}>Loading cities…</div>
-          )}
-
-          {cityOpen && filteredCities.length > 0 && (
+          {cityOpen && cityMatches.length > 0 && (
             <div style={{ position: "absolute", left: 0, right: 0, top: "calc(100% + 4px)", zIndex: 100, background: "white", border: "1px solid #ddd", borderRadius: "10px", boxShadow: "0 10px 25px rgba(0,0,0,.12)", maxHeight: "240px", overflowY: "auto" }}>
-              {filteredCities.map((city) => (
+              {cityMatches.map((location) => (
                 <button
-                  key={city}
+                  key={`${location.city}-${location.state}`}
                   type="button"
                   onMouseDown={(e) => e.preventDefault()}
-                  onTouchStart={(e) => e.currentTarget.focus()}
                   onClick={() => {
-                    setForm({ ...form, city });
+                    setForm({ ...form, city: location.city, state: location.state || form.state });
                     setCityOpen(false);
                   }}
                   style={{ display: "block", width: "100%", padding: "12px 14px", border: 0, borderBottom: "1px solid #eee", background: "white", textAlign: "left", cursor: "pointer", fontSize: "16px", color: "#182033" }}
                 >
-                  {city}
+                  {location.city}{location.state ? `, ${location.state}` : ""}
                 </button>
               ))}
             </div>
           )}
         </div>
+
+        <select value={form.state} autoComplete="address-level1" onChange={(e) => setForm({ ...form, state: e.target.value })} style={fieldStyle}>
+          <option value="">Select state</option>
+          {STATES.map(([code, name]) => <option key={code} value={code}>{name}</option>)}
+        </select>
 
         <input placeholder="ZIP code" value={form.zip_code} onChange={(e) => setForm({ ...form, zip_code: e.target.value })} style={{ ...fieldStyle, width: "160px", maxWidth: "100%" }} />
 
@@ -269,21 +244,15 @@ export default function ListService() {
         <div style={{ display: "grid", gap: "10px", gridColumn: "1 / -1" }}>
           <div style={{ fontWeight: "600" }}>What services do you offer? Select all that apply.</div>
           <input type="text" placeholder="Search services..." value={serviceSearch} onChange={(e) => setSearch(e.target.value)} style={{ padding: "12px", borderRadius: "10px", border: "1px solid #ddd", width: "100%" }} />
-          {services
-            .filter((service: any) => serviceSearch.trim() ? service.name.toLowerCase().includes(serviceSearch.toLowerCase()) : form.service_ids.includes(Number(service.id)))
-            .map((service: any) => (
-              <label key={service.id} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px", border: "1px solid #ddd", borderRadius: "10px", cursor: "pointer" }}>
-                <input
-                  type="checkbox"
-                  checked={form.service_ids.includes(Number(service.id))}
-                  onChange={(e) => {
-                    const serviceId = Number(service.id);
-                    setForm({ ...form, service_ids: e.target.checked ? [...form.service_ids, serviceId] : form.service_ids.filter((id) => id !== serviceId) });
-                  }}
-                />
-                {service.name}
-              </label>
-            ))}
+          {services.filter((service: any) => serviceSearch.trim() ? service.name.toLowerCase().includes(serviceSearch.toLowerCase()) : form.service_ids.includes(Number(service.id))).map((service: any) => (
+            <label key={service.id} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "10px", border: "1px solid #ddd", borderRadius: "10px", cursor: "pointer" }}>
+              <input type="checkbox" checked={form.service_ids.includes(Number(service.id))} onChange={(e) => {
+                const serviceId = Number(service.id);
+                setForm({ ...form, service_ids: e.target.checked ? [...form.service_ids, serviceId] : form.service_ids.filter((id) => id !== serviceId) });
+              }} />
+              {service.name}
+            </label>
+          ))}
         </div>
 
         <div style={{ gridColumn: "1 / -1" }}>
@@ -297,11 +266,7 @@ export default function ListService() {
           <div style={{ fontSize: "14px", color: "#667085", marginBottom: "10px" }}>Select all that apply. You can add rates if you'd like, but pricing is optional.</div>
           {["Hourly rate", "Flat rate", "Contact for pricing"].map((method) => (
             <label key={method} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 0", cursor: "pointer" }}>
-              <input
-                type="checkbox"
-                checked={form.pricing_methods.includes(method)}
-                onChange={(e) => setForm({ ...form, pricing_methods: e.target.checked ? [...form.pricing_methods, method] : form.pricing_methods.filter((m) => m !== method) })}
-              />
+              <input type="checkbox" checked={form.pricing_methods.includes(method)} onChange={(e) => setForm({ ...form, pricing_methods: e.target.checked ? [...form.pricing_methods, method] : form.pricing_methods.filter((m) => m !== method) })} />
               {method}
             </label>
           ))}
