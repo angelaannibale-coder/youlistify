@@ -30,6 +30,11 @@
     text-transform: none;
   }
 
+  /* Once a provider is signed in, Dashboard replaces List Your Service. */
+  .header-actions:has(.sign-in[href="/dashboard"]) .list-link {
+    display: none !important;
+  }
+
   .header-actions .sign-in {
     display: inline-flex !important;
     align-items: center !important;
