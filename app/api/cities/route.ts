@@ -9,7 +9,18 @@ const STATE_FIPS: Record<string, string> = {
   VT:"50", VA:"51", WA:"53", WV:"54", WI:"55", WY:"56"
 };
 
-const FIPS_STATE = Object.fromEntries(Object.entries(STATE_FIPS).map(([state, fips]) => [fips, state]));
+const STATE_NAMES: Record<string, string> = {
+  Alabama:"AL", Alaska:"AK", Arizona:"AZ", Arkansas:"AR", California:"CA", Colorado:"CO",
+  Connecticut:"CT", Delaware:"DE", Florida:"FL", Georgia:"GA", Hawaii:"HI", Idaho:"ID",
+  Illinois:"IL", Indiana:"IN", Iowa:"IA", Kansas:"KS", Kentucky:"KY", Louisiana:"LA",
+  Maine:"ME", Maryland:"MD", Massachusetts:"MA", Michigan:"MI", Minnesota:"MN",
+  Mississippi:"MS", Missouri:"MO", Montana:"MT", Nebraska:"NE", Nevada:"NV",
+  "New Hampshire":"NH", "New Jersey":"NJ", "New Mexico":"NM", "New York":"NY",
+  "North Carolina":"NC", "North Dakota":"ND", Ohio:"OH", Oklahoma:"OK", Oregon:"OR",
+  Pennsylvania:"PA", "Rhode Island":"RI", "South Carolina":"SC", "South Dakota":"SD",
+  Tennessee:"TN", Texas:"TX", Utah:"UT", Vermont:"VT", Virginia:"VA", Washington:"WA",
+  "West Virginia":"WV", Wisconsin:"WI", Wyoming:"WY", "District of Columbia":"DC"
+};
 
 function cleanPlaceName(value: string) {
   return value.split(",")[0].trim()
@@ -19,37 +30,39 @@ function cleanPlaceName(value: string) {
 }
 
 export async function GET(request: NextRequest) {
-  const query = (request.nextUrl.searchParams.get("q") || "").trim().toLowerCase();
+  const query = (request.nextUrl.searchParams.get("q") || "").trim();
   const state = (request.nextUrl.searchParams.get("state") || "").toUpperCase();
 
   try {
     if (query) {
       if (query.length < 2) return NextResponse.json({ locations: [] });
 
-      const url = "https://api.census.gov/data/2020/dec/pl?get=NAME&for=place:*&in=state:*";
-      const response = await fetch(url, { next: { revalidate: 604800 } });
-      if (!response.ok) throw new Error(`Census request failed: ${response.status}`);
+      const url = new URL("https://geocoding-api.open-meteo.com/v1/search");
+      url.searchParams.set("name", query);
+      url.searchParams.set("count", "25");
+      url.searchParams.set("language", "en");
+      url.searchParams.set("format", "json");
+      url.searchParams.set("countryCode", "US");
 
-      const rows: string[][] = await response.json();
+      const response = await fetch(url.toString(), { next: { revalidate: 86400 } });
+      if (!response.ok) throw new Error(`Geocoding request failed: ${response.status}`);
+
+      const data = await response.json();
+      const results = Array.isArray(data?.results) ? data.results : [];
       const seen = new Set<string>();
       const locations: Array<{ city: string; state: string }> = [];
 
-      for (const row of rows.slice(1)) {
-        const city = cleanPlaceName(row[0]);
-        const stateCode = FIPS_STATE[row[1]] || "";
-        if (!city || !stateCode || !city.toLowerCase().includes(query)) continue;
+      for (const result of results) {
+        if (result?.country_code !== "US") continue;
+        const city = typeof result?.name === "string" ? result.name.trim() : "";
+        const stateCode = STATE_NAMES[result?.admin1] || "";
+        if (!city || !stateCode) continue;
 
         const key = `${city.toLowerCase()}|${stateCode}`;
         if (seen.has(key)) continue;
         seen.add(key);
         locations.push({ city, state: stateCode });
       }
-
-      locations.sort((a, b) => {
-        const aStarts = a.city.toLowerCase().startsWith(query) ? 0 : 1;
-        const bStarts = b.city.toLowerCase().startsWith(query) ? 0 : 1;
-        return aStarts - bStarts || a.city.localeCompare(b.city) || a.state.localeCompare(b.state);
-      });
 
       return NextResponse.json({ locations: locations.slice(0, 12) });
     }
