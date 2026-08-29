@@ -39,6 +39,7 @@ export default function ListService() {
   const [showAccountForm, setShowAccountForm] = useState(false);
   const [locationSuggestions, setLocationSuggestions] = useState<Array<{ city: string; state: string }>>([]);
   const [cityOpen, setCityOpen] = useState(false);
+  const [cityLoading, setCityLoading] = useState(false);
   const [form, setForm] = useState({
     name: "",
     last_name: "",
@@ -69,39 +70,34 @@ export default function ListService() {
   }, []);
 
   useEffect(() => {
-    async function loadExistingLocations() {
-      const { data, error } = await supabase
-        .from("Providers")
-        .select("city, state")
-        .not("city", "is", null);
-
-      if (error || !data) return;
-
-      const seen = new Set<string>();
-      const locations: Array<{ city: string; state: string }> = [];
-
-      for (const row of data) {
-        const city = String(row.city || "").trim();
-        const state = String(row.state || "").trim().toUpperCase();
-        if (!city) continue;
-        const key = `${city.toLowerCase()}|${state}`;
-        if (seen.has(key)) continue;
-        seen.add(key);
-        locations.push({ city, state });
-      }
-
-      locations.sort((a, b) => a.city.localeCompare(b.city) || a.state.localeCompare(b.state));
-      setLocationSuggestions(locations);
+    const query = form.city.trim();
+    if (query.length < 2) {
+      setLocationSuggestions([]);
+      setCityLoading(false);
+      return;
     }
 
-    void loadExistingLocations();
-  }, []);
+    const controller = new AbortController();
+    const timer = window.setTimeout(async () => {
+      setCityLoading(true);
+      try {
+        const response = await fetch(`/api/cities?q=${encodeURIComponent(query)}`, { signal: controller.signal });
+        const data = await response.json();
+        if (!controller.signal.aborted) {
+          setLocationSuggestions(Array.isArray(data.locations) ? data.locations : []);
+        }
+      } catch {
+        if (!controller.signal.aborted) setLocationSuggestions([]);
+      } finally {
+        if (!controller.signal.aborted) setCityLoading(false);
+      }
+    }, 180);
 
-  const cityMatches = form.city.trim()
-    ? locationSuggestions
-        .filter((location) => location.city.toLowerCase().includes(form.city.trim().toLowerCase()))
-        .slice(0, 8)
-    : [];
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [form.city]);
 
   async function createAccount() {
     if (!form.email || !password) {
@@ -208,9 +204,13 @@ export default function ListService() {
             style={{ ...fieldStyle, width: "100%", boxSizing: "border-box" }}
           />
 
-          {cityOpen && cityMatches.length > 0 && (
+          {cityLoading && form.city.trim().length >= 2 && (
+            <div style={{ fontSize: "13px", color: "#667085", marginTop: "6px" }}>Finding cities…</div>
+          )}
+
+          {cityOpen && locationSuggestions.length > 0 && (
             <div style={{ position: "absolute", left: 0, right: 0, top: "calc(100% + 4px)", zIndex: 100, background: "white", border: "1px solid #ddd", borderRadius: "10px", boxShadow: "0 10px 25px rgba(0,0,0,.12)", maxHeight: "240px", overflowY: "auto" }}>
-              {cityMatches.map((location) => (
+              {locationSuggestions.map((location) => (
                 <button
                   key={`${location.city}-${location.state}`}
                   type="button"
