@@ -209,26 +209,6 @@ export default function ListService() {
         <input placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} style={fieldStyle} />
         <input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} style={fieldStyle} />
 
-        <div style={{ gridColumn: "1 / -1", border: "1px solid #e5e7eb", borderRadius: "12px", padding: "16px" }}>
-          <div style={{ fontWeight: "700", marginBottom: "6px" }}>How can customers contact you?</div>
-          <div style={{ fontSize: "14px", color: "#667085", marginBottom: "10px" }}>Select all the contact options you want displayed on your public listing.</div>
-          {[
-            ["contact_call", "Call"],
-            ["contact_text", "Text"],
-            ["contact_email", "Email"],
-            ["contact_youlistify", "Contact through YouListify"]
-          ].map(([field, label]) => (
-            <label key={field} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 0", cursor: "pointer" }}>
-              <input
-                type="checkbox"
-                checked={Boolean(form[field as keyof typeof form])}
-                onChange={(e) => setForm({ ...form, [field]: e.target.checked })}
-              />
-              {label}
-            </label>
-          ))}
-        </div>
-
         <div style={{ position: "relative", width: "100%" }}>
           <input
             placeholder="City"
@@ -323,6 +303,26 @@ export default function ListService() {
               <input placeholder="Example: 250" value={form.flat_price} onChange={(e) => setForm({ ...form, flat_price: e.target.value })} style={{ padding: "12px", borderRadius: "10px", border: "1px solid #ddd", width: "180px" }} />
             </div>
           )}
+        </div>
+
+        <div style={{ gridColumn: "1 / -1", border: "1px solid #e5e7eb", borderRadius: "12px", padding: "16px" }}>
+          <div style={{ fontWeight: "700", marginBottom: "6px" }}>How can customers contact you?</div>
+          <div style={{ fontSize: "14px", color: "#667085", marginBottom: "10px" }}>Select all the contact options you want displayed on your public listing.</div>
+          {[
+            ["contact_call", "Call"],
+            ["contact_text", "Text"],
+            ["contact_email", "Email"],
+            ["contact_youlistify", "Contact through YouListify"]
+          ].map(([field, label]) => (
+            <label key={field} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 0", cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={Boolean(form[field as keyof typeof form])}
+                onChange={(e) => setForm({ ...form, [field]: e.target.checked })}
+              />
+              {label}
+            </label>
+          ))}
         </div>
 
         <button type="submit" style={{ gridColumn: "1 / -1", padding: "16px", border: "none", borderRadius: "12px", background: "#5b4cf0", color: "white", fontWeight: "700", fontSize: "16px", cursor: "pointer", marginTop: "8px" }}>Create my listing</button>
