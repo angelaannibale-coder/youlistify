@@ -14,11 +14,8 @@ export default function ProviderAccountLinker() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user?.id || !user.email) return;
 
-      await supabase
-        .from("Providers")
-        .update({ user_id: user.id })
-        .eq("email", user.email)
-        .is("user_id", null);
+      const { error } = await supabase.rpc("claim_provider_listing");
+      if (error) console.error("Could not securely link provider listing:", error);
     }
 
     linkListingToUser();
