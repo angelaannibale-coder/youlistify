@@ -46,6 +46,10 @@ export default function ListService() {
     business_name: "",
     phone: "",
     email: "",
+    contact_call: false,
+    contact_text: false,
+    contact_email: false,
+    contact_youlistify: false,
     service_mode: "local",
     city: "",
     state: "",
@@ -122,6 +126,21 @@ export default function ListService() {
       return;
     }
 
+    if (!form.contact_call && !form.contact_text && !form.contact_email && !form.contact_youlistify) {
+      alert("Please choose at least one way customers can contact you.");
+      return;
+    }
+
+    if ((form.contact_call || form.contact_text) && !form.phone.trim()) {
+      alert("Please enter a phone number for Call or Text contact.");
+      return;
+    }
+
+    if (form.contact_email && !form.email.trim()) {
+      alert("Please enter an email address for Email contact.");
+      return;
+    }
+
     const { service_ids, ...rest } = form;
     const providerData = {
       ...rest,
@@ -189,6 +208,26 @@ export default function ListService() {
         <input placeholder="Business name (optional)" value={form.business_name} onChange={(e) => setForm({ ...form, business_name: e.target.value })} style={fieldStyle} />
         <input placeholder="Phone" value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} style={fieldStyle} />
         <input placeholder="Email" value={form.email} onChange={(e) => setForm({ ...form, email: e.target.value })} style={fieldStyle} />
+
+        <div style={{ gridColumn: "1 / -1", border: "1px solid #e5e7eb", borderRadius: "12px", padding: "16px" }}>
+          <div style={{ fontWeight: "700", marginBottom: "6px" }}>How can customers contact you?</div>
+          <div style={{ fontSize: "14px", color: "#667085", marginBottom: "10px" }}>Select all the contact options you want displayed on your public listing.</div>
+          {[
+            ["contact_call", "Call"],
+            ["contact_text", "Text"],
+            ["contact_email", "Email"],
+            ["contact_youlistify", "Contact through YouListify"]
+          ].map(([field, label]) => (
+            <label key={field} style={{ display: "flex", alignItems: "center", gap: "10px", padding: "8px 0", cursor: "pointer" }}>
+              <input
+                type="checkbox"
+                checked={Boolean(form[field as keyof typeof form])}
+                onChange={(e) => setForm({ ...form, [field]: e.target.checked })}
+              />
+              {label}
+            </label>
+          ))}
+        </div>
 
         <div style={{ position: "relative", width: "100%" }}>
           <input
