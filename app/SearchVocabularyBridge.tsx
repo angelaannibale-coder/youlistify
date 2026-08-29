@@ -6,7 +6,6 @@ import { SEARCH_VOCABULARY, normalizeSearch, queryRequestsRemote } from "./searc
 function rankedServices(query: string) {
   const q = normalizeSearch(query);
   if (!q) return [] as { name: string; score: number }[];
-
   const scores = new Map<string, number>();
   for (const [name, aliases] of Object.entries(SEARCH_VOCABULARY)) {
     let best = 0;
@@ -27,11 +26,7 @@ function rankedServices(query: string) {
     }
     if (best >= 50) scores.set(name, best);
   }
-
-  return [...scores.entries()]
-    .map(([name, score]) => ({ name, score }))
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 5);
+  return [...scores.entries()].map(([name, score]) => ({ name, score })).sort((a, b) => b.score - a.score).slice(0, 5);
 }
 
 function canonicalService(query: string) {
@@ -48,7 +43,6 @@ function setReactInput(input: HTMLInputElement, value: string) {
 export default function SearchVocabularyBridge() {
   useEffect(() => {
     if (window.location.pathname !== "/") return;
-
     const form = document.querySelector("form.search-card") as HTMLFormElement | null;
     if (!form) return;
     const inputs = form.querySelectorAll("input");
@@ -56,14 +50,7 @@ export default function SearchVocabularyBridge() {
     const remoteInput = Array.from(inputs).find((el) => (el as HTMLInputElement).type === "checkbox") as HTMLInputElement | undefined;
     const searchButton = form.querySelector<HTMLButtonElement>('button[type="submit"]');
     if (!serviceInput) return;
-
     let resubmitting = false;
-    let suggestionBox: HTMLDivElement | null = null;
-
-    const closeSuggestions = () => {
-      suggestionBox?.remove();
-      suggestionBox = null;
-    };
 
     const applyCanonicalSearch = () => {
       const original = serviceInput.value;
@@ -71,77 +58,24 @@ export default function SearchVocabularyBridge() {
       const wantsRemote = queryRequestsRemote(original);
       const needsServiceRewrite = !!canonical && normalizeSearch(canonical) !== normalizeSearch(original);
       const needsRemoteToggle = wantsRemote && !!remoteInput && !remoteInput.checked;
-
       if (needsServiceRewrite && canonical) setReactInput(serviceInput, canonical);
       if (needsRemoteToggle && remoteInput) remoteInput.click();
-
       return needsServiceRewrite || needsRemoteToggle;
     };
 
-    const renderSuggestions = () => {
-      closeSuggestions();
-      const matches = rankedServices(serviceInput.value);
-      if (!matches.length || serviceInput.value.trim().length < 3) return;
-
-      const shell = serviceInput.closest("label") as HTMLElement | null;
-      if (!shell) return;
-
-      suggestionBox = document.createElement("div");
-      suggestionBox.setAttribute("data-smart-search-suggestions", "true");
-      Object.assign(suggestionBox.style, {
-        position: "absolute", top: "100%", left: "0", right: "0", zIndex: "50",
-        background: "white", border: "1px solid #e6e9f0", borderRadius: "14px",
-        marginTop: "6px", boxShadow: "0 12px 30px rgba(0,0,0,.12)", overflow: "hidden",
-      });
-
-      const title = document.createElement("div");
-      title.textContent = "You might mean";
-      Object.assign(title.style, { padding: "10px 14px 6px", fontSize: "12px", fontWeight: "800", color: "#7b8190", letterSpacing: ".04em" });
-      suggestionBox.appendChild(title);
-
-      matches.forEach(({ name }) => {
-        const btn = document.createElement("button");
-        btn.type = "button";
-        btn.textContent = name;
-        Object.assign(btn.style, {
-          display: "block", width: "100%", textAlign: "left", padding: "11px 14px",
-          border: "0", borderTop: "1px solid #f0f1f5", background: "white",
-          color: "#101a38", cursor: "pointer", fontSize: "15px", fontWeight: "700",
-        });
-        btn.addEventListener("click", () => {
-          setReactInput(serviceInput, name);
-          closeSuggestions();
-          serviceInput.focus();
-        });
-        suggestionBox!.appendChild(btn);
-      });
-
-      shell.appendChild(suggestionBox);
-    };
-
-    const onInput = () => window.setTimeout(renderSuggestions, 0);
-    const onFocus = () => window.setTimeout(renderSuggestions, 0);
-    const onDocumentClick = (event: MouseEvent) => {
-      const target = event.target as Node;
-      if (target !== serviceInput && !suggestionBox?.contains(target)) closeSuggestions();
-    };
-
-    // Canonicalize as soon as the user presses the Search button, before React reads the form value.
+    // The homepage React UI owns the one visible autocomplete dropdown.
+    // This bridge remains only for vocabulary normalization when a search is submitted.
     const onSearchPointerDown = () => {
-      closeSuggestions();
       applyCanonicalSearch();
     };
 
     const onSubmit = (event: Event) => {
-      closeSuggestions();
       if (resubmitting) {
         resubmitting = false;
         return;
       }
-
       const changed = applyCanonicalSearch();
       if (!changed) return;
-
       event.preventDefault();
       event.stopImmediatePropagation();
       window.setTimeout(() => {
@@ -150,21 +84,12 @@ export default function SearchVocabularyBridge() {
       }, 0);
     };
 
-    serviceInput.addEventListener("input", onInput);
-    serviceInput.addEventListener("focus", onFocus);
-    document.addEventListener("click", onDocumentClick, true);
     searchButton?.addEventListener("pointerdown", onSearchPointerDown, true);
     form.addEventListener("submit", onSubmit, true);
-
     return () => {
-      closeSuggestions();
-      serviceInput.removeEventListener("input", onInput);
-      serviceInput.removeEventListener("focus", onFocus);
-      document.removeEventListener("click", onDocumentClick, true);
       searchButton?.removeEventListener("pointerdown", onSearchPointerDown, true);
       form.removeEventListener("submit", onSubmit, true);
     };
   }, []);
-
   return null;
 }
