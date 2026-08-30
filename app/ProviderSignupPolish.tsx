@@ -51,15 +51,7 @@ export default function ProviderSignupPolish() {
         mode.style.fontSize = "16px";
         mode.style.fontWeight = "600";
         mode.style.width = "100%";
-        if (!mode.previousElementSibling?.matches('[data-field-label="mode"]')) {
-          const label = document.createElement("div");
-          label.dataset.fieldLabel = "mode";
-          label.textContent = "How do you provide this service?";
-          label.style.fontWeight = "700";
-          label.style.color = "#344054";
-          label.style.marginBottom = "6px";
-          mode.insertAdjacentElement("beforebegin", label);
-        }
+        document.querySelectorAll('[data-field-label="mode"]').forEach((label) => label.remove());
       }
 
       const buttons = Array.from(document.querySelectorAll<HTMLButtonElement>("button"));
@@ -98,7 +90,6 @@ export default function ProviderSignupPolish() {
         submit.textContent = "Creating your listing…";
         submit.style.opacity = "0.72";
         submit.style.cursor = "wait";
-        // Safety reset if a network request fails and the page remains on the form.
         window.setTimeout(() => {
           if (document.body.contains(submit)) {
             submit.disabled = false;
