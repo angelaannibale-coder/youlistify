@@ -14,7 +14,7 @@ export default function PostWorkPage() {
 
   useEffect(()=>{
     let saved:any=null;
-    try { const raw=sessionStorage.getItem(draftKey); if(raw) saved=JSON.parse(raw); } catch {}
+    try { const raw=localStorage.getItem(draftKey); if(raw) saved=JSON.parse(raw); } catch {}
     supabase.auth.getSession().then(({data})=>{
       const user=data.session?.user;
       setUserId(user?.id||"");
@@ -29,7 +29,7 @@ export default function PostWorkPage() {
     if(!form.contact_call&&!form.contact_text&&!form.contact_email&&!form.contact_youlistify&&!form.application_url.trim()){alert("Choose at least one way for people to respond.");return;}
 
     if(!userId){
-      sessionStorage.setItem(draftKey,JSON.stringify(form));
+      localStorage.setItem(draftKey,JSON.stringify(form));
       window.location.href="/sign-in?next=/post-work&posting=1";
       return;
     }
@@ -38,7 +38,7 @@ export default function PostWorkPage() {
     const {data,error}=await supabase.from("work_posts").insert({...form,user_id:userId,pay_amount:form.pay_amount?Number(form.pay_amount):null,contact_phone:form.contact_phone.trim()||null,contact_email_address:form.contact_email_address.trim()||null,application_url:form.application_url.trim()||null}).select("id").single();
     setSaving(false);
     if(error){console.error(error);alert(error.message.includes("work_posts")?"The Jobs / Gigs / Tasks database step still needs to be completed in Supabase.":error.message);return;}
-    sessionStorage.removeItem(draftKey);
+    localStorage.removeItem(draftKey);
     window.location.href=`/work/${data.id}`;
   }
 
