@@ -29,8 +29,16 @@ export function normalizeSearch(value: string) {
   return value.toLowerCase().replace(/[^a-z0-9\s-]/g, " ").replace(/\s+/g, " ").trim();
 }
 
+export function coreServiceQuery(value: string) {
+  return normalizeSearch(value)
+    .split(" ")
+    .filter((word) => word.length > 1 && !STOP_WORDS.has(word) && !DELIVERY_WORDS.has(word))
+    .join(" ")
+    .trim();
+}
+
 function usefulTokens(value: string) {
-  return normalizeSearch(value).split(" ").filter((word) => word.length > 1 && !STOP_WORDS.has(word) && !DELIVERY_WORDS.has(word));
+  return coreServiceQuery(value).split(" ").filter(Boolean);
 }
 
 export function aliasesForService(serviceName: string) {
