@@ -34,10 +34,15 @@ export default function PostWorkPage() {
       return;
     }
 
+    localStorage.setItem(draftKey,JSON.stringify(form));
     setSaving(true);
     const {data,error}=await supabase.from("work_posts").insert({...form,user_id:userId,pay_amount:form.pay_amount?Number(form.pay_amount):null,contact_phone:form.contact_phone.trim()||null,contact_email_address:form.contact_email_address.trim()||null,application_url:form.application_url.trim()||null}).select("id").single();
     setSaving(false);
-    if(error){console.error(error);alert(error.message.includes("work_posts")?"The Jobs / Gigs / Tasks database step still needs to be completed in Supabase.":error.message);return;}
+    if(error){
+      console.error("Work post publish error",error);
+      alert(`We couldn't publish this yet. Your post is still saved.\n\n${error.message}${error.code?`\n\nCode: ${error.code}`:""}`);
+      return;
+    }
     localStorage.removeItem(draftKey);
     window.location.href=`/work/${data.id}`;
   }
