@@ -2,6 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
+import { coreServiceQuery, queryRequestsMobile } from "./searchVocabulary";
 
 type Provider = {
  id?:number;
@@ -17,6 +18,7 @@ pricing_methods?: string[];
 starting_price?: number | null;
 flat_price?: number | null;
 service_mode?: string;
+mobile_service?: boolean;
 zip_code?: string;
 };
 
@@ -143,6 +145,7 @@ const searchableProviders: Provider[] = dbProviders.length
       category: p.category || "",
       city: [p.city, p.state].filter(Boolean).join(", "),
       service_mode: p.service_mode || "",
+      mobile_service: p.mobile_service ?? false,
       zip_code: p.zip_code || "",
       rating: 0,
       reviews: 0,
@@ -164,14 +167,23 @@ const searchableProviders: Provider[] = dbProviders.length
   : providers;
 
 const locationSuggestions = Array.from(new Set(searchableProviders.flatMap((p) => [p.city, p.zip_code ? `${p.city} ${p.zip_code}` : null]).filter(Boolean))) as string[];
+const wantsMobileService = queryRequestsMobile(service);
+const serviceSuggestionQuery = (wantsMobileService ? coreServiceQuery(service) : service).trim().toLowerCase();
+const serviceSuggestions = allServices.filter((item: any) => {
+  if (!serviceSuggestionQuery) return false;
+  const name = item.name.toLowerCase();
+  return name.startsWith(serviceSuggestionQuery) || name.split(/\s+/).some((word: string) => word.startsWith(serviceSuggestionQuery)) || name.includes(serviceSuggestionQuery);
+}).slice(0,10);
 
 const filtered = useMemo(()=>{
-  const s = service.trim().toLowerCase();
+  const mobileOnly = queryRequestsMobile(service);
+  const s = (mobileOnly ? coreServiceQuery(service) : service).trim().toLowerCase();
   const l = location.trim().toLowerCase();
 
   return searchableProviders.filter((p) => {
     const serviceMatch = !s || p.category.toLowerCase().includes(s) || p.name.toLowerCase().includes(s) || p.specialties.some((x) => x.toLowerCase().includes(s));
     if (!serviceMatch) return false;
+    if (mobileOnly && !p.mobile_service) return false;
 
     const mode = (p.service_mode || "").toLowerCase();
 
@@ -239,7 +251,7 @@ return <main>
 <p>Search local services, see who is available, and connect directly—without filling out long forms or waiting for multiple quotes.</p>
 <form className="search-card" onSubmit={runSearch}>
 <label style={{ position: "relative" }} onBlur={(e)=>{if(!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget as Node)) setShowServiceSuggestions(false);}}><span>WHAT DO YOU NEED?</span><div className="input-shell"><b>⌕</b><input value={service} onChange={(e) => {setService(e.target.value);setShowServiceSuggestions(true);}} onFocus={() => {setShowServiceSuggestions(true);setShowLocationSuggestions(false);}} placeholder="Handyman, DJ, cleaner..." /></div>
-{showServiceSuggestions && service.trim() && (<div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:20,background:"white",border:"1px solid #e6e9f0",borderRadius:"14px",marginTop:"6px",maxHeight:"260px",overflowY:"auto",boxShadow:"0 12px 30px rgba(0,0,0,.12)"}}>{allServices.filter((item: any) => item.name.toLowerCase().split(/\s+/).some((word: string) => word.startsWith(service.trim().toLowerCase()))).slice(0,10).map((item:any)=><button key={item.id} type="button" onClick={()=>{setService(item.name);setShowServiceSuggestions(false);}} style={{display:"block",width:"100%",textAlign:"left",padding:"11px 14px",border:0,background:"white",cursor:"pointer"}}>{item.name}</button>)}</div>)}</label>
+{showServiceSuggestions && service.trim() && serviceSuggestions.length>0 && (<div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:20,background:"white",border:"1px solid #e6e9f0",borderRadius:"14px",marginTop:"6px",maxHeight:"260px",overflowY:"auto",boxShadow:"0 12px 30px rgba(0,0,0,.12)"}}>{serviceSuggestions.map((item:any)=><button key={item.id} type="button" onClick={()=>{setService(wantsMobileService?`mobile ${item.name}`:item.name);setShowServiceSuggestions(false);}} style={{display:"block",width:"100%",textAlign:"left",padding:"11px 14px",border:0,background:"white",cursor:"pointer"}}>{wantsMobileService?`Mobile ${item.name}`:item.name}</button>)}</div>)}</label>
 <label style={{ position: "relative" }} onBlur={(e)=>{if(!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget as Node)) setShowLocationSuggestions(false);}}><span>WHERE?</span><div className="input-shell" style={{ position: "relative" }}><b>✦</b><input value={location} onChange={(e)=>{setLocation(e.target.value);setShowLocationSuggestions(true);}} onFocus={()=>{setShowLocationSuggestions(true);setShowServiceSuggestions(false);}} placeholder="City or ZIP code" /></div>
 {showLocationSuggestions && location.trim() && (<div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:20,background:"white",border:"1px solid #e6e9f0",borderRadius:"14px",marginTop:"6px",padding:"10px 14px",boxShadow:"0 12px 30px rgba(0,0,0,.12)"}}>{locationSuggestions.filter((loc)=>loc.toLowerCase().includes(location.trim().toLowerCase())).slice(0,8).map((loc)=><button key={loc} type="button" onClick={()=>{setLocation(loc);setShowLocationSuggestions(false);}} style={{display:"block",width:"100%",textAlign:"left",padding:"10px 4px",border:0,background:"white",cursor:"pointer"}}>{loc}</button>)}</div>)}</label>
 <label style={{display:"flex",alignItems:"center",gap:"8px",fontWeight:"600",whiteSpace:"nowrap"}}><input type="checkbox" checked={remoteSearch} onChange={(e)=>setRemoteSearch(e.target.checked)} />Remote / Online / Phone</label>
