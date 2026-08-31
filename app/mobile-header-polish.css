@@ -12,6 +12,18 @@
     gap: 12px;
   }
 
+  .header-actions .work-nav-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    color: #5b4df5 !important;
+    text-decoration: none !important;
+    font-size: 13px;
+    font-weight: 800;
+    line-height: 1.15;
+    white-space: nowrap;
+  }
+
   .header-actions .list-link {
     display: inline-flex !important;
     align-items: center !important;
@@ -62,11 +74,28 @@
   .brand-icon { width: 36px; height: 36px; border-radius: 11px; }
 }
 
+@media (min-width: 721px) {
+  .header-actions .work-nav-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 14px;
+    border: 1px solid #d8d2ff;
+    border-radius: 12px;
+    background: #f7f5ff;
+    color: #5546e8;
+    text-decoration: none;
+    font-weight: 800;
+    white-space: nowrap;
+  }
+}
+
 @media (max-width: 430px) {
-  .topbar { gap: 7px; padding: 0 9px; }
-  .header-actions { gap: 9px; }
-  .header-actions .list-link { font-size: 11px; }
-  .header-actions .sign-in { min-width: 78px; min-height: 44px; padding: 0 10px; font-size: 12px; }
-  .brand-word { font-size: 1rem; }
-  .brand-icon { width: 34px; height: 34px; }
+  .topbar { gap: 6px; padding: 0 8px; }
+  .header-actions { gap: 7px; }
+  .header-actions .work-nav-link { font-size: 10px; }
+  .header-actions .list-link { font-size: 10px; }
+  .header-actions .sign-in { min-width: 74px; min-height: 42px; padding: 0 8px; font-size: 11px; }
+  .brand-word { font-size: .96rem; }
+  .brand-icon { width: 32px; height: 32px; }
 }
