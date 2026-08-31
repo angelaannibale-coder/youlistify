@@ -1,76 +1,87 @@
 @media (max-width: 720px) {
   .topbar {
+    display: grid !important;
     grid-template-columns: minmax(0, 1fr) auto;
-    gap: 12px;
-    padding: 0 14px;
+    grid-template-areas:
+      "brand signin"
+      "links links";
+    gap: 10px 12px;
+    padding: 12px 14px !important;
+    align-items: center;
+  }
+
+  .brand {
+    grid-area: brand;
+    gap: 8px;
+    min-width: 0;
   }
 
   .header-actions {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-end;
-    gap: 12px;
-  }
-
-  .header-actions .work-nav-link {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    color: #5b4df5 !important;
-    text-decoration: none !important;
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.15;
-    white-space: nowrap;
-  }
-
-  .header-actions .list-link {
-    display: inline-flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-    min-height: auto;
-    padding: 0;
-    border: 0 !important;
-    border-radius: 0;
-    color: #5b4df5 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    font-size: 13px;
-    font-weight: 800;
-    line-height: 1.15;
-    white-space: nowrap;
-    text-transform: none;
-  }
-
-  /* Once a provider is signed in, Dashboard replaces List Your Service. */
-  .header-actions:has(.sign-in[href="/dashboard"]) .list-link {
-    display: none !important;
+    display: contents !important;
   }
 
   .header-actions .sign-in {
+    grid-area: signin;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    min-width: 92px;
-    min-height: 46px;
-    padding: 0 16px;
+    min-width: 88px;
+    min-height: 44px;
+    padding: 0 14px;
     margin: 0 !important;
     border: 1px solid #d8d2ff !important;
     border-radius: 13px;
     background: #f1efff !important;
     color: #5546e8 !important;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 800;
     line-height: 1 !important;
     white-space: nowrap;
+    justify-self: end;
   }
 
-  .brand {
-    gap: 8px;
-    min-width: 0;
+  .header-actions .work-nav-link,
+  .header-actions .list-link {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 40px;
+    padding: 0 12px;
+    border: 1px solid #d8d2ff !important;
+    border-radius: 12px;
+    background: #f7f5ff !important;
+    color: #5546e8 !important;
+    text-decoration: none !important;
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1.1;
+    white-space: nowrap;
   }
 
-  .brand-word { font-size: 1.18rem; }
+  .header-actions .work-nav-link {
+    grid-area: links;
+    justify-self: start;
+    margin-right: 154px;
+  }
+
+  .header-actions .list-link {
+    grid-area: links;
+    justify-self: end;
+  }
+
+  /* Once signed in, Dashboard replaces List Your Service. */
+  .header-actions:has(.sign-in[href="/dashboard"]) .list-link {
+    display: none !important;
+  }
+
+  .header-actions button {
+    grid-area: links;
+    justify-self: end;
+    align-self: center;
+    margin-left: auto !important;
+  }
+
+  .brand-word { font-size: 1.12rem; }
   .brand-icon { width: 36px; height: 36px; border-radius: 11px; }
 }
 
@@ -91,11 +102,29 @@
 }
 
 @media (max-width: 430px) {
-  .topbar { gap: 6px; padding: 0 8px; }
-  .header-actions { gap: 7px; }
-  .header-actions .work-nav-link { font-size: 10px; }
-  .header-actions .list-link { font-size: 10px; }
-  .header-actions .sign-in { min-width: 74px; min-height: 42px; padding: 0 8px; font-size: 11px; }
-  .brand-word { font-size: .96rem; }
+  .topbar {
+    gap: 9px 8px;
+    padding: 10px 9px !important;
+  }
+
+  .header-actions .work-nav-link,
+  .header-actions .list-link {
+    min-height: 38px;
+    padding: 0 9px;
+    font-size: 10px;
+  }
+
+  .header-actions .work-nav-link {
+    margin-right: 132px;
+  }
+
+  .header-actions .sign-in {
+    min-width: 76px;
+    min-height: 42px;
+    padding: 0 10px;
+    font-size: 11px;
+  }
+
+  .brand-word { font-size: .98rem; }
   .brand-icon { width: 32px; height: 32px; }
 }
