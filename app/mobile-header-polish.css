@@ -4,10 +4,12 @@
     grid-template-columns: minmax(0, 1fr) auto;
     grid-template-areas:
       "brand signin"
-      "links links";
-    gap: 10px 12px;
+      "actions actions"
+      "nav nav";
+    gap: 9px 12px;
     padding: 12px 14px !important;
     align-items: center;
+    height: auto !important;
   }
 
   .brand {
@@ -17,11 +19,18 @@
   }
 
   .header-actions {
-    display: contents !important;
+    grid-area: actions;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    gap: 10px;
+    width: 100%;
   }
 
   .header-actions .sign-in {
-    grid-area: signin;
+    position: absolute;
+    top: 12px;
+    right: 14px;
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
@@ -37,7 +46,6 @@
     font-weight: 800;
     line-height: 1 !important;
     white-space: nowrap;
-    justify-self: end;
   }
 
   .header-actions .work-nav-link,
@@ -45,8 +53,9 @@
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
+    flex: 1 1 0;
     min-height: 40px;
-    padding: 0 12px;
+    padding: 0 10px;
     border: 1px solid #d8d2ff !important;
     border-radius: 12px;
     background: #f7f5ff !important;
@@ -58,15 +67,22 @@
     white-space: nowrap;
   }
 
-  .header-actions .work-nav-link {
-    grid-area: links;
-    justify-self: start;
-    margin-right: 154px;
+  .nav {
+    grid-area: nav;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    width: 100%;
+    padding-top: 2px;
+    color: #101a38 !important;
+    font-size: 12px;
+    font-weight: 800;
   }
 
-  .header-actions .list-link {
-    grid-area: links;
-    justify-self: end;
+  .nav a {
+    color: #101a38 !important;
+    white-space: nowrap;
   }
 
   /* Once signed in, Dashboard replaces List Your Service. */
@@ -75,9 +91,6 @@
   }
 
   .header-actions button {
-    grid-area: links;
-    justify-self: end;
-    align-self: center;
     margin-left: auto !important;
   }
 
@@ -103,26 +116,33 @@
 
 @media (max-width: 430px) {
   .topbar {
-    gap: 9px 8px;
+    gap: 8px;
     padding: 10px 9px !important;
+  }
+
+  .header-actions {
+    gap: 8px;
   }
 
   .header-actions .work-nav-link,
   .header-actions .list-link {
     min-height: 38px;
-    padding: 0 9px;
+    padding: 0 8px;
     font-size: 10px;
   }
 
-  .header-actions .work-nav-link {
-    margin-right: 132px;
-  }
-
   .header-actions .sign-in {
+    top: 10px;
+    right: 9px;
     min-width: 76px;
     min-height: 42px;
     padding: 0 10px;
     font-size: 11px;
+  }
+
+  .nav {
+    gap: 16px;
+    font-size: 10px;
   }
 
   .brand-word { font-size: .98rem; }
