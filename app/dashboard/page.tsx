@@ -7,10 +7,12 @@ const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env
 
 type Provider = {id:number;name:string|null;last_name:string|null;business_name:string|null;email:string|null;phone:string|null;city:string|null;state:string|null;bio:string|null;name_display?:string|null;user_id:string|null;};
 type WorkPost = {id:number;post_type:string;title:string;category:string|null;status:string;created_at:string;};
+type WorkMessage = {id:number;work_post_id:number;sender_name:string;sender_email:string;message:string;created_at:string;};
 
 export default function DashboardPage() {
   const [provider,setProvider]=useState<Provider|null>(null);
   const [posts,setPosts]=useState<WorkPost[]>([]);
+  const [messages,setMessages]=useState<WorkMessage[]>([]);
   const [loading,setLoading]=useState(true);
   const [message,setMessage]=useState("");
   const [userEmail,setUserEmail]=useState("");
@@ -21,7 +23,14 @@ export default function DashboardPage() {
     setUserEmail(session.user.email||"");
 
     const {data:workPosts}=await supabase.from("work_posts").select("id,post_type,title,category,status,created_at").eq("user_id",session.user.id).order("created_at",{ascending:false});
-    setPosts((workPosts||[]) as WorkPost[]);
+    const ownedPosts=(workPosts||[]) as WorkPost[];
+    setPosts(ownedPosts);
+
+    if(ownedPosts.length>0){
+      const ids=ownedPosts.map(p=>p.id);
+      const {data:workMessages,error:messagesError}=await supabase.from("work_post_messages").select("id,work_post_id,sender_name,sender_email,message,created_at").in("work_post_id",ids).order("created_at",{ascending:false});
+      if(!messagesError)setMessages((workMessages||[]) as WorkMessage[]);
+    }
 
     const selectFields="id,name,last_name,business_name,email,phone,city,state,bio,name_display,user_id";
     const {data:owned}=await supabase.from("Providers").select(selectFields).eq("user_id",session.user.id).maybeSingle();
@@ -32,7 +41,7 @@ export default function DashboardPage() {
       const result=await response.json();
       if(response.ok&&result.provider){setProvider(result.provider as Provider);setLoading(false);return;}
       if(response.status===409){setMessage("We found more than one unclaimed listing using this email. Please contact YouListify support so we can safely connect the correct listing.");}
-      else if(posts.length===0&&(!workPosts||workPosts.length===0)){setMessage("You don’t have a service listing yet. You can create one anytime, or use this account just for Jobs, Gigs & Tasks.");}
+      else if(ownedPosts.length===0){setMessage("You don’t have a service listing yet. You can create one anytime, or use this account just for Jobs, Gigs & Tasks.");}
     }catch{}
     setLoading(false);
   }
@@ -40,11 +49,12 @@ export default function DashboardPage() {
   useEffect(()=>{loadDashboard();},[]);
 
   async function setStatus(id:number,status:string){const {error}=await supabase.from("work_posts").update({status,updated_at:new Date().toISOString()}).eq("id",id);if(error){alert(error.message);return;}setPosts(v=>v.map(p=>p.id===id?{...p,status}:p));}
-  async function removePost(id:number){if(!window.confirm("Delete this post? This cannot be undone."))return;const {error}=await supabase.from("work_posts").delete().eq("id",id);if(error){alert(error.message);return;}setPosts(v=>v.filter(p=>p.id!==id));}
+  async function removePost(id:number){if(!window.confirm("Delete this post? This cannot be undone."))return;const {error}=await supabase.from("work_posts").delete().eq("id",id);if(error){alert(error.message);return;}setPosts(v=>v.filter(p=>p.id!==id));setMessages(v=>v.filter(m=>m.work_post_id!==id));}
   async function handleSignOut(){await supabase.auth.signOut();window.location.href="/";}
 
   if(loading)return <main style={{padding:40,fontFamily:"Arial,sans-serif"}}>Loading your dashboard...</main>;
-  const hasProvider=!!provider,hasPosts=posts.length>0;
+  const hasPosts=posts.length>0;
+  const postTitle=(id:number)=>posts.find(p=>p.id===id)?.title||"Work post";
 
   return <main style={{minHeight:"100vh",background:"#f8f8fb",padding:"40px 20px",fontFamily:"Arial,sans-serif"}}><div style={{maxWidth:960,margin:"0 auto",background:"white",borderRadius:24,padding:"36px",boxShadow:"0 10px 35px rgba(0,0,0,.08)"}}>
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:20,flexWrap:"wrap",marginBottom:28}}><div><div style={{color:"#5b4cf0",fontWeight:700,marginBottom:8}}>YOULISTIFY ACCOUNT</div><h1 style={{fontSize:40,margin:0,color:"#182033"}}>My Dashboard</h1><div style={{color:"#667085",marginTop:8}}>{userEmail}</div></div><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><a href="/post-work" style={primary}>Post a Job / Gig / Task</a>{provider&&<a href="/dashboard/edit" style={primary}>Edit My Listing</a>}</div></div>
@@ -54,8 +64,12 @@ export default function DashboardPage() {
 
     {!provider&&<section style={{marginBottom:34,padding:22,borderRadius:16,background:"#f7f6ff"}}><h2 style={{marginTop:0,color:"#182033"}}>Want to list your services too?</h2><p style={{color:"#667085",lineHeight:1.6}}>The same YouListify account can be used to post Jobs, Gigs & Tasks and to create a service listing.</p><a href="/list-service" style={secondary}>List My Service</a></section>}
 
-    <section><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:16,flexWrap:"wrap"}}><div><h2 style={{color:"#182033",marginBottom:6}}>My Work Posts</h2><p style={{color:"#667085",marginTop:0}}>Jobs, Gigs & Tasks posted from this account.</p></div><a href="/post-work" style={primary}>+ Post New</a></div>
+    <section style={{marginBottom:34}}><div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:16,flexWrap:"wrap"}}><div><h2 style={{color:"#182033",marginBottom:6}}>My Work Posts</h2><p style={{color:"#667085",marginTop:0}}>Jobs, Gigs & Tasks posted from this account.</p></div><a href="/post-work" style={primary}>+ Post New</a></div>
     {!hasPosts?<div style={{padding:22,border:"1px solid #eee",borderRadius:16,color:"#667085"}}>No work posts yet.</div>:<div style={{display:"grid",gap:14}}>{posts.map(p=><div key={p.id} style={{border:"1px solid #ececf2",borderRadius:16,padding:20}}><div style={{display:"flex",justifyContent:"space-between",gap:14,flexWrap:"wrap"}}><div><div style={{color:"#5b4cf0",fontWeight:900,textTransform:"uppercase",fontSize:13}}>{p.post_type} · {p.status}</div><h3 style={{margin:"7px 0 4px",fontSize:22,color:"#182033"}}>{p.title}</h3>{p.category&&<div style={{color:"#667085"}}>{p.category}</div>}</div><div style={{display:"flex",gap:8,flexWrap:"wrap",alignItems:"flex-start"}}><a href={`/work/${p.id}`} style={smallBtn}>View</a><a href={`/work/${p.id}/edit`} style={smallBtn}>Edit</a>{p.status==="active"?<button onClick={()=>setStatus(p.id,"paused")} style={smallBtn}>Pause</button>:<button onClick={()=>setStatus(p.id,"active")} style={smallBtn}>Activate</button>}<button onClick={()=>setStatus(p.id,"closed")} style={smallBtn}>Close</button><button onClick={()=>removePost(p.id)} style={{...smallBtn,color:"#b42318"}}>Delete</button></div></div></div>)}</div>}
+    </section>
+
+    <section><div><h2 style={{color:"#182033",marginBottom:6}}>Messages</h2><p style={{color:"#667085",marginTop:0}}>Responses sent through YouListify to your work posts.</p></div>
+    {messages.length===0?<div style={{padding:22,border:"1px solid #eee",borderRadius:16,color:"#667085"}}>No YouListify messages yet.</div>:<div style={{display:"grid",gap:14}}>{messages.map(m=><div key={m.id} style={{border:"1px solid #ececf2",borderRadius:16,padding:20,background:"#fbfbfe"}}><div style={{color:"#5b4cf0",fontWeight:800,fontSize:13,textTransform:"uppercase"}}>About: {postTitle(m.work_post_id)}</div><h3 style={{margin:"8px 0 4px",color:"#182033"}}>{m.sender_name}</h3><a href={`mailto:${m.sender_email}`} style={{color:"#4f46e5",fontWeight:700,textDecoration:"none",wordBreak:"break-all"}}>{m.sender_email}</a><p style={{color:"#454b60",lineHeight:1.6,whiteSpace:"pre-wrap",marginBottom:8}}>{m.message}</p><div style={{color:"#98a2b3",fontSize:13}}>{new Date(m.created_at).toLocaleString()}</div></div>)}</div>}
     </section>
 
     <a href="/" style={{display:"inline-block",marginTop:28,color:"#4f46e5",textDecoration:"none",fontWeight:600}}>← Back to YouListify</a><button onClick={handleSignOut} style={{display:"block",marginTop:18,border:"1px solid #ddd",background:"white",padding:"12px 18px",borderRadius:10,cursor:"pointer",fontWeight:600}}>Sign Out</button>
