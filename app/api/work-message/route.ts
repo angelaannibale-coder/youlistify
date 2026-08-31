@@ -55,15 +55,15 @@ export async function POST(req: NextRequest) {
     let notificationSent = false;
     const resendKey = process.env.RESEND_API_KEY;
     if (resendKey && recipients.size > 0) {
-      const from = process.env.RESEND_FROM_EMAIL || "YouListify <notifications@youlistify.com>";
       const response = await fetch("https://api.resend.com/emails", {
         method: "POST",
         headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
         body: JSON.stringify({
-          from,
+          from: "YouListify <messages@youlistify.com>",
           to: Array.from(recipients),
-          subject: `New YouListify response: ${post.title}`,
-          html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#182033"><h2>You have a new YouListify response</h2><p><strong>${escapeHtml(senderName)}</strong> responded to <strong>${escapeHtml(post.title)}</strong>.</p><p>Sign in to your YouListify dashboard to read the message and reply.</p><p><a href="https://youlistify.com/dashboard" style="display:inline-block;background:#5b4df5;color:white;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700">Open My Dashboard</a></p></div>`
+          reply_to: senderEmail,
+          subject: `New YouListify message from ${senderName}`,
+          html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#182033"><h2>New message through YouListify</h2><p><strong>For:</strong> ${escapeHtml(post.title)}</p><p><strong>From:</strong> ${escapeHtml(senderName)}</p><p><strong>Reply email:</strong> ${escapeHtml(senderEmail)}</p><p><strong>Message:</strong></p><p>${escapeHtml(message).replace(/\n/g,"<br>")}</p><hr/><p>This message was sent privately through YouListify.</p><p><a href="https://youlistify.com/dashboard" style="display:inline-block;background:#5b4df5;color:white;text-decoration:none;padding:12px 18px;border-radius:10px;font-weight:700">Open My Dashboard</a></p></div>`
         })
       });
       notificationSent = response.ok;
