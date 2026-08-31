@@ -33,10 +33,20 @@ export async function POST(req: NextRequest) {
       .from("work_posts")
       .select("id,title,user_id,status,contact_youlistify")
       .eq("id", postId)
-      .single();
+      .maybeSingle();
 
-    if (postError || !post || post.status !== "active" || !post.contact_youlistify) {
-      return NextResponse.json({ error: "This post is not accepting YouListify messages" }, { status: 404 });
+    if (postError) {
+      console.error("work post lookup failed", postError);
+      return NextResponse.json({ error: `Could not verify this post: ${postError.message}`, code: postError.code }, { status: 500 });
+    }
+    if (!post) {
+      return NextResponse.json({ error: "This work post could not be found" }, { status: 404 });
+    }
+    if (post.status !== "active") {
+      return NextResponse.json({ error: `This post is currently ${post.status} and is not accepting new messages` }, { status: 409 });
+    }
+    if (!post.contact_youlistify) {
+      return NextResponse.json({ error: "Contact through YouListify is turned off for this post" }, { status: 409 });
     }
 
     const { error: insertError } = await admin.from("work_post_messages").insert({
