@@ -4,6 +4,7 @@ import "./categories-polish.css";
 import "./home-card-tilt.css";
 import "./mobile-header-polish.css";
 import "./modal-stability.css";
+import "./brand-refresh.css";
 import SafetyFooterLink from "./SafetyFooterLink";
 import LaunchPolish from "./LaunchPolish";
 import FoundingProviderOffer from "./FoundingProviderOffer";
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{children:React.ReactNode}>) {
   return (
     <html lang="en">
-      <body>
+      <body className="youlistify-brand-refresh">
         {children}
         <ContactModalCleanup />
         <ProviderAccountLinker />
