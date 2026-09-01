@@ -15,8 +15,8 @@ function makeMount(id: string, anchor: Element, position: "beforebegin" | "after
 
 function OfferCard({ compact = false, showButton = true }: { compact?: boolean; showButton?: boolean }) {
   return (
-    <section style={compact ? { maxWidth: "1040px", margin: "7px auto 9px", padding: "0 16px", boxSizing: "border-box" } : { maxWidth: "1040px", margin: "28px auto", padding: "0 20px", boxSizing: "border-box" }}>
-      <div style={{ background: "linear-gradient(135deg,#f5f3ff,#ffffff)", border: "1px solid #ddd8ff", borderRadius: "18px", padding: compact ? "9px 16px" : "18px 22px", textAlign: "center", boxShadow: "0 8px 24px rgba(79,70,229,.07)" }}>
+    <section style={compact ? { maxWidth: "1040px", margin: "8px auto 10px", padding: "0 16px", boxSizing: "border-box", overflow: "visible" } : { maxWidth: "1040px", margin: "28px auto", padding: "0 20px", boxSizing: "border-box" }}>
+      <div style={{ background: "linear-gradient(135deg,#f5f3ff,#ffffff)", border: "1px solid #ddd8ff", borderRadius: "18px", padding: compact ? "12px 16px" : "18px 22px", textAlign: "center", boxShadow: "0 8px 24px rgba(79,70,229,.07)", height: "auto", minHeight: 0, overflow: "visible" }}>
         <div style={{ color: "#5b4cf0", fontWeight: 800, fontSize: compact ? "12px" : "14px", letterSpacing: ".04em", marginBottom: compact ? "2px" : "4px" }}>
           CREATE YOUR FREE LISTING 🎉
         </div>
@@ -28,7 +28,7 @@ function OfferCard({ compact = false, showButton = true }: { compact?: boolean; 
           {!compact && " After your free period, you can choose whether to continue with one simple annual membership. The annual price will be clearly disclosed before any charge."}
         </div>
         {showButton && (
-          <a href="/list-service" style={{ display: "inline-block", marginTop: compact ? "6px" : "12px", padding: compact ? "8px 15px" : "10px 18px", borderRadius: "10px", background: "#5b4cf0", color: "white", fontWeight: 700, textDecoration: "none", fontSize: compact ? "13px" : "15px" }}>
+          <a href="/list-service" style={{ display: "inline-block", marginTop: compact ? "7px" : "12px", marginBottom: compact ? "1px" : 0, padding: compact ? "8px 15px" : "10px 18px", borderRadius: "10px", background: "#5b4cf0", color: "white", fontWeight: 700, textDecoration: "none", fontSize: compact ? "13px" : "15px" }}>
             Create Your Free Listing
           </a>
         )}
