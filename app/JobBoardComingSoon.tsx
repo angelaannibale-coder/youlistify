@@ -70,9 +70,9 @@ export default function JobBoardComingSoon() {
           </article>
         </div>
 
-        <div style={{maxWidth:"880px",margin:"38px auto 0",padding:"26px 28px",background:"#fff",border:"1px solid #e6e9f0",borderRadius:"20px",textAlign:"center",boxShadow:"0 10px 28px rgba(28,35,67,.04)"}}>
-          <span style={{display:"inline-block",fontSize:"12px",fontWeight:900,letterSpacing:".11em",color:"#5b4df5",marginBottom:"8px"}}>ONE MARKETPLACE. MORE WAYS TO CONNECT.</span>
-          <p style={{fontSize:"17px",lineHeight:1.65,color:"#4f596c",margin:0}}><strong style={{color:"#101a38"}}>YouListify is a services and work marketplace</strong> where you can find local or remote service providers, post jobs, gigs & tasks, or list what you do and get found.</p>
+        <div style={{maxWidth:"880px",margin:"38px auto 0",padding:"28px",background:"#fff",border:"1px solid #e6e9f0",borderRadius:"20px",textAlign:"center",boxShadow:"0 10px 28px rgba(28,35,67,.04)"}}>
+          <p style={{fontSize:"clamp(21px,3vw,27px)",lineHeight:1.3,fontWeight:850,color:"#101a38",margin:"0 0 9px"}}>YouListify is a services and work marketplace.</p>
+          <p style={{fontSize:"17px",lineHeight:1.6,fontWeight:800,color:"#5b4df5",margin:0}}>Find someone. Post what you need. Get found.</p>
         </div>
       </div>
     </section>,
