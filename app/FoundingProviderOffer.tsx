@@ -15,20 +15,20 @@ function makeMount(id: string, anchor: Element, position: "beforebegin" | "after
 
 function OfferCard({ compact = false, showButton = true }: { compact?: boolean; showButton?: boolean }) {
   return (
-    <section style={compact ? { maxWidth: "1040px", margin: "18px auto 22px", padding: "0 20px", boxSizing: "border-box" } : { maxWidth: "1040px", margin: "28px auto", padding: "0 20px", boxSizing: "border-box" }}>
-      <div style={{ background: "linear-gradient(135deg,#f5f3ff,#ffffff)", border: "1px solid #ddd8ff", borderRadius: "18px", padding: compact ? "14px 18px" : "18px 22px", textAlign: "center", boxShadow: "0 8px 24px rgba(79,70,229,.07)" }}>
-        <div style={{ color: "#5b4cf0", fontWeight: 800, fontSize: compact ? "12px" : "14px", letterSpacing: ".04em", marginBottom: "4px" }}>
+    <section style={compact ? { maxWidth: "1040px", margin: "7px auto 9px", padding: "0 16px", boxSizing: "border-box" } : { maxWidth: "1040px", margin: "28px auto", padding: "0 20px", boxSizing: "border-box" }}>
+      <div style={{ background: "linear-gradient(135deg,#f5f3ff,#ffffff)", border: "1px solid #ddd8ff", borderRadius: "18px", padding: compact ? "9px 16px" : "18px 22px", textAlign: "center", boxShadow: "0 8px 24px rgba(79,70,229,.07)" }}>
+        <div style={{ color: "#5b4cf0", fontWeight: 800, fontSize: compact ? "12px" : "14px", letterSpacing: ".04em", marginBottom: compact ? "2px" : "4px" }}>
           CREATE YOUR FREE LISTING 🎉
         </div>
-        <div style={{ color: "#182033", fontWeight: 800, fontSize: compact ? "18px" : "22px", marginBottom: compact ? "3px" : "6px" }}>
+        <div style={{ color: "#182033", fontWeight: 800, fontSize: compact ? "18px" : "22px", marginBottom: compact ? "2px" : "6px" }}>
           Free for your first 3 months
         </div>
-        <div style={{ color: "#667085", fontSize: compact ? "13px" : "15px", lineHeight: 1.5 }}>
+        <div style={{ color: "#667085", fontSize: compact ? "13px" : "15px", lineHeight: compact ? 1.35 : 1.5 }}>
           No commissions, no fees per lead, and no credit card required.
           {!compact && " After your free period, you can choose whether to continue with one simple annual membership. The annual price will be clearly disclosed before any charge."}
         </div>
         {showButton && (
-          <a href="/list-service" style={{ display: "inline-block", marginTop: compact ? "8px" : "12px", padding: compact ? "8px 15px" : "10px 18px", borderRadius: "10px", background: "#5b4cf0", color: "white", fontWeight: 700, textDecoration: "none", fontSize: compact ? "13px" : "15px" }}>
+          <a href="/list-service" style={{ display: "inline-block", marginTop: compact ? "6px" : "12px", padding: compact ? "8px 15px" : "10px 18px", borderRadius: "10px", background: "#5b4cf0", color: "white", fontWeight: 700, textDecoration: "none", fontSize: compact ? "13px" : "15px" }}>
             Create Your Free Listing
           </a>
         )}
