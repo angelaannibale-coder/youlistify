@@ -19,60 +19,26 @@ export default function JobBoardComingSoon() {
 
   if (!mountNode) return null;
 
-  const actionLink: React.CSSProperties = {
-    display:"inline-flex", alignItems:"center", justifyContent:"center", minHeight:"48px", padding:"0 20px",
-    borderRadius:"13px", background:"#5b4df5", color:"#fff", textDecoration:"none", fontWeight:800
-  };
-  const card: React.CSSProperties = {
-    flex:"1 1 290px", background:"#fff", border:"1px solid #e6e9f0", borderRadius:"24px",
-    padding:"clamp(24px,3vw,34px)", boxShadow:"0 14px 36px rgba(28,35,67,.06)"
-  };
-  const kicker: React.CSSProperties = {
-    display:"inline-block", fontSize:"12px", fontWeight:900, letterSpacing:".1em", color:"#5b4df5", marginBottom:"12px"
-  };
-
   return createPortal(
-    <section style={{padding:"68px 20px",background:"#fafbff",borderTop:"1px solid #f0f1f5",borderBottom:"1px solid #f0f1f5"}}>
-      <div style={{maxWidth:"1120px",margin:"0 auto"}}>
-        <div style={{textAlign:"center",maxWidth:"790px",margin:"0 auto 36px"}}>
-          <span style={{display:"inline-block",fontSize:"12px",fontWeight:900,letterSpacing:".12em",color:"#5b4df5",marginBottom:"10px"}}>THREE SIMPLE WAYS TO USE YOULISTIFY</span>
-          <h2 style={{fontSize:"clamp(32px,5vw,50px)",lineHeight:1.06,letterSpacing:"-.04em",margin:"0 0 14px",color:"#101a38"}}>Find someone. Post what you need. Get found.</h2>
-          <p style={{fontSize:"17px",lineHeight:1.65,color:"#667085",margin:0}}>Search people who are ready to work, post exactly what you need, or list your own service so customers can find you.</p>
+    <section className="yl-work-zone">
+      <div className="yl-work-zone-inner">
+        <div className="yl-work-zone-copy">
+          <span className="yl-work-kicker">JOBS · GIGS · TASKS</span>
+          <h2>Can’t find exactly what you need? Post it.</h2>
+          <p>Whether it’s an ongoing job, freelance gig or one-time task, tell people what you need and let the right person respond.</p>
+          <div className="yl-work-offer">
+            <strong>🎉 Post FREE for your first 3 months</strong>
+            <span>Then one simple yearly fee for unlimited posts.</span>
+          </div>
+          <div className="yl-work-actions">
+            <a className="yl-work-primary" href="/post-work">Post FREE</a>
+            <a className="yl-work-secondary" href="/work">Browse Jobs, Gigs & Tasks</a>
+          </div>
         </div>
-
-        <div style={{display:"flex",flexWrap:"wrap",gap:"18px",alignItems:"stretch"}}>
-          <article style={card}>
-            <span style={kicker}>SEARCH SERVICES</span>
-            <h3 style={{fontSize:"26px",margin:"0 0 12px",color:"#101a38"}}>Find the right person.</h3>
-            <p style={{color:"#667085",fontSize:"16px",lineHeight:1.65,margin:"0 0 18px"}}>Search by service and location, see profiles and availability, and contact people directly. No account required to search.</p>
-            <a href="#top" style={actionLink}>Search Services</a>
-          </article>
-
-          <article style={{...card,border:"1px solid #dcd8ff"}}>
-            <span style={kicker}>JOBS · GIGS · TASKS</span>
-            <h3 style={{fontSize:"26px",margin:"0 0 12px",color:"#101a38"}}>Post what you need.</h3>
-            <p style={{color:"#667085",fontSize:"16px",lineHeight:1.65,margin:"0 0 16px"}}>Need someone for an ongoing job, freelance gig or one-time task? Create a post and let people respond.</p>
-            <div style={{background:"#f5f3ff",border:"1px solid #dedaff",borderRadius:"16px",padding:"14px 16px",margin:"0 0 18px"}}>
-              <strong style={{display:"block",fontSize:"17px",color:"#101a38",marginBottom:"5px"}}>🎉 Post FREE for your first 3 months</strong>
-              <span style={{display:"block",fontSize:"14px",color:"#5f687b",lineHeight:1.5}}>Then one simple yearly fee for unlimited posts.</span>
-            </div>
-            <div style={{display:"flex",gap:"9px",flexWrap:"wrap"}}>
-              <a href="/post-work" style={actionLink}>Post FREE</a>
-              <a href="/work" style={{...actionLink,background:"#fff",color:"#5b4df5",border:"1px solid #cfcdfc"}}>Browse Posts</a>
-            </div>
-          </article>
-
-          <article style={card}>
-            <span style={kicker}>LIST YOUR SERVICE</span>
-            <h3 style={{fontSize:"26px",margin:"0 0 12px",color:"#101a38"}}>Let customers find you.</h3>
-            <p style={{color:"#667085",fontSize:"16px",lineHeight:1.65,margin:"0 0 18px"}}>Create one simple listing showing what you do, your availability, pricing and how customers can reach you.</p>
-            <a href="/list-service" style={actionLink}>Create Your Listing</a>
-          </article>
-        </div>
-
-        <div style={{maxWidth:"880px",margin:"38px auto 0",padding:"28px",background:"#fff",border:"1px solid #e6e9f0",borderRadius:"20px",textAlign:"center",boxShadow:"0 10px 28px rgba(28,35,67,.04)"}}>
-          <p style={{fontSize:"clamp(21px,3vw,27px)",lineHeight:1.3,fontWeight:850,color:"#101a38",margin:"0 0 9px"}}>YouListify is a services and work marketplace.</p>
-          <p style={{fontSize:"17px",lineHeight:1.6,fontWeight:800,color:"#5b4df5",margin:0}}>Find someone. Post what you need. Get found.</p>
+        <div className="yl-work-types" aria-label="Types of work posts">
+          <article><span>JOB</span><strong>Ongoing work</strong><p>Full-time, part-time or recurring opportunities.</p></article>
+          <article><span>GIG</span><strong>Freelance & contract</strong><p>Projects, temporary work and flexible opportunities.</p></article>
+          <article><span>TASK</span><strong>One-time help</strong><p>Something specific you need done now or soon.</p></article>
         </div>
       </div>
     </section>,
