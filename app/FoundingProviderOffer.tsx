@@ -40,7 +40,7 @@ export default function FoundingProviderOffer() {
     if (pathname === "/") {
       const place = () => {
         const providerSection = document.querySelector("section.provider-cta");
-        if (providerSection) setProviderTarget(makeMount("founding-offer-provider", providerSection, "beforeend"));
+        if (providerSection) setProviderTarget(makeMount("founding-offer-provider", providerSection, "afterend"));
       };
       place();
       const observer = new MutationObserver(place);
