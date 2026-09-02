@@ -12,7 +12,7 @@ export default function JobBoardComingSoon() {
     if (!categoriesSection?.parentElement) return;
     const node = document.createElement("div");
     node.id = "youlistify-find-or-post";
-    categoriesSection.parentElement.insertBefore(node, categoriesSection);
+    categoriesSection.insertAdjacentElement("afterend", node);
     setMountNode(node);
     return () => node.remove();
   }, []);
