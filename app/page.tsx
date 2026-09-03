@@ -2,7 +2,7 @@
 
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
-import { coreServiceQuery, queryRequestsMobile } from "./searchVocabulary";
+import { coreServiceQuery, queryRequestsMobile, textMatchesService } from "./searchVocabulary";
 
 type Provider = {
  id?:number;
@@ -181,7 +181,7 @@ const filtered = useMemo(()=>{
   const l = location.trim().toLowerCase();
 
   return searchableProviders.filter((p) => {
-    const serviceMatch = !s || p.category.toLowerCase().includes(s) || p.name.toLowerCase().includes(s) || p.specialties.some((x) => x.toLowerCase().includes(s));
+    const serviceMatch = !s || p.category.toLowerCase().includes(s) || p.name.toLowerCase().includes(s) || p.specialties.some((x) => textMatchesService(s, x));
     if (!serviceMatch) return false;
     if (mobileOnly && !p.mobile_service) return false;
 

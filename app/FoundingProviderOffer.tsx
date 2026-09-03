@@ -39,8 +39,8 @@ export default function FoundingProviderOffer() {
   useEffect(() => {
     if (pathname === "/") {
       const place = () => {
-        const miniSiteCard = document.querySelector("section.provider-cta .cta-card");
-        if (miniSiteCard) setProviderTarget(makeMount("founding-offer-provider", miniSiteCard, "afterend"));
+        const miniSiteSection = document.querySelector("section.provider-cta");
+        if (miniSiteSection) setProviderTarget(makeMount("founding-offer-provider", miniSiteSection, "afterend"));
       };
       place();
       const observer = new MutationObserver(place);
