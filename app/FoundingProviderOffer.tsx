@@ -41,8 +41,8 @@ export default function FoundingProviderOffer() {
       const place = () => {
         const miniSiteSection = document.querySelector("section.provider-cta");
         if (miniSiteSection) {
-          const mount = makeMount("founding-offer-provider", miniSiteSection, "afterend");
-          if (miniSiteSection.nextElementSibling !== mount) miniSiteSection.insertAdjacentElement("afterend", mount);
+          const mount = makeMount("founding-offer-provider", miniSiteSection, "beforeend");
+          if (mount.parentElement !== miniSiteSection) miniSiteSection.insertAdjacentElement("beforeend", mount);
           setProviderTarget(mount);
         }
       };
