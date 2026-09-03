@@ -11,6 +11,7 @@ export default function SignInPage() {
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [claimMode, setClaimMode] = useState(false);
+  const [acceptedLegalTerms, setAcceptedLegalTerms] = useState(false);
   const [nextPath,setNextPath]=useState("/dashboard");
   const [posting,setPosting]=useState(false);
 
@@ -31,6 +32,7 @@ export default function SignInPage() {
   async function createAccount(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !password) { setMessage(posting?"Enter your email and choose a password to finish your post.":"Enter the email used on your listing and choose a password."); return; }
+    if (!acceptedLegalTerms) { setMessage("Please agree to the Terms of Use and acknowledge the Privacy Policy to create your account."); return; }
     setLoading(true); setMessage("");
     const redirectPath=posting?"/post-work":"/dashboard";
     const { error } = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: `https://youlistify.com${redirectPath}` } });
@@ -49,6 +51,7 @@ export default function SignInPage() {
       <form onSubmit={accountMode ? createAccount : handleSignIn} autoComplete="on">
         <input type="email" name="email" autoComplete="email" inputMode="email" placeholder="Email address" value={email} onChange={e=>setEmail(e.target.value)} required style={inputStyle}/>
         <input type="password" name="password" autoComplete={accountMode ? "new-password" : "current-password"} placeholder={accountMode ? "Choose a password" : "Password"} value={password} onChange={e=>setPassword(e.target.value)} required style={{...inputStyle,marginBottom:"18px"}}/>
+        {accountMode && <label style={{display:"flex",alignItems:"flex-start",gap:"10px",margin:"0 0 18px",color:"#475467",fontSize:"14px",lineHeight:1.5,cursor:"pointer"}}><input type="checkbox" checked={acceptedLegalTerms} onChange={e=>setAcceptedLegalTerms(e.target.checked)} required style={{marginTop:"3px",width:"18px",height:"18px",flex:"0 0 auto"}}/><span>I agree to YouListify&apos;s <a href="/terms" target="_blank" rel="noopener noreferrer" style={{color:"#4f46e5",fontWeight:700}}>Terms of Use</a> and acknowledge the <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{color:"#4f46e5",fontWeight:700}}>Privacy Policy</a>.</span></label>}
         <button type="submit" disabled={loading} style={{width:"100%",padding:"15px",border:"none",borderRadius:"10px",background:"#4f46e5",color:"white",fontSize:"17px",fontWeight:"bold",cursor:"pointer"}}>{loading?"Please wait...":accountMode?(posting?"Create Free Account & Continue":"Create My Free Account"):"Sign In"}</button>
       </form>
       {posting && <button type="button" onClick={()=>{setPosting(false);setClaimMode(false);setPassword("");setMessage("");}} style={{width:"100%",marginTop:14,background:"white",border:"1px solid #d9dce7",padding:"13px",borderRadius:10,color:"#4f46e5",fontWeight:700,cursor:"pointer"}}>I already have an account — Sign In</button>}
