@@ -5,7 +5,6 @@ import "./home-card-tilt.css";
 import "./mobile-header-polish.css";
 import "./modal-stability.css";
 import "./brand-refresh.css";
-import SafetyFooterLink from "./SafetyFooterLink";
 import LaunchPolish from "./LaunchPolish";
 import FoundingProviderOffer from "./FoundingProviderOffer";
 import HomepageProviderPriority from "./HomepageProviderPriority";
@@ -44,7 +43,6 @@ export default function RootLayout({ children }: Readonly<{children:React.ReactN
         <FoundingProviderOffer />
         <LaunchPolish />
         <HomepageProviderPriority />
-        <SafetyFooterLink />
         <JobBoardComingSoon />
         <HomepageWorkNavBridge />
         <SearchVocabularyBridge />
