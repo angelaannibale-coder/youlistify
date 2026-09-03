@@ -40,7 +40,11 @@ export default function FoundingProviderOffer() {
     if (pathname === "/") {
       const place = () => {
         const miniSiteSection = document.querySelector("section.provider-cta");
-        if (miniSiteSection) setProviderTarget(makeMount("founding-offer-provider", miniSiteSection, "afterend"));
+        if (miniSiteSection) {
+          const mount = makeMount("founding-offer-provider", miniSiteSection, "afterend");
+          if (miniSiteSection.nextElementSibling !== mount) miniSiteSection.insertAdjacentElement("afterend", mount);
+          setProviderTarget(mount);
+        }
       };
       place();
       const observer = new MutationObserver(place);
