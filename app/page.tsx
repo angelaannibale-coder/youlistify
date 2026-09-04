@@ -247,7 +247,7 @@ return <main>
 <path d="M160 43V25"/><path d="M137 49l-12-13"/><path d="M183 49l12-13"/><path d="M123 63l-17-5"/><path d="M197 63l17-5"/>
 <path className="sun-body" d="M137 76a23 23 0 0 1 46 0Z"/>
 </g>
-<path className="header-road" d="M154 77C125 84 127 94 157 98C181 101 182 108 148 120H180C211 106 204 96 177 92C157 89 157 85 180 79Z"/>
+<path className="header-road" d="M181 79C145 84 139 91 166 97C194 103 187 111 150 119"/>
 </svg>
 </a>
 <nav className="nav"><a href="#how">How it works</a><a href="#categories">Categories</a><a href="#results">Available now</a></nav>
