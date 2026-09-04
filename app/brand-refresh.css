@@ -29,24 +29,70 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
 @media(max-width:1050px){.youlistify-brand-refresh .provider-cta #founding-offer-provider{grid-column:1;margin:14px 0 0}}
 
 
-/* Clean text wordmark for the dark header—no image background or cropping. */
-.youlistify-brand-refresh .topbar .brand-header-wordmark{
+/* True transparent vector header logo: wordmark, five-ray sun, smile and path. */
+.youlistify-brand-refresh .topbar .header-logo{
+  position:relative;
+  display:flex;
+  align-items:flex-start;
+  justify-content:center;
+  width:238px;
+  height:78px;
+  padding:9px 0 0;
+  overflow:visible;
+  background:transparent;
+  box-shadow:none;
+}
+.youlistify-brand-refresh .topbar .header-logo-word{
+  position:relative;
+  z-index:2;
   display:inline-flex;
   align-items:baseline;
   gap:0;
-  width:max-content;
-  height:auto;
-  padding:0;
-  background:transparent;
-  box-shadow:none;
   font-size:2rem;
   font-weight:900;
   line-height:1;
-  letter-spacing:-.06em;
+  letter-spacing:-.065em;
   white-space:nowrap;
 }
-.youlistify-brand-refresh .topbar .brand-header-wordmark .header-you{color:#fff}
-.youlistify-brand-refresh .topbar .brand-header-wordmark .header-listify{color:var(--yl-pink)}
+.youlistify-brand-refresh .topbar .header-logo-word .header-you{color:#fff}
+.youlistify-brand-refresh .topbar .header-logo-word .header-listify{color:var(--yl-pink)}
+.youlistify-brand-refresh .topbar .header-logo-mark{
+  position:absolute;
+  z-index:1;
+  left:0;
+  right:0;
+  bottom:0;
+  width:100%;
+  height:58px;
+  overflow:visible;
+  fill:none;
+}
+.youlistify-brand-refresh .topbar .header-logo-sun{
+  stroke:#ffc33d;
+  stroke-width:6;
+  stroke-linecap:round;
+}
+.youlistify-brand-refresh .topbar .header-logo-sun .sun-body{
+  fill:#ffc33d;
+  stroke:none;
+}
+.youlistify-brand-refresh .topbar .header-smile{
+  stroke:var(--yl-pink);
+  stroke-width:7;
+  stroke-linecap:round;
+}
+.youlistify-brand-refresh .topbar .header-path{
+  stroke:var(--yl-pink);
+  stroke-width:7;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
 @media(max-width:720px){
-  .youlistify-brand-refresh .topbar .brand-header-wordmark{font-size:1.72rem}
+  .youlistify-brand-refresh .topbar .header-logo{
+    width:184px;
+    height:64px;
+    padding-top:7px;
+  }
+  .youlistify-brand-refresh .topbar .header-logo-word{font-size:1.58rem}
+  .youlistify-brand-refresh .topbar .header-logo-mark{height:47px}
 }
