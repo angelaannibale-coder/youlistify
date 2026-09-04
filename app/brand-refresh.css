@@ -82,8 +82,11 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
   stroke-linecap:round;
 }
 .youlistify-brand-refresh .topbar .header-road{
-  fill:var(--yl-pink);
-  stroke:none;
+  fill:none;
+  stroke:var(--yl-pink);
+  stroke-width:10;
+  stroke-linecap:round;
+  stroke-linejoin:round;
 }
 @media(max-width:720px){
   .youlistify-brand-refresh .topbar .header-logo{
