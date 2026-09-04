@@ -242,12 +242,15 @@ return <main>
 <a className="brand header-logo" href="#top" aria-label="YouListify home">
 <span className="header-logo-word"><span className="header-you">You</span><span className="header-listify">Listify</span></span>
 <svg className="header-logo-mark" viewBox="0 0 320 120" aria-hidden="true">
+<defs>
+<clipPath id="header-logo-inside"><path d="M28 0H292V47Q160 151 28 47Z"/></clipPath>
+</defs>
 <path className="header-smile" d="M28 47Q160 151 292 47"/>
 <g className="header-logo-sun">
 <path d="M160 43V25"/><path d="M137 49l-12-13"/><path d="M183 49l12-13"/><path d="M123 63l-17-5"/><path d="M197 63l17-5"/>
 <path className="sun-body" d="M137 76a23 23 0 0 1 46 0Z"/>
 </g>
-<path className="header-road" d="M181 79C145 84 139 91 166 97C194 103 187 111 150 119"/>
+<path className="header-road" clipPath="url(#header-logo-inside)" d="M181 79C145 84 139 91 166 97C194 103 187 111 150 119"/>
 </svg>
 </a>
 <nav className="nav"><a href="#how">How it works</a><a href="#categories">Categories</a><a href="#results">Available now</a></nav>
