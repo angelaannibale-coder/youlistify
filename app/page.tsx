@@ -239,7 +239,7 @@ setContactOpen(false);
 
 return <main>
 <header className="topbar">
-<a className="brand brand-preview-logo" href="#top" aria-label="YouListify home"><img className="brand-preview-logo-image" src="/youlistify-logo-banner-v2.png" alt="YouListify" /></a>
+<a className="brand brand-header-wordmark" href="#top" aria-label="YouListify home"><span className="header-you">You</span><span className="header-listify">Listify</span></a>
 <nav className="nav"><a href="#how">How it works</a><a href="#categories">Categories</a><a href="#results">Available now</a></nav>
 <div className="header-actions"><a className="list-link" href="/list-service">List your service</a>{isSignedIn ? (<><a className="sign-in" href="/dashboard">My Dashboard</a><button type="button" onClick={handleSignOut} style={{background:"none",border:"none",color:"#4f46e5",fontWeight:"600",cursor:"pointer"}}>Sign out</button></>) : (<a className="sign-in" href="/sign-in">Sign in</a>)}</div>
 </header>
