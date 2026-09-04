@@ -241,13 +241,13 @@ return <main>
 <header className="topbar">
 <a className="brand header-logo" href="#top" aria-label="YouListify home">
 <span className="header-logo-word"><span className="header-you">You</span><span className="header-listify">Listify</span></span>
-<svg className="header-logo-mark" viewBox="0 0 320 112" aria-hidden="true">
+<svg className="header-logo-mark" viewBox="0 0 320 120" aria-hidden="true">
+<path className="header-smile" d="M28 47Q160 151 292 47"/>
 <g className="header-logo-sun">
-<path d="M160 42V25"/><path d="M139 47l-11-12"/><path d="M181 47l11-12"/><path d="M126 60l-17-5"/><path d="M194 60l17-5"/>
-<path className="sun-body" d="M139 72a21 21 0 0 1 42 0Z"/>
+<path d="M160 43V25"/><path d="M137 49l-12-13"/><path d="M183 49l12-13"/><path d="M123 63l-17-5"/><path d="M197 63l17-5"/>
+<path className="sun-body" d="M137 76a23 23 0 0 1 46 0Z"/>
 </g>
-<path className="header-smile" d="M24 48Q160 148 296 48"/>
-<path className="header-path" d="M163 75c-19 5-30 12-27 18 4 7 30 5 40 10-13 2-25 5-36 10"/>
+<path className="header-road" d="M154 77C125 84 127 94 157 98C181 101 182 108 148 120H180C211 106 204 96 177 92C157 89 157 85 180 79Z"/>
 </svg>
 </a>
 <nav className="nav"><a href="#how">How it works</a><a href="#categories">Categories</a><a href="#results">Available now</a></nav>
