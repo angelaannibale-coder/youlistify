@@ -50,13 +50,13 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
 }
 @media(max-width:720px){
   .youlistify-brand-refresh .topbar .brand-preview-logo{
-    width:174px;
-    height:58px;
+    width:190px;
+    height:62px;
     padding:0;
     border-radius:0;
   }
   .youlistify-brand-refresh .topbar .brand-preview-logo-image{
-    width:164px;
-    height:54px;
+    width:184px;
+    height:58px;
   }
 }
