@@ -239,7 +239,17 @@ setContactOpen(false);
 
 return <main>
 <header className="topbar">
-<a className="brand brand-header-wordmark" href="#top" aria-label="YouListify home"><span className="header-you">You</span><span className="header-listify">Listify</span></a>
+<a className="brand header-logo" href="#top" aria-label="YouListify home">
+<span className="header-logo-word"><span className="header-you">You</span><span className="header-listify">Listify</span></span>
+<svg className="header-logo-mark" viewBox="0 0 320 92" aria-hidden="true">
+<g className="header-logo-sun">
+<path d="M160 31V18"/><path d="M143 35l-9-10"/><path d="M177 35l9-10"/><path d="M132 45l-13-4"/><path d="M188 45l13-4"/>
+<path className="sun-body" d="M143 54a17 17 0 0 1 34 0Z"/>
+</g>
+<path className="header-smile" d="M36 34Q160 126 284 34"/>
+<path className="header-path" d="M164 57c-14 4-22 9-20 14 3 6 24 4 31 8-9 1-19 4-28 9"/>
+</svg>
+</a>
 <nav className="nav"><a href="#how">How it works</a><a href="#categories">Categories</a><a href="#results">Available now</a></nav>
 <div className="header-actions"><a className="list-link" href="/list-service">List your service</a>{isSignedIn ? (<><a className="sign-in" href="/dashboard">My Dashboard</a><button type="button" onClick={handleSignOut} style={{background:"none",border:"none",color:"#4f46e5",fontWeight:"600",cursor:"pointer"}}>Sign out</button></>) : (<a className="sign-in" href="/sign-in">Sign in</a>)}</div>
 </header>
