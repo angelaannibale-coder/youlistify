@@ -1,7 +1,5 @@
 "use client";
 import {useEffect,useMemo,useRef,useState} from "react";
-import {createClient} from "@supabase/supabase-js";
-const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 type Post={id:number;post_type:string;title:string;description:string;category:string|null;city:string|null;state:string|null;remote:boolean;pay_type:string;pay_amount:number|null;created_at:string};
 type LocationSuggestion={city:string;state:string};
 function pay(p:Post){if(p.pay_type==="contact"||p.pay_amount==null)return "Pay: discuss details";const n=Number(p.pay_amount).toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});return p.pay_type==="hourly"?`${n}/hr`:p.pay_type==="salary"?`${n} salary`:n;}
