@@ -106,19 +106,17 @@ setSuggestionEmail("");
 
 useEffect(() => {
   async function loadProviders() {
-    const { data, error } = await supabase.from("Providers").select(`
-*,
-provider_services (
-services (
-name
-)
-)
-`);
-    if (error) {
+    try {
+      const response = await fetch("/api/providers", { cache: "no-store" });
+      const result = await response.json();
+      if (!response.ok) {
+        console.error("Error loading providers:", result.error);
+        return;
+      }
+      setDbProviders(Array.isArray(result.providers) ? result.providers : []);
+    } catch (error) {
       console.error("Error loading providers:", error);
-      return;
     }
-    setDbProviders(data || []);
   }
   loadProviders();
 }, []);
