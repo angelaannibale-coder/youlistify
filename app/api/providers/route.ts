@@ -3,7 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const publicFields = `
 id,created_at,name,last_name,business_name,phone,email,city,state,zip_code,
-service_mode,bio,available_now,profile_active,name_display,contact_call,
+service_mode,display_city,bio,available_now,profile_active,name_display,contact_call,
 contact_text,contact_email,contact_youlistify,customer_comes_to_me,mobile_service,
 pricing_methods,starting_price,flat_price,profile_photo,gallery_photos,user_id,
 provider_services (services (name))
@@ -54,8 +54,12 @@ export async function GET(req: NextRequest) {
 
 function sanitizeProvider(provider: any) {
   const { user_id: _privateUserId, ...safeProvider } = provider;
+  const showCity = provider.service_mode !== "remote" || provider.display_city !== false;
   return {
     ...safeProvider,
+    city: showCity ? provider.city : null,
+    state: showCity ? provider.state : null,
+    zip_code: showCity ? provider.zip_code : null,
     phone: provider.contact_call || provider.contact_text ? provider.phone : null,
     email: provider.contact_email ? provider.email : null
   };
