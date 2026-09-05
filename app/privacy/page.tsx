@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import LegalReturnLink from "../LegalReturnLink";
 
 export const metadata: Metadata = {
   title: "Privacy Policy | YouListify",
@@ -10,7 +11,7 @@ export default function PrivacyPage() {
     <main style={{minHeight:"100vh",background:"#fbfcff",color:"#101a38",fontFamily:'Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif'}}>
       <header style={{height:82,display:"flex",alignItems:"center",justifyContent:"space-between",padding:"0 5.3vw",background:"white",borderBottom:"1px solid #eef0f5"}}>
         <a href="/" style={{display:"flex",alignItems:"center",gap:11,textDecoration:"none",color:"#101a38",fontSize:22,fontWeight:850}}><span style={{display:"grid",placeItems:"center",width:40,height:40,borderRadius:13,background:"#5b4df5",color:"white",fontWeight:900}}>Y</span>YouListify</a>
-        <a href="/" style={{color:"#5b4df5",textDecoration:"none",fontWeight:750}}>Back to home</a>
+        <div style={{display:"flex",alignItems:"center",gap:18}}><LegalReturnLink/><a href="/" style={{color:"#5b4df5",textDecoration:"none",fontWeight:750}}>Back to home</a></div>
       </header>
       <article style={{maxWidth:900,margin:"0 auto",padding:"64px 22px 80px",lineHeight:1.72}}>
         <div style={{color:"#5b4df5",fontSize:12,fontWeight:900,letterSpacing:'.12em',textTransform:"uppercase"}}>Privacy</div>
