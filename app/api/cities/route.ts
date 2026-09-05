@@ -32,8 +32,34 @@ function cleanPlaceName(value: string) {
 export async function GET(request: NextRequest) {
   const query = (request.nextUrl.searchParams.get("q") || "").trim();
   const state = (request.nextUrl.searchParams.get("state") || "").toUpperCase();
+  const zip = (request.nextUrl.searchParams.get("zip") || "").trim();
 
   try {
+    if (zip) {
+      if (!/^\\d{5}$/.test(zip)) {
+        return NextResponse.json({ valid: false, locations: [] });
+      }
+
+      const response = await fetch(`https://api.zippopotam.us/us/${zip}`, {
+        next: { revalidate: 86400 }
+      });
+      if (response.status === 404) {
+        return NextResponse.json({ valid: false, locations: [] });
+      }
+      if (!response.ok) throw new Error(`ZIP lookup failed: ${response.status}`);
+
+      const data = await response.json();
+      const places = Array.isArray(data?.places) ? data.places : [];
+      const locations = places
+        .map((place: Record<string, unknown>) => ({
+          city: typeof place["place name"] === "string" ? place["place name"] : "",
+          state: typeof place["state abbreviation"] === "string" ? place["state abbreviation"] : ""
+        }))
+        .filter((location: { city: string; state: string }) => location.city && location.state);
+
+      return NextResponse.json({ valid: locations.length > 0, locations });
+    }
+
     if (query) {
       if (query.length < 2) return NextResponse.json({ locations: [] });
 
@@ -78,6 +104,7 @@ export async function GET(request: NextRequest) {
       .sort((a, b) => a.localeCompare(b));
     return NextResponse.json({ cities });
   } catch {
+    if (zip) return NextResponse.json({ valid: false, locations: [], unavailable: true }, { status: 503 });
     return query
       ? NextResponse.json({ locations: [] }, { status: 200 })
       : NextResponse.json({ cities: [] }, { status: 200 });
