@@ -141,7 +141,7 @@ const searchableProviders: Provider[] = dbProviders.length
       slug: `${(p.name || "provider").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}-${p.id}`,
       name: displayName,
       category: p.category || "",
-      city: [p.city, p.state].filter(Boolean).join(", "),
+      city: [p.city, p.state].filter(Boolean).join(", ") || ((p.service_mode || "").toLowerCase() === "remote" ? "Remote" : ""),
       service_mode: p.service_mode || "",
       mobile_service: p.mobile_service ?? false,
       zip_code: p.zip_code || "",
