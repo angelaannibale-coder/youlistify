@@ -1,11 +1,9 @@
 "use client";
 import {useEffect,useState} from "react";
-import {createClient} from "@supabase/supabase-js";
-const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 export default function WorkDetail({params}:{params:Promise<{id:string}>}){
  const [p,setP]=useState<any>(null),[loading,setLoading]=useState(true),[emailOpen,setEmailOpen]=useState(false),[copied,setCopied]=useState(false);
  const [contactOpen,setContactOpen]=useState(false),[contactName,setContactName]=useState(""),[contactEmail,setContactEmail]=useState(""),[contactMessage,setContactMessage]=useState(""),[sending,setSending]=useState(false);
- useEffect(()=>{params.then(({id})=>supabase.from("work_posts").select("*").eq("id",id).single().then(({data})=>{setP(data);setLoading(false);}));},[params]);
+ useEffect(()=>{params.then(async({id})=>{try{const response=await fetch(`/api/work-posts?id=${encodeURIComponent(id)}`,{cache:"no-store"});const result=await response.json();if(response.ok)setP(result.post);}finally{setLoading(false);}});},[params]);
  if(loading)return <main style={{padding:40}}>Loading...</main>;if(!p)return <main style={{padding:40}}><h1>Opportunity not found</h1><a href="/work">Back to Jobs, Gigs & Tasks</a></main>;
  const place=p.remote?"Remote":([p.city,p.state].filter(Boolean).join(", ")||"Location flexible");const amount=p.pay_amount?Number(p.pay_amount).toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0}):"";const pay=p.pay_type==="contact"?"Pay: discuss details":p.pay_type==="hourly"?`${amount}/hr`:p.pay_type==="salary"?`${amount} salary`:amount;
  async function copyEmail(){if(!p.contact_email_address)return;try{await navigator.clipboard.writeText(p.contact_email_address);}catch{const input=document.createElement("input");input.value=p.contact_email_address;document.body.appendChild(input);input.select();document.execCommand("copy");document.body.removeChild(input);}setCopied(true);setTimeout(()=>setCopied(false),2000);}
