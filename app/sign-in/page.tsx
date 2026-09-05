@@ -10,6 +10,7 @@ export default function SignInPage() {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [resendLoading, setResendLoading] = useState(false);
   const [claimMode, setClaimMode] = useState(false);
   const [acceptedLegalTerms, setAcceptedLegalTerms] = useState(false);
   const [nextPath,setNextPath]=useState("/dashboard");
@@ -27,6 +28,24 @@ export default function SignInPage() {
     const { error } = await supabase.auth.signInWithPassword({ email, password });
     if (error) { setMessage(error.message); setLoading(false); return; }
     window.location.href = nextPath;
+  }
+
+  async function resendVerificationEmail() {
+    if (!email) {
+      setMessage("Enter your email address first, then tap Resend verification email.");
+      return;
+    }
+
+    setResendLoading(true);
+    setMessage("");
+    const redirectPath = posting ? "/post-work" : "/dashboard";
+    const { error } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo: `https://youlistify.com${redirectPath}` },
+    });
+    setResendLoading(false);
+    setMessage(error ? error.message : "Verification email sent again. Check your inbox and spam folder.");
   }
 
   async function createAccount(e: React.FormEvent) {
@@ -55,9 +74,12 @@ export default function SignInPage() {
         <button type="submit" disabled={loading} style={{width:"100%",padding:"15px",border:"none",borderRadius:"10px",background:"#4f46e5",color:"white",fontSize:"17px",fontWeight:"bold",cursor:"pointer"}}>{loading?"Please wait...":accountMode?(posting?"Create Free Account & Continue":"Create My Free Account"):"Sign In"}</button>
       </form>
       {posting && <button type="button" onClick={()=>{setPosting(false);setClaimMode(false);setPassword("");setMessage("");}} style={{width:"100%",marginTop:14,background:"white",border:"1px solid #d9dce7",padding:"13px",borderRadius:10,color:"#4f46e5",fontWeight:700,cursor:"pointer"}}>I already have an account — Sign In</button>}
-      {!posting&&!claimMode && <button type="button" onClick={async()=>{if(!email){setMessage("Enter your email address first.");return;} const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:"https://youlistify.com/reset-password"}); setMessage(error?error.message:"Password reset email sent. Check your inbox.");}} style={{background:"none",border:"none",color:"#4f46e5",cursor:"pointer",fontSize:"15px",marginTop:"14px",padding:0,textDecoration:"underline"}}>Forgot password?</button>}
+      {!posting&&!claimMode && <div style={{display:"flex",flexDirection:"column",alignItems:"flex-start",gap:"10px",marginTop:"14px"}}>
+        <button type="button" onClick={async()=>{if(!email){setMessage("Enter your email address first.");return;} const {error}=await supabase.auth.resetPasswordForEmail(email,{redirectTo:"https://youlistify.com/reset-password"}); setMessage(error?error.message:"Password reset email sent. Check your inbox.");}} style={{background:"none",border:"none",color:"#4f46e5",cursor:"pointer",fontSize:"15px",padding:0,textDecoration:"underline"}}>Forgot password?</button>
+        <button type="button" disabled={resendLoading} onClick={resendVerificationEmail} style={{background:"none",border:"none",color:"#4f46e5",cursor:resendLoading?"default":"pointer",fontSize:"15px",padding:0,textDecoration:"underline",fontWeight:700}}>{resendLoading?"Sending verification email...":"Resend verification email"}</button>
+      </div>}
       {!posting && <div style={{marginTop:"28px",paddingTop:"22px",borderTop:"1px solid #eee",textAlign:"center"}}><p style={{color:"#667085",fontSize:"14px",marginBottom:"10px"}}>{claimMode?"Already have an account?":"Created a listing but haven't created your account yet?"}</p><button type="button" onClick={()=>{setClaimMode(!claimMode);setMessage("");setPassword("");}} style={{background:"none",border:"none",color:"#4f46e5",fontWeight:700,cursor:"pointer",fontSize:"15px",textDecoration:"underline"}}>{claimMode?"Back to Sign In":"Create an account to manage my listing"}</button></div>}
-      {message && <p style={{marginTop:"18px",color:message.startsWith("Your free account was created")||message.startsWith("Account created")||message.startsWith("Password reset")?"#166534":"#b91c1c",lineHeight:1.5}}>{message}</p>}
+      {message && <p style={{marginTop:"18px",color:message.startsWith("Your free account was created")||message.startsWith("Account created")||message.startsWith("Password reset")||message.startsWith("Verification email sent")?"#166534":"#b91c1c",lineHeight:1.5}}>{message}</p>}
     </div>
   </main>;
 }
