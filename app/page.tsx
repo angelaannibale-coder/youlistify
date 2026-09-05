@@ -205,6 +205,12 @@ function runSearch(e?:FormEvent){
   setShowServiceSuggestions(false);
   setShowLocationSuggestions(false);
   setSearched(true);
+  void supabase.from("search_events").insert({
+    search_term: service.trim().slice(0,200),
+    location_term: location.trim().slice(0,200),
+    remote_selected: remoteSearch,
+    result_count: filtered.length,
+  }).then(({error})=>{if(error)console.error("Search tracking error:",error);});
   setTimeout(()=>document.getElementById("results")?.scrollIntoView({behavior:"smooth"}),50);
 }
 
@@ -222,12 +228,15 @@ if (!emailPattern.test(contactEmail.trim())) {
 alert("Please enter a valid email address.");
 return;
 }
-const { error } = await supabase.functions.invoke("send-provider-message", { body: { providerId: selected.id, customerName: contactName, customerEmail: contactEmail, message: contactMessage } });
-if (error) {
-console.error(error);
+const messageData={provider_id:selected.id,sender_name:contactName.trim(),sender_email:contactEmail.trim(),message:contactMessage.trim()};
+const {error:saveError}=await supabase.from("provider_messages").insert(messageData);
+if(saveError){
+console.error(saveError);
 alert("Your message could not be sent. Please try again.");
 return;
 }
+const { error:emailError } = await supabase.functions.invoke("send-provider-message", { body: { providerId: selected.id, customerName: contactName.trim(), customerEmail: contactEmail.trim(), message: contactMessage.trim() } });
+if (emailError) console.error("Message saved, but email notification failed:",emailError);
 alert("Message sent!");
 setContactName("");
 setContactEmail("");
