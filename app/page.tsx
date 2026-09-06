@@ -188,9 +188,9 @@ useEffect(() => {
       const suggestions = Array.isArray(data.locations)
         ? data.locations.map((item: {city?: string; state?: string}) => [item.city, item.state].filter(Boolean).join(", ")).filter(Boolean)
         : [];
-      setCitySuggestions(suggestions);
+      if (suggestions.length > 0) setCitySuggestions(suggestions);
     } catch (error) {
-      if ((error as Error).name !== "AbortError") setCitySuggestions([]);
+      if ((error as Error).name === "AbortError") return;
     }
   }, 220);
   return () => {
