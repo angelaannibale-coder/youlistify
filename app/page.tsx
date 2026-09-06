@@ -316,7 +316,7 @@ return <main>
 <a className="brand header-logo" href="#top" aria-label="YouListify home">
 <span className="header-logo-word" aria-hidden="true"><span className="header-you">You</span><span className="header-listify"><span>L</span><span className="header-sun-i">ı<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="10"/><g><path d="M32 6v9M32 49v9M6 32h9M49 32h9M13.6 13.6l6.4 6.4M44 44l6.4 6.4M50.4 13.6L44 20M20 44l-6.4 6.4"/></g></svg></span><span>stify</span></span></span>
 <svg className="header-logo-mark" viewBox="0 0 520 112" aria-hidden="true">
-<path className="header-smile" d="M140 23Q275 119 410 23"/>
+<path className="header-smile" d="M140 23Q275 119 425 23"/>
 <path className="header-road" d="M275 67Q307 64 291 59Q259 53 275 47Q305 41 289 35Q262 29 292 23"/>
 </svg>
 </a>
