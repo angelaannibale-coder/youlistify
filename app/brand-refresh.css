@@ -177,8 +177,13 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     margin:0 auto;
   }
   .youlistify-brand-refresh .topbar .header-logo-word{
-    font-size:clamp(2.55rem,12vw,3.25rem);
+    font-size:clamp(2.8rem,13.2vw,3.55rem);
     line-height:1;
+  }
+  .youlistify-brand-refresh .topbar .header-sun-i svg{
+    width:1.75rem;
+    height:1.75rem;
+    top:-.58rem;
   }
   .youlistify-brand-refresh .topbar .header-logo-mark{
     left:0;
@@ -260,7 +265,7 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     height:104px;
   }
   .youlistify-brand-refresh .topbar .header-logo-word{
-    font-size:clamp(2.35rem,12vw,3rem);
+    font-size:clamp(2.58rem,13.2vw,3.3rem);
   }
   .youlistify-brand-refresh .topbar .header-logo-mark{
     height:67px;
