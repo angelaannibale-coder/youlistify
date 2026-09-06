@@ -647,3 +647,19 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     margin-bottom:50px;
   }
 }
+
+
+/* Center the YouListify brand above the two-column mobile footer. */
+@media(max-width:720px){
+  .youlistify-brand-refresh .site-footer .footer-brand{
+    text-align:center;
+  }
+  .youlistify-brand-refresh .site-footer .footer-brand .brand{
+    justify-content:center;
+    width:100%;
+  }
+  .youlistify-brand-refresh .site-footer .footer-brand p{
+    margin-left:auto;
+    margin-right:auto;
+  }
+}
