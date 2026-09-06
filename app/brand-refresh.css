@@ -359,3 +359,10 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     gap:9px;
   }
 }
+
+
+/* Let the page header scroll naturally with the page. */
+.youlistify-brand-refresh .topbar{
+  position:relative;
+  top:auto;
+}
