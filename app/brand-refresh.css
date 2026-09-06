@@ -596,3 +596,23 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     width:100%;
   }
 }
+
+
+/* Keep the Remote checkbox and its larger label on one horizontal line. */
+.youlistify-brand-refresh .search-card .remote-search-toggle{
+  display:flex!important;
+  flex-direction:row!important;
+  align-items:center!important;
+  justify-content:flex-start!important;
+  gap:10px!important;
+}
+.youlistify-brand-refresh .search-card .remote-search-toggle input{
+  width:21px;
+  height:21px;
+}
+.youlistify-brand-refresh .search-card .remote-search-toggle .remote-search-toggle-text{
+  flex:0 1 auto;
+  width:auto!important;
+  font-size:1rem!important;
+  white-space:nowrap!important;
+}
