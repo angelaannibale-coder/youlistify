@@ -168,9 +168,10 @@ const searchableProviders: Provider[] = dbProviders.length
 const providerLocationSuggestions = Array.from(new Set(searchableProviders.flatMap((p) => [p.city, p.zip_code ? `${p.city} ${p.zip_code}` : null]).filter(Boolean))) as string[];
 const locationSuggestions = Array.from(new Set([...citySuggestions, ...providerLocationSuggestions]));
 const normalizedLocation = location.trim().toLowerCase();
+const normalizedLocationSearch = normalizedLocation.replace(/[^a-z0-9]+/g, " ").trim();
 const remoteOptionMatches = !!normalizedLocation && "remote / online / phone".startsWith(normalizedLocation);
 const visibleLocationSuggestions = normalizedLocation && !normalizedLocation.startsWith("remote")
-  ? locationSuggestions.filter((loc)=>loc.toLowerCase().includes(normalizedLocation)).slice(0,10)
+  ? locationSuggestions.filter((loc)=>loc.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim().includes(normalizedLocationSearch)).slice(0,10)
   : [];
 
 useEffect(() => {
