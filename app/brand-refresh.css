@@ -461,3 +461,20 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     align-items:center;
   }
 }
+
+
+/* Give the provider identity panel a little more breathing room. */
+.youlistify-brand-refresh .provider-card-identity{
+  padding:15px 16px;
+}
+.youlistify-brand-refresh .provider-visual{
+  height:168px;
+}
+@media(max-width:720px){
+  .youlistify-brand-refresh .provider-card-identity{
+    padding:15px 14px;
+  }
+  .youlistify-brand-refresh .provider-visual{
+    height:160px;
+  }
+}
