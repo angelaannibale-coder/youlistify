@@ -76,6 +76,24 @@ const [suggestionEmail, setSuggestionEmail] = useState("");
 const [suggestionSent, setSuggestionSent] = useState(false);
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
+
+useEffect(() => {
+  const params = new URLSearchParams(window.location.search);
+  if (params.get("returnTo") !== "footer") return;
+
+  const previousRestoration = window.history.scrollRestoration;
+  window.history.scrollRestoration = "manual";
+  const scrollToFooter = () => document.getElementById("site-footer")?.scrollIntoView({ block: "start" });
+  const frame = window.requestAnimationFrame(() => window.requestAnimationFrame(scrollToFooter));
+  const timers = [250, 800, 1600].map((delay) => window.setTimeout(scrollToFooter, delay));
+
+  return () => {
+    window.cancelAnimationFrame(frame);
+    timers.forEach(window.clearTimeout);
+    window.history.scrollRestoration = previousRestoration;
+  };
+}, []);
+
 useEffect(() => {
 async function checkAuth() {
 const { data } = await supabase.auth.getUser();
