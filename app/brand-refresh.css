@@ -636,3 +636,14 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     max-height:230px!important;
   }
 }
+
+
+/* Match the clean white spacing below the purple mini-site panel to its spacing above. */
+.youlistify-brand-refresh .provider-cta{
+  margin-bottom:70px;
+}
+@media(max-width:720px){
+  .youlistify-brand-refresh .provider-cta{
+    margin-bottom:50px;
+  }
+}
