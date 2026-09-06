@@ -63,9 +63,15 @@ export async function GET(request: NextRequest) {
     if (query) {
       if (query.length < 2) return NextResponse.json({ locations: [] });
 
+      const stateQualifier = query.match(/^(.+?)(?:,\\s*|\\s+)([A-Za-z]{2})$/);
+      const qualifiedState = stateQualifier?.[2]?.toUpperCase() || "";
+      const geocodingQuery = stateQualifier && STATE_FIPS[qualifiedState]
+        ? `${stateQualifier[1].trim()}, ${qualifiedState}`
+        : query;
+
       const url = new URL("https://geocoding-api.open-meteo.com/v1/search");
-      url.searchParams.set("name", query);
-      url.searchParams.set("count", "25");
+      url.searchParams.set("name", geocodingQuery);
+      url.searchParams.set("count", "100");
       url.searchParams.set("language", "en");
       url.searchParams.set("format", "json");
       url.searchParams.set("countryCode", "US");
@@ -76,7 +82,7 @@ export async function GET(request: NextRequest) {
       const data = await response.json();
       const results = Array.isArray(data?.results) ? data.results : [];
       const seen = new Set<string>();
-      const locations: Array<{ city: string; state: string }> = [];
+      const locations: Array<{ city: string; state: string; population: number }> = [];
 
       for (const result of results) {
         if (result?.country_code !== "US") continue;
@@ -87,10 +93,12 @@ export async function GET(request: NextRequest) {
         const key = `${city.toLowerCase()}|${stateCode}`;
         if (seen.has(key)) continue;
         seen.add(key);
-        locations.push({ city, state: stateCode });
+        const population = typeof result?.population === "number" ? result.population : 0;
+        locations.push({ city, state: stateCode, population });
       }
 
-      return NextResponse.json({ locations: locations.slice(0, 12) });
+      locations.sort((a, b) => b.population - a.population || a.city.localeCompare(b.city));
+      return NextResponse.json({ locations: locations.slice(0, 20).map(({ city, state }) => ({ city, state })) });
     }
 
     const fips = STATE_FIPS[state];
