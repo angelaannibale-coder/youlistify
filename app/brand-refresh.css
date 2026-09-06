@@ -427,3 +427,37 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     height:48px;
   }
 }
+
+
+/* Place availability with the provider identity and remove the disconnected floating badge. */
+.youlistify-brand-refresh .provider-visual{
+  height:160px;
+}
+.youlistify-brand-refresh .provider-card-availability{
+  position:static!important;
+  display:inline-flex;
+  align-items:center;
+  width:max-content;
+  margin-top:8px;
+  padding:6px 10px;
+  border-radius:999px;
+  background:#eefbf6;
+  box-shadow:none;
+  color:#139465;
+  font-size:.76rem;
+  font-weight:900;
+  line-height:1;
+}
+.youlistify-brand-refresh .provider-card-availability .green-dot{
+  width:8px;
+  height:8px;
+  margin-right:6px;
+}
+@media(max-width:720px){
+  .youlistify-brand-refresh .provider-visual{
+    height:150px;
+  }
+  .youlistify-brand-refresh .provider-card-identity{
+    align-items:center;
+  }
+}
