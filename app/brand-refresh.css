@@ -616,3 +616,23 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
   font-size:1rem!important;
   white-space:nowrap!important;
 }
+
+
+/* Keep long city suggestion lists compact, scrollable, and above nearby content. */
+.youlistify-brand-refresh .hero-copy{
+  z-index:3;
+}
+.youlistify-brand-refresh .location-suggestions-menu{
+  overscroll-behavior:contain;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-gutter:stable;
+}
+.youlistify-brand-refresh .location-suggestions-menu button{
+  min-height:46px;
+  padding:10px 8px!important;
+}
+@media(max-width:720px){
+  .youlistify-brand-refresh .location-suggestions-menu{
+    max-height:230px!important;
+  }
+}
