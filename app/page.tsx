@@ -240,6 +240,7 @@ function selectRemoteLocation(){
 
 function runSearch(e?:FormEvent){
   e?.preventDefault();
+  if(document.activeElement instanceof HTMLElement)document.activeElement.blur();
   setShowServiceSuggestions(false);
   setShowLocationSuggestions(false);
   setSearched(true);
@@ -249,7 +250,7 @@ function runSearch(e?:FormEvent){
     remote_selected: remoteSearch,
     result_count: filtered.length,
   }).then(({error})=>{if(error)console.error("Search tracking error:",error);});
-  const alignResults=(behavior:ScrollBehavior)=>{const results=document.getElementById("results");if(!results)return;const headerHeight=document.querySelector<HTMLElement>(".topbar")?.getBoundingClientRect().height??0;const resultsTop=window.scrollY+results.getBoundingClientRect().top;window.scrollTo({top:Math.max(0,resultsTop-headerHeight),behavior});};setTimeout(()=>{alignResults("smooth");window.setTimeout(()=>alignResults("auto"),650);},420);
+  const resultsTarget=()=>{const results=document.getElementById("results");if(!results)return null;const headerHeight=document.querySelector<HTMLElement>(".topbar")?.getBoundingClientRect().height??0;return Math.max(0,window.scrollY+results.getBoundingClientRect().top-headerHeight);};setTimeout(()=>{const target=resultsTarget();if(target===null)return;window.scrollTo({top:target,behavior:"smooth"});window.setTimeout(()=>{const exactTarget=resultsTarget();if(exactTarget===null)return;const root=document.documentElement;const previousBehavior=root.style.scrollBehavior;root.style.scrollBehavior="auto";window.scrollTo(0,exactTarget);window.requestAnimationFrame(()=>{root.style.scrollBehavior=previousBehavior;});},700);},450);
 }
 
 async function sendProviderMessage() {
