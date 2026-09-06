@@ -560,3 +560,39 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     padding-top:16px;
   }
 }
+
+
+/* Keep the Remote search label visible beside its checkbox. */
+.youlistify-brand-refresh .search-card .remote-search-toggle{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:9px;
+  min-width:0;
+  color:var(--yl-ink);
+  font-weight:700;
+  white-space:nowrap;
+  cursor:pointer;
+}
+.youlistify-brand-refresh .search-card .remote-search-toggle input{
+  flex:0 0 auto;
+  width:19px;
+  height:19px;
+  margin:0;
+  accent-color:var(--yl-pink);
+}
+.youlistify-brand-refresh .search-card .remote-search-toggle .remote-search-toggle-text{
+  display:inline!important;
+  margin:0!important;
+  color:var(--yl-ink)!important;
+  font-size:.88rem!important;
+  font-weight:700!important;
+  line-height:1.2!important;
+  letter-spacing:0!important;
+  text-transform:none!important;
+}
+@media(max-width:720px){
+  .youlistify-brand-refresh .search-card .remote-search-toggle{
+    width:100%;
+  }
+}
