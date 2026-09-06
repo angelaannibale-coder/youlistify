@@ -247,21 +247,21 @@ setContactOpen(false);
 return <main>
 <header className="topbar">
 <a className="brand header-logo" href="#top" aria-label="YouListify home">
-<span className="header-logo-word"><span className="header-you">You</span><span className="header-listify">Listify</span></span>
-<svg className="header-logo-mark" viewBox="0 0 320 120" aria-hidden="true">
-<defs>
-<clipPath id="header-logo-inside"><path d="M28 0H292V47Q160 151 28 47Z"/></clipPath>
-</defs>
-<path className="header-smile" d="M28 47Q160 151 292 47"/>
-<g className="header-logo-sun">
-<path d="M160 43V25"/><path d="M137 49l-12-13"/><path d="M183 49l12-13"/><path d="M123 63l-17-5"/><path d="M197 63l17-5"/>
-<path className="sun-body" d="M137 76a23 23 0 0 1 46 0Z"/>
-</g>
-<path className="header-road" clipPath="url(#header-logo-inside)" d="M181 79C145 84 139 91 166 97C194 103 187 111 150 119"/>
+<span className="header-logo-word" aria-hidden="true"><span className="header-you">You</span><span className="header-listify"><span>L</span><span className="header-sun-i">ı<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="10"/><g><path d="M32 6v9M32 49v9M6 32h9M49 32h9M13.6 13.6l6.4 6.4M44 44l6.4 6.4M50.4 13.6L44 20M20 44l-6.4 6.4"/></g></svg></span><span>stify</span></span></span>
+<svg className="header-logo-mark" viewBox="0 0 520 112" aria-hidden="true">
+<path className="header-smile" d="M34 23Q260 119 486 23"/>
+<path className="header-road" d="M274 67C237 72 230 80 260 86C292 92 286 101 246 108"/>
 </svg>
 </a>
-<nav className="nav"><a href="#how">How it works</a><a href="#categories">Categories</a><a href="#results">Available now</a></nav>
-<div className="header-actions"><a className="list-link" href="/list-service">List your service</a>{isSignedIn ? (<><a className="sign-in" href="/dashboard">My Dashboard</a><button type="button" onClick={handleSignOut} style={{background:"none",border:"none",color:"#4f46e5",fontWeight:"600",cursor:"pointer"}}>Sign out</button></>) : (<a className="sign-in" href="/sign-in">Sign in</a>)}</div>
+<nav className="nav">
+<a href="#how">How it works</a><a href="#categories">Categories</a><a href="#results">Available now</a>
+{isSignedIn ? (<><a className="mobile-auth-link" href="/dashboard">Dashboard</a><button className="mobile-auth-link mobile-sign-out" type="button" onClick={handleSignOut}>Sign out</button></>) : (<a className="mobile-auth-link" href="/sign-in">Sign in</a>)}
+</nav>
+<div className="header-actions">
+<a className="work-nav-link" data-work-nav="true" href="/work">Jobs / Gigs / Tasks</a>
+<a className="list-link" href="/list-service">List Your Service</a>
+<span className="desktop-auth">{isSignedIn ? (<><a className="sign-in" href="/dashboard">My Dashboard</a><button type="button" onClick={handleSignOut}>Sign out</button></>) : (<a className="sign-in" href="/sign-in">Sign in</a>)}</span>
+</div>
 </header>
 
 <section className="hero" id="top">
