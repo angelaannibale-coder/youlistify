@@ -683,3 +683,16 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     text-align:center;
   }
 }
+
+
+/* Enlarge only the mobile header letters; keep the sun, curve and path unchanged. */
+@media(max-width:720px){
+  .youlistify-brand-refresh .topbar .header-logo-word{
+    font-size:clamp(3.64rem,17.16vw,4.615rem);
+  }
+}
+@media(max-width:430px){
+  .youlistify-brand-refresh .topbar .header-logo-word{
+    font-size:clamp(3.354rem,17.16vw,4.29rem);
+  }
+}
