@@ -696,3 +696,9 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     font-size:clamp(3.354rem,17.16vw,4.29rem);
   }
 }
+
+
+/* Fine-tune the sun over the enlarged first i. */
+.youlistify-brand-refresh .topbar .header-sun-i svg{
+  left:calc(50% + 4px);
+}
