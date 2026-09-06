@@ -663,3 +663,23 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     margin-right:auto;
   }
 }
+
+
+/* Keep the mobile footer wordmark truly centered, with its app icon just to the left. */
+@media(max-width:720px){
+  .youlistify-brand-refresh .site-footer .footer-brand .brand{
+    position:relative;
+    min-height:46px;
+    gap:0;
+  }
+  .youlistify-brand-refresh .site-footer .footer-brand .footer-logo-symbol{
+    position:absolute;
+    left:calc(50% - 116px);
+    top:50%;
+    transform:translateY(-50%);
+  }
+  .youlistify-brand-refresh .site-footer .footer-brand .brand-word{
+    margin:0 auto;
+    text-align:center;
+  }
+}
