@@ -42,6 +42,7 @@ function initialsFor(displayName: string) {
 export default function Home(){
   const [service,setService]=useState("");
   const [location,setLocation]=useState("");
+  const [citySuggestions,setCitySuggestions]=useState<string[]>([]);
   const [remoteSearch, setRemoteSearch] = useState(false);
   const [searched,setSearched]=useState(false);
   const [allServices, setAllServices] = useState<any[]>([]);
@@ -164,7 +165,38 @@ const searchableProviders: Provider[] = dbProviders.length
   })
   : providers;
 
-const locationSuggestions = Array.from(new Set(searchableProviders.flatMap((p) => [p.city, p.zip_code ? `${p.city} ${p.zip_code}` : null]).filter(Boolean))) as string[];
+const providerLocationSuggestions = Array.from(new Set(searchableProviders.flatMap((p) => [p.city, p.zip_code ? `${p.city} ${p.zip_code}` : null]).filter(Boolean))) as string[];
+const locationSuggestions = Array.from(new Set([...citySuggestions, ...providerLocationSuggestions]));
+const normalizedLocation = location.trim().toLowerCase();
+const remoteOptionMatches = !!normalizedLocation && "remote / online / phone".startsWith(normalizedLocation);
+const visibleLocationSuggestions = normalizedLocation && !normalizedLocation.startsWith("remote")
+  ? locationSuggestions.filter((loc)=>loc.toLowerCase().includes(normalizedLocation)).slice(0,10)
+  : [];
+
+useEffect(() => {
+  const query = location.trim();
+  if (query.length < 2 || query.toLowerCase().startsWith("remote")) {
+    setCitySuggestions([]);
+    return;
+  }
+  const controller = new AbortController();
+  const timer = window.setTimeout(async () => {
+    try {
+      const response = await fetch(`/api/cities?q=${encodeURIComponent(query)}`, { signal: controller.signal });
+      const data = await response.json();
+      const suggestions = Array.isArray(data.locations)
+        ? data.locations.map((item: {city?: string; state?: string}) => [item.city, item.state].filter(Boolean).join(", ")).filter(Boolean)
+        : [];
+      setCitySuggestions(suggestions);
+    } catch (error) {
+      if ((error as Error).name !== "AbortError") setCitySuggestions([]);
+    }
+  }, 220);
+  return () => {
+    window.clearTimeout(timer);
+    controller.abort();
+  };
+}, [location]);
 const wantsMobileService = queryRequestsMobile(service);
 const serviceSuggestionQuery = (wantsMobileService ? coreServiceQuery(service) : service).trim().toLowerCase();
 const serviceSuggestions = allServices.filter((item: any) => {
@@ -279,7 +311,7 @@ return <main>
 <label style={{ position: "relative" }} onBlur={(e)=>{if(!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget as Node)) setShowServiceSuggestions(false);}}><span>WHAT DO YOU NEED?</span><div className="input-shell"><b>⌕</b><input value={service} onChange={(e) => {setService(e.target.value);setShowServiceSuggestions(true);}} onFocus={() => {setShowServiceSuggestions(true);setShowLocationSuggestions(false);}} placeholder="Handyman, DJ, cleaner..." /></div>
 {showServiceSuggestions && service.trim() && serviceSuggestions.length>0 && (<div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:20,background:"white",border:"1px solid #e6e9f0",borderRadius:"14px",marginTop:"6px",maxHeight:"260px",overflowY:"auto",boxShadow:"0 12px 30px rgba(0,0,0,.12)"}}>{serviceSuggestions.map((item:any)=><button key={item.id} type="button" onPointerDown={(e)=>{e.preventDefault();setService(wantsMobileService?`mobile ${item.name}`:item.name);setShowServiceSuggestions(false);}} onClick={()=>{setService(wantsMobileService?`mobile ${item.name}`:item.name);setShowServiceSuggestions(false);}} style={{display:"block",width:"100%",textAlign:"left",padding:"11px 14px",border:0,background:"white",cursor:"pointer"}}>{wantsMobileService?`Mobile ${item.name}`:item.name}</button>)}</div>)}</label>
 <label style={{ position: "relative" }} onBlur={(e)=>{if(!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget as Node)) window.setTimeout(()=>setShowLocationSuggestions(false),600);}}><span>WHERE?</span><div className="input-shell" style={{ position: "relative" }}><b>✦</b><input value={location} onChange={(e)=>{const nextLocation=e.target.value;setLocation(nextLocation);setRemoteSearch(nextLocation.trim().toLowerCase().startsWith("remote"));setShowLocationSuggestions(true);}} onFocus={()=>{if(location.trim().toLowerCase().startsWith("remote")){setLocation("");setRemoteSearch(false);}setShowLocationSuggestions(true);setShowServiceSuggestions(false);}} placeholder="City, ZIP code, or Remote" /></div>
-{showLocationSuggestions && (<div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:20,background:"white",border:"1px solid #e6e9f0",borderRadius:"14px",marginTop:"6px",padding:"10px 14px",boxShadow:"0 12px 30px rgba(0,0,0,.12)"}}><button type="button" onPointerDown={(e)=>{e.preventDefault();selectRemoteLocation();}} onMouseDown={(e)=>{e.preventDefault();selectRemoteLocation();}} onTouchStart={()=>selectRemoteLocation()} onClick={selectRemoteLocation} style={{display:"block",width:"100%",textAlign:"left",padding:"10px 4px",border:0,background:"white",cursor:"pointer",fontWeight:700}}>Remote / Online / Phone</button>{location.trim() && location!=="Remote / Online / Phone" && locationSuggestions.filter((loc)=>loc.toLowerCase().includes(location.trim().toLowerCase())).slice(0,8).map((loc)=><button key={loc} type="button" onPointerDown={(e)=>{e.preventDefault();setLocation(loc);setRemoteSearch(false);setShowLocationSuggestions(false);}} onClick={()=>{setLocation(loc);setRemoteSearch(false);setShowLocationSuggestions(false);}} style={{display:"block",width:"100%",textAlign:"left",padding:"10px 4px",border:0,background:"white",cursor:"pointer"}}>{loc}</button>)}</div>)}</label>
+{showLocationSuggestions && location.trim() && (remoteOptionMatches || visibleLocationSuggestions.length>0) && (<div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:20,background:"white",border:"1px solid #e6e9f0",borderRadius:"14px",marginTop:"6px",padding:"10px 14px",boxShadow:"0 12px 30px rgba(0,0,0,.12)"}}>{remoteOptionMatches && <button type="button" onPointerDown={(e)=>{e.preventDefault();selectRemoteLocation();}} onMouseDown={(e)=>{e.preventDefault();selectRemoteLocation();}} onTouchStart={()=>selectRemoteLocation()} onClick={selectRemoteLocation} style={{display:"block",width:"100%",textAlign:"left",padding:"10px 4px",border:0,background:"white",cursor:"pointer",fontWeight:700}}>Remote / Online / Phone</button>}{visibleLocationSuggestions.map((loc)=><button key={loc} type="button" onPointerDown={(e)=>{e.preventDefault();setLocation(loc);setRemoteSearch(false);setShowLocationSuggestions(false);}} onClick={()=>{setLocation(loc);setRemoteSearch(false);setShowLocationSuggestions(false);}} style={{display:"block",width:"100%",textAlign:"left",padding:"10px 4px",border:0,background:"white",cursor:"pointer"}}>{loc}</button>)}</div>)}</label>
 <label className="remote-search-toggle"><input type="checkbox" checked={remoteSearch} onChange={(e)=>{const checked=e.target.checked;setRemoteSearch(checked);if(checked){setLocation("Remote / Online / Phone");setShowLocationSuggestions(false);}else if(location.trim().toLowerCase().startsWith("remote")){setLocation("");}}} /><span className="remote-search-toggle-text">Remote / Online / Phone</span></label>
 <button type="submit" className="search-btn">Search now</button>
 </form>
