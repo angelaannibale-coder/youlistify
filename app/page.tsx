@@ -247,9 +247,9 @@ setContactOpen(false);
 return <main>
 <header className="topbar">
 <a className="brand header-logo" href="#top" aria-label="YouListify home">
-<span className="header-logo-word" aria-hidden="true"><span className="header-you">You</span><span className="header-listify"><span>L</span><span className="header-sun-i">ı<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="10"/><g><path d="M32 6v9M32 49v9M6 32h9M49 32h9M13.6 13.6l6.4 6.4M44 44l6.4 6.4M50.4 13.6L44 20M20 44l-6.4 6.4"/></g></svg></span><span>stify</span></span></span>
+<span className="header-logo-word" aria-hidden="true"><span className="header-you">You</span><span className="header-listify"><span>L</span><span className="header-sun-i">i<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="10"/><g><path d="M32 6v9M32 49v9M6 32h9M49 32h9M13.6 13.6l6.4 6.4M44 44l6.4 6.4M50.4 13.6L44 20M20 44l-6.4 6.4"/></g></svg></span><span>stify</span></span></span>
 <svg className="header-logo-mark" viewBox="0 0 520 112" aria-hidden="true">
-<path className="header-smile" d="M34 23Q260 119 486 23"/>
+<path className="header-smile" d="M125 23Q260 119 395 23"/>
 <path className="header-road" d="M274 67C237 72 230 80 260 86C292 92 286 101 246 108"/>
 </svg>
 </a>
