@@ -249,7 +249,7 @@ function runSearch(e?:FormEvent){
     remote_selected: remoteSearch,
     result_count: filtered.length,
   }).then(({error})=>{if(error)console.error("Search tracking error:",error);});
-  setTimeout(()=>{const results=document.getElementById("results");if(!results)return;const headerHeight=document.querySelector<HTMLElement>(".topbar")?.getBoundingClientRect().height??0;const resultsTop=window.scrollY+results.getBoundingClientRect().top;window.scrollTo({top:Math.max(0,resultsTop-headerHeight),behavior:"smooth"});},420);
+  const alignResults=(behavior:ScrollBehavior)=>{const results=document.getElementById("results");if(!results)return;const headerHeight=document.querySelector<HTMLElement>(".topbar")?.getBoundingClientRect().height??0;const resultsTop=window.scrollY+results.getBoundingClientRect().top;window.scrollTo({top:Math.max(0,resultsTop-headerHeight),behavior});};setTimeout(()=>{alignResults("smooth");window.setTimeout(()=>alignResults("auto"),650);},420);
 }
 
 async function sendProviderMessage() {
