@@ -674,7 +674,7 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
   }
   .youlistify-brand-refresh .site-footer .footer-brand .footer-logo-symbol{
     position:absolute;
-    left:calc(50% - 116px);
+    left:0;
     top:50%;
     transform:translateY(-50%);
   }
