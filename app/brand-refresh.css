@@ -361,8 +361,8 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
 }
 
 
-/* Let the complete homepage banner scroll naturally with the page. */
+/* Keep the complete homepage banner visible as the page scrolls. */
 .youlistify-brand-refresh .topbar{
-  position:static!important;
-  top:auto!important;
+  position:sticky!important;
+  top:0!important;
 }
