@@ -115,10 +115,10 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
 .youlistify-brand-refresh .topbar .header-sun-i svg{
   position:absolute;
   z-index:4;
-  width:.72em;
-  height:.72em;
+  width:.60em;
+  height:.60em;
   left:50%;
-  top:-.42em;
+  top:-.20em;
   transform:translateX(-50%);
   overflow:visible;
   fill:#ffc33d;
