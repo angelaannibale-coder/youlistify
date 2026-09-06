@@ -478,3 +478,10 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     height:160px;
   }
 }
+
+
+/* Center the identity panel within the colored provider header. */
+.youlistify-brand-refresh .provider-visual{
+  align-items:center;
+  justify-content:center;
+}
