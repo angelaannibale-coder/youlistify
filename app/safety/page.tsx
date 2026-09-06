@@ -71,7 +71,7 @@ export default function SafetyPage() {
           <span className="safety-logo">Y</span>
           <span>YouListify</span>
         </a>
-        <a className="safety-home" href="/#site-footer">Back to Home</a>
+        <a className="safety-home" href="/?returnTo=footer#site-footer">Back to Home</a>
       </header>
 
       <section className="safety-hero">
