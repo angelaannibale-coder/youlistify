@@ -279,3 +279,83 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     font-size:clamp(9px,2.65vw,12px)!important;
   }
 }
+
+
+/* Desktop-only header balance; mobile action buttons intentionally unchanged. */
+@media(min-width:721px){
+  .youlistify-brand-refresh .topbar{
+    grid-template-columns:310px minmax(300px,1fr) auto;
+    column-gap:24px;
+    min-height:104px;
+    height:104px;
+    padding-left:4vw;
+    padding-right:4vw;
+  }
+  .youlistify-brand-refresh .topbar .header-logo{
+    justify-self:start;
+    width:292px;
+    height:98px;
+    padding-top:10px;
+  }
+  .youlistify-brand-refresh .topbar .header-logo-word{
+    font-size:2.55rem;
+  }
+  .youlistify-brand-refresh .topbar .header-logo-mark{
+    height:76px;
+    bottom:2px;
+  }
+  .youlistify-brand-refresh .topbar .nav{
+    justify-content:center;
+    gap:26px;
+    font-size:.94rem;
+  }
+  .youlistify-brand-refresh .topbar .header-actions{
+    gap:12px;
+    white-space:nowrap;
+  }
+  .youlistify-brand-refresh .topbar .header-actions .work-nav-link{
+    min-height:44px;
+    padding:0 15px;
+  }
+  .youlistify-brand-refresh .topbar .header-actions .list-link{
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+    white-space:nowrap;
+  }
+  .youlistify-brand-refresh .topbar .desktop-auth{
+    gap:10px;
+    white-space:nowrap;
+  }
+  .youlistify-brand-refresh .topbar .desktop-auth .sign-in{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    min-width:90px;
+    min-height:48px;
+    padding:0 18px;
+    white-space:nowrap;
+  }
+}
+
+@media(min-width:721px) and (max-width:1120px){
+  .youlistify-brand-refresh .topbar{
+    grid-template-columns:260px 1fr auto;
+    column-gap:16px;
+    padding-left:24px;
+    padding-right:24px;
+  }
+  .youlistify-brand-refresh .topbar .header-logo{
+    width:252px;
+  }
+  .youlistify-brand-refresh .topbar .header-logo-word{
+    font-size:2.2rem;
+  }
+  .youlistify-brand-refresh .topbar .nav{
+    gap:16px;
+    font-size:.86rem;
+  }
+  .youlistify-brand-refresh .topbar .header-actions{
+    gap:9px;
+  }
+}
