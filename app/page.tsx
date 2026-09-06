@@ -250,7 +250,7 @@ return <main>
 <span className="header-logo-word" aria-hidden="true"><span className="header-you">You</span><span className="header-listify"><span>L</span><span className="header-sun-i">i<svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="10"/><g><path d="M32 6v9M32 49v9M6 32h9M49 32h9M13.6 13.6l6.4 6.4M44 44l6.4 6.4M50.4 13.6L44 20M20 44l-6.4 6.4"/></g></svg></span><span>stify</span></span></span>
 <svg className="header-logo-mark" viewBox="0 0 520 112" aria-hidden="true">
 <path className="header-smile" d="M125 23Q260 119 395 23"/>
-<path className="header-road" d="M260 72C289 66 289 59 259 56C230 53 235 46 272 41"/>
+<path className="header-road" d="M260 72C289 66 289 59 259 56C230 53 238 45 276 43C326 41 365 34 395 23"/>
 </svg>
 </a>
 <nav className="nav">
