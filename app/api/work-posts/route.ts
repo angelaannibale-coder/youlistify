@@ -40,7 +40,7 @@ export async function GET(req: NextRequest) {
       .eq("status", "active")
       .order("created_at", { ascending: false })
       .limit(1000);
-    if (error) return NextResponse.json({ error: "Could not load posts", diagnostic: { code: error.code, message: error.message } }, { status: 500 });
+    if (error) return NextResponse.json({ error: "Could not load posts" }, { status: 500 });
     return NextResponse.json({ posts: (data || []).map(sanitizePost) });
   } catch {
     return NextResponse.json({ error: "Unexpected server error" }, { status: 500 });
