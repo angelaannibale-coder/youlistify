@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import "./globals.css";
 import "./categories-polish.css";
 import "./home-card-tilt.css";
@@ -83,6 +84,16 @@ export default function RootLayout({ children }: Readonly<{children:React.ReactN
   return (
     <html lang="en">
       <body className="youlistify-brand-refresh">
+        <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-0JTPD4HSQE"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-0JTPD4HSQE');`}
+        </Script>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(siteStructuredData).replace(/</g, "\\u003c") }}
