@@ -11,19 +11,19 @@ const listFields = "id,created_at,post_type,title,description,category,city,stat
 export async function GET(req: NextRequest) {
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-    if (!supabaseUrl || !anonKey) {
+    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !serviceRoleKey) {
       return NextResponse.json({ error: "Server configuration incomplete" }, { status: 500 });
     }
 
-    const publicClient = createClient(supabaseUrl, anonKey, {
+    const admin = createClient(supabaseUrl, serviceRoleKey, {
       auth: { persistSession: false, autoRefreshToken: false }
     });
     const id = req.nextUrl.searchParams.get("id");
 
     if (id) {
       if (!/^\d+$/.test(id)) return NextResponse.json({ error: "Invalid post" }, { status: 400 });
-      const { data, error } = await publicClient
+      const { data, error } = await admin
         .from("work_posts")
         .select(publicFields)
         .eq("status", "active")
@@ -34,7 +34,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ post: sanitizePost(data) });
     }
 
-    const { data, error } = await publicClient
+    const { data, error } = await admin
       .from("work_posts")
       .select(listFields)
       .eq("status", "active")
