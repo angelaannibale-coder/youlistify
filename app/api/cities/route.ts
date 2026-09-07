@@ -30,28 +30,26 @@ function cleanPlaceName(value: string) {
 }
 
 async function lookupZipFallback(zip: string) {
-  const url = new URL("https://nominatim.openstreetmap.org/search");
-  url.searchParams.set("postalcode", zip);
-  url.searchParams.set("country", "United States");
-  url.searchParams.set("format", "jsonv2");
-  url.searchParams.set("addressdetails", "1");
-  url.searchParams.set("limit", "5");
+  const url = new URL("https://geocoding-api.open-meteo.com/v1/search");
+  url.searchParams.set("name", zip);
+  url.searchParams.set("count", "20");
+  url.searchParams.set("language", "en");
+  url.searchParams.set("format", "json");
+  url.searchParams.set("countryCode", "US");
 
   const response = await fetch(url.toString(), {
-    headers: { "User-Agent": "YouListify/1.0 (https://youlistify.com)" },
     next: { revalidate: 604800 }
   });
   if (!response.ok) return [];
 
-  const results = await response.json();
-  if (!Array.isArray(results)) return [];
+  const data = await response.json();
+  const results = Array.isArray(data?.results) ? data.results : [];
   const seen = new Set<string>();
   return results.flatMap((result: Record<string, any>) => {
-    const address = result?.address || {};
-    const city = address.city || address.town || address.village || address.municipality || address.hamlet;
-    const state = typeof address["ISO3166-2-lvl4"] === "string"
-      ? address["ISO3166-2-lvl4"].replace("US-", "")
-      : STATE_NAMES[address.state] || "";
+    const postcodes = Array.isArray(result?.postcodes) ? result.postcodes : [];
+    if (!postcodes.includes(zip)) return [];
+    const city = typeof result?.name === "string" ? result.name.trim() : "";
+    const state = STATE_NAMES[result?.admin1] || "";
     const key = `${city || ""}|${state}`;
     if (!city || !state || seen.has(key)) return [];
     seen.add(key);
