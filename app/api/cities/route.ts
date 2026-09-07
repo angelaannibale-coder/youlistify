@@ -29,6 +29,36 @@ function cleanPlaceName(value: string) {
     .trim();
 }
 
+async function lookupZipFallback(zip: string) {
+  const url = new URL("https://nominatim.openstreetmap.org/search");
+  url.searchParams.set("postalcode", zip);
+  url.searchParams.set("country", "United States");
+  url.searchParams.set("format", "jsonv2");
+  url.searchParams.set("addressdetails", "1");
+  url.searchParams.set("limit", "5");
+
+  const response = await fetch(url.toString(), {
+    headers: { "User-Agent": "YouListify/1.0 (https://youlistify.com)" },
+    next: { revalidate: 604800 }
+  });
+  if (!response.ok) return [];
+
+  const results = await response.json();
+  if (!Array.isArray(results)) return [];
+  const seen = new Set<string>();
+  return results.flatMap((result: Record<string, any>) => {
+    const address = result?.address || {};
+    const city = address.city || address.town || address.village || address.municipality || address.hamlet;
+    const state = typeof address["ISO3166-2-lvl4"] === "string"
+      ? address["ISO3166-2-lvl4"].replace("US-", "")
+      : STATE_NAMES[address.state] || "";
+    const key = `${city || ""}|${state}`;
+    if (!city || !state || seen.has(key)) return [];
+    seen.add(key);
+    return [{ city, state }];
+  });
+}
+
 export async function GET(request: NextRequest) {
   const query = (request.nextUrl.searchParams.get("q") || "").trim();
   const state = (request.nextUrl.searchParams.get("state") || "").toUpperCase();
@@ -43,19 +73,19 @@ export async function GET(request: NextRequest) {
       const response = await fetch(`https://api.zippopotam.us/us/${zip}`, {
         next: { revalidate: 86400 }
       });
-      if (response.status === 404) {
-        return NextResponse.json({ valid: false, locations: [] });
+      let locations: Array<{ city: string; state: string }> = [];
+      if (response.ok) {
+        const data = await response.json();
+        const places = Array.isArray(data?.places) ? data.places : [];
+        locations = places
+          .map((place: Record<string, unknown>) => ({
+            city: typeof place["place name"] === "string" ? place["place name"] : "",
+            state: typeof place["state abbreviation"] === "string" ? place["state abbreviation"] : ""
+          }))
+          .filter((location: { city: string; state: string }) => location.city && location.state);
       }
-      if (!response.ok) throw new Error(`ZIP lookup failed: ${response.status}`);
 
-      const data = await response.json();
-      const places = Array.isArray(data?.places) ? data.places : [];
-      const locations = places
-        .map((place: Record<string, unknown>) => ({
-          city: typeof place["place name"] === "string" ? place["place name"] : "",
-          state: typeof place["state abbreviation"] === "string" ? place["state abbreviation"] : ""
-        }))
-        .filter((location: { city: string; state: string }) => location.city && location.state);
+      if (locations.length === 0) locations = await lookupZipFallback(zip);
 
       return NextResponse.json({ valid: locations.length > 0, locations });
     }
