@@ -46,8 +46,6 @@ async function lookupZipFallback(zip: string) {
   const results = Array.isArray(data?.results) ? data.results : [];
   const seen = new Set<string>();
   return results.flatMap((result: Record<string, any>) => {
-    const postcodes = Array.isArray(result?.postcodes) ? result.postcodes : [];
-    if (!postcodes.includes(zip)) return [];
     const city = typeof result?.name === "string" ? result.name.trim() : "";
     const state = STATE_NAMES[result?.admin1] || "";
     const key = `${city || ""}|${state}`;
