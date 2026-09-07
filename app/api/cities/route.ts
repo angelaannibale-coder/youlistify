@@ -62,26 +62,11 @@ export async function GET(request: NextRequest) {
 
   try {
     if (zip) {
-      if (!/^\\d{5}$/.test(zip)) {
+      if (!/^\d{5}$/.test(zip)) {
         return NextResponse.json({ valid: false, locations: [] });
       }
 
-      const response = await fetch(`https://api.zippopotam.us/us/${zip}`, {
-        next: { revalidate: 86400 }
-      });
-      let locations: Array<{ city: string; state: string }> = [];
-      if (response.ok) {
-        const data = await response.json();
-        const places = Array.isArray(data?.places) ? data.places : [];
-        locations = places
-          .map((place: Record<string, unknown>) => ({
-            city: typeof place["place name"] === "string" ? place["place name"] : "",
-            state: typeof place["state abbreviation"] === "string" ? place["state abbreviation"] : ""
-          }))
-          .filter((location: { city: string; state: string }) => location.city && location.state);
-      }
-
-      if (locations.length === 0) locations = await lookupZipFallback(zip);
+      const locations = await lookupZipFallback(zip);
 
       return NextResponse.json({ valid: locations.length > 0, locations });
     }
@@ -89,7 +74,7 @@ export async function GET(request: NextRequest) {
     if (query) {
       if (query.length < 2) return NextResponse.json({ locations: [] });
 
-      const stateQualifier = query.match(/^(.+?)(?:,\\s*|\\s+)([A-Za-z]{2})$/);
+      const stateQualifier = query.match(/^(.+?)(?:,\s*|\s+)([A-Za-z]{2})$/);
       const qualifiedState = stateQualifier?.[2]?.toUpperCase() || "";
       const geocodingQuery = stateQualifier && STATE_FIPS[qualifiedState]
         ? `${stateQualifier[1].trim()}, ${qualifiedState}`
