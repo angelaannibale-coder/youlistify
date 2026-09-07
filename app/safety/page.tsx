@@ -2,8 +2,15 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Safety & Resources | YouListify",
-  description:
-    "Practical safety tips and resources for customers and service providers using YouListify.",
+  description: "Practical safety tips and resources for customers and service providers using YouListify.",
+  alternates: { canonical: "/safety" },
+  openGraph: {
+    title: "Safety & Resources | YouListify",
+    description: "Practical safety tips and resources for customers and service providers using YouListify.",
+    url: "/safety",
+    siteName: "YouListify",
+    type: "website"
+  }
 };
 
 const tips = [

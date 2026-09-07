@@ -1,4 +1,10 @@
 User-agent: *
 Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /sign-in
+Disallow: /reset-password
+Disallow: /sample-provider
 
 Sitemap: https://youlistify.com/sitemap.xml
+Host: https://youlistify.com

@@ -4,6 +4,14 @@ import LegalReturnLink from "../LegalReturnLink";
 export const metadata: Metadata = {
   title: "Privacy Policy | YouListify",
   description: "How YouListify collects, uses, and protects information.",
+  alternates: { canonical: "/privacy" },
+  openGraph: {
+    title: "Privacy Policy | YouListify",
+    description: "How YouListify collects, uses, and protects information.",
+    url: "/privacy",
+    siteName: "YouListify",
+    type: "website"
+  }
 };
 
 export default function PrivacyPage() {
