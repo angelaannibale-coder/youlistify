@@ -202,9 +202,7 @@ useEffect(() => {
   const timer = window.setTimeout(async () => {
     try {
       const isZipCode = /^\d{5}$/.test(query);
-      const endpoint = isZipCode
-        ? `/api/cities?zip=${encodeURIComponent(query)}`
-        : `/api/cities?q=${encodeURIComponent(query)}`;
+      const endpoint = `/api/cities?q=${encodeURIComponent(query)}`;
       const response = await fetch(endpoint, { signal: controller.signal });
       const data = await response.json();
       const suggestions = Array.isArray(data.locations)
