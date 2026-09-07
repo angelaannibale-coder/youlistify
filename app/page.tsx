@@ -201,12 +201,19 @@ useEffect(() => {
   const controller = new AbortController();
   const timer = window.setTimeout(async () => {
     try {
-      const response = await fetch(`/api/cities?q=${encodeURIComponent(query)}`, { signal: controller.signal });
+      const isZipCode = /^\d{5}$/.test(query);
+      const endpoint = isZipCode
+        ? `/api/cities?zip=${encodeURIComponent(query)}`
+        : `/api/cities?q=${encodeURIComponent(query)}`;
+      const response = await fetch(endpoint, { signal: controller.signal });
       const data = await response.json();
       const suggestions = Array.isArray(data.locations)
-        ? data.locations.map((item: {city?: string; state?: string}) => [item.city, item.state].filter(Boolean).join(", ")).filter(Boolean)
+        ? data.locations.map((item: {city?: string; state?: string}) => {
+            const cityAndState = [item.city, item.state].filter(Boolean).join(", ");
+            return cityAndState && isZipCode ? `${cityAndState} ${query}` : cityAndState;
+          }).filter(Boolean)
         : [];
-      if (suggestions.length > 0) setCitySuggestions(suggestions);
+      setCitySuggestions(suggestions);
     } catch (error) {
       if ((error as Error).name === "AbortError") return;
     }
