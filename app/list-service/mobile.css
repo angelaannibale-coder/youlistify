@@ -83,6 +83,11 @@
     font-size: 16px !important;
   }
 
+  main.list-service-page .edit-sign-out {
+    width: auto !important;
+    justify-self: end !important;
+  }
+
   main:has(form) input[type="checkbox"] {
     width: 24px !important;
     min-width: 24px !important;
