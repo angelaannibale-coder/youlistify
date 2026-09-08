@@ -11,8 +11,16 @@ provider_services (services (name))
 
 export async function GET(req: NextRequest) {
   try {
-    if (process.env.VERCEL_ENV === "preview" && !req.nextUrl.searchParams.get("id")) {
-      const productionResponse = await fetch("https://youlistify.com/api/providers", { cache: "no-store" });
+    const previewProviderId = req.nextUrl.searchParams.get("id");
+    if (process.env.VERCEL_ENV === "preview") {
+      const productionUrl = previewProviderId
+        ? `https://youlistify.com/api/providers?id=${encodeURIComponent(previewProviderId)}`
+        : "https://youlistify.com/api/providers";
+      const authorization = req.headers.get("authorization");
+      const productionResponse = await fetch(productionUrl, {
+        cache: "no-store",
+        headers: authorization ? { Authorization: authorization } : undefined
+      });
       if (productionResponse.ok) return NextResponse.json(await productionResponse.json());
     }
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
