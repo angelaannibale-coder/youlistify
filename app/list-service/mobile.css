@@ -88,6 +88,15 @@
     justify-self: end !important;
   }
 
+  main.list-service-page .photo-remove-button {
+    width: auto !important;
+    min-width: 0 !important;
+    max-width: fit-content !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+
   main:has(form) input[type="checkbox"] {
     width: 24px !important;
     min-width: 24px !important;
