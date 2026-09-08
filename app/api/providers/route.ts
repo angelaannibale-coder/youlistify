@@ -11,8 +11,16 @@ provider_services (services (name))
 
 export async function GET(req: NextRequest) {
   try {
-    if (process.env.VERCEL_ENV === "preview" && !req.nextUrl.searchParams.get("id")) {
-      const productionResponse = await fetch("https://youlistify.com/api/providers", { cache: "no-store" });
+    const previewProviderId = req.nextUrl.searchParams.get("id");
+    if (process.env.VERCEL_ENV === "preview") {
+      const productionUrl = previewProviderId
+        ? `https://youlistify.com/api/providers?id=${encodeURIComponent(previewProviderId)}`
+        : "https://youlistify.com/api/providers";
+      const authorization = req.headers.get("authorization");
+      const productionResponse = await fetch(productionUrl, {
+        cache: "no-store",
+        headers: authorization ? { Authorization: authorization } : undefined
+      });
       if (productionResponse.ok) return NextResponse.json(await productionResponse.json());
     }
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -27,14 +35,9 @@ export async function GET(req: NextRequest) {
     });
     const id = req.nextUrl.searchParams.get("id");
 
-    let query = admin
-      .from("Providers")
-      .select(publicFields)
-      .eq("profile_active", true);
-
     if (id) {
       if (!/^\d+$/.test(id)) return NextResponse.json({ error: "Invalid provider" }, { status: 400 });
-      const { data, error } = await query.eq("id", id).maybeSingle();
+      const { data, error } = await admin.from("Providers").select(publicFields).eq("id", id).maybeSingle();
       if (error) return NextResponse.json({ error: "Could not load provider" }, { status: 500 });
       if (!data) return NextResponse.json({ error: "Provider not found" }, { status: 404 });
       let isOwner = false;
@@ -45,10 +48,15 @@ export async function GET(req: NextRequest) {
         const { data: { user } } = await authClient.auth.getUser(token);
         isOwner = Boolean(user && data.user_id === user.id);
       }
+      if (!data.profile_active && !isOwner) return NextResponse.json({ error: "Provider not found" }, { status: 404 });
       return NextResponse.json({ provider: sanitizeProvider(data), isOwner });
     }
 
-    const { data, error } = await query.order("created_at", { ascending: false }).limit(1000);
+    const { data, error } = await admin
+      .from("Providers")
+      .select(publicFields)
+      .eq("profile_active", true)
+      .order("created_at", { ascending: false }).limit(1000);
     if (error) return NextResponse.json({ error: "Could not load providers" }, { status: 500 });
     return NextResponse.json({ providers: (data || []).map(sanitizeProvider) });
   } catch {

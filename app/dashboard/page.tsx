@@ -5,7 +5,7 @@ import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
-type Provider = {id:number;name:string|null;last_name:string|null;business_name:string|null;email:string|null;phone:string|null;city:string|null;state:string|null;bio:string|null;name_display?:string|null;user_id:string|null;};
+type Provider = {id:number;name:string|null;last_name:string|null;business_name:string|null;email:string|null;phone:string|null;city:string|null;state:string|null;bio:string|null;name_display?:string|null;user_id:string|null;profile_active?:boolean|null;};
 type WorkPost = {id:number;post_type:string;title:string;category:string|null;status:string;created_at:string;};
 type WorkMessage = {id:number;work_post_id:number;sender_name:string;sender_email:string;message:string;created_at:string;};
 type ProviderMessage = {id:string;provider_id:number;sender_name:string;sender_email:string;message:string;created_at:string;};
@@ -18,6 +18,10 @@ export default function DashboardPage() {
   const [loading,setLoading]=useState(true);
   const [message,setMessage]=useState("");
   const [userEmail,setUserEmail]=useState("");
+
+  function providerSlug(provider:Provider){return `${(provider.name||"provider").toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-|-$/g,"")}-${provider.id}`;}
+
+  async function ensureProviderActive(providerId:number){await supabase.from("Providers").update({profile_active:true}).eq("id",providerId);}
 
   async function loadProviderMessages(providerId:number){
     const {data,error}=await supabase.from("provider_messages").select("id,provider_id,sender_name,sender_email,message,created_at").eq("provider_id",providerId).order("created_at",{ascending:false});
@@ -39,14 +43,14 @@ export default function DashboardPage() {
       if(!messagesError)setMessages((workMessages||[]) as WorkMessage[]);
     }
 
-    const selectFields="id,name,last_name,business_name,email,phone,city,state,bio,name_display,user_id";
+    const selectFields="id,name,last_name,business_name,email,phone,city,state,bio,name_display,user_id,profile_active";
     const {data:owned}=await supabase.from("Providers").select(selectFields).eq("user_id",session.user.id).maybeSingle();
-    if(owned){setProvider(owned as Provider);await loadProviderMessages((owned as Provider).id);setLoading(false);return;}
+    if(owned){const ownedProvider={...(owned as Provider),profile_active:true};if((owned as Provider).profile_active!==true)await ensureProviderActive((owned as Provider).id);setProvider(ownedProvider);await loadProviderMessages(ownedProvider.id);setLoading(false);return;}
 
     try{
       const response=await fetch("/api/claim-listing",{method:"POST",headers:{Authorization:`Bearer ${session.access_token}`}});
       const result=await response.json();
-      if(response.ok&&result.provider){setProvider(result.provider as Provider);await loadProviderMessages((result.provider as Provider).id);setLoading(false);return;}
+      if(response.ok&&result.provider){const claimedProvider={...(result.provider as Provider),profile_active:true};await ensureProviderActive(claimedProvider.id);setProvider(claimedProvider);await loadProviderMessages(claimedProvider.id);setLoading(false);return;}
       if(response.status===409){setMessage("We found more than one unclaimed listing using this email. Please contact YouListify support so we can safely connect the correct listing.");}
       else if(ownedPosts.length===0){setMessage("You don’t have a service listing yet. You can create one anytime, or use this account just for Jobs, Gigs & Tasks.");}
     }catch{}
@@ -67,7 +71,7 @@ export default function DashboardPage() {
     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",gap:20,flexWrap:"wrap",marginBottom:28}}><div><div style={{color:"#5b4cf0",fontWeight:700,marginBottom:8}}>YOULISTIFY ACCOUNT</div><h1 style={{fontSize:40,margin:0,color:"#182033"}}>My Dashboard</h1><div style={{color:"#667085",marginTop:8}}>{userEmail}</div></div><div style={{display:"flex",gap:10,flexWrap:"wrap"}}>{!provider&&hasPosts&&<a href="/post-work" style={primary}>Post a Job / Gig / Task</a>}{provider&&<a href="/dashboard/edit" style={primary}>Edit My Listing</a>}{provider&&<a href="/work" style={secondary}>View Job Posts</a>}{!provider&&hasPosts&&<a href="/list-service" style={secondary}>List My Services</a>}{!provider&&!hasPosts&&<><a href="/list-service" style={primary}>List My Service</a><a href="/post-work" style={primary}>Post a Job / Gig / Task</a></>}</div></div>
     {message&&<div style={{padding:18,borderRadius:12,background:"#fff7ed",marginBottom:24,lineHeight:1.5}}>{message}</div>}
 
-    {provider&&<section style={{marginBottom:34}}><h2 style={{color:"#182033"}}>My Service Listing</h2><p style={{color:"#667085"}}>Manage the service listing connected to this account.</p><div style={{display:"grid",gap:16,gridTemplateColumns:"repeat(auto-fit, minmax(220px, 1fr))"}}><div style={card}><strong>Listing name</strong><div style={muted}>{provider.business_name||provider.name||"Not added"}</div></div><div style={card}><strong>Location</strong><div style={muted}>{[provider.city,provider.state].filter(Boolean).join(", ")||"Not added"}</div></div><div style={card}><strong>Email</strong><div style={muted}>{provider.email||"Not added"}</div></div><div style={card}><strong>Phone</strong><div style={muted}>{provider.phone||"Not added"}</div></div></div><div style={{display:"flex",gap:10,flexWrap:"wrap",marginTop:16}}><a href="/dashboard/edit" style={secondary}>Edit Listing</a><a href={`/provider/${provider.id}`} style={secondary}>View Listing</a></div></section>}
+    {provider&&<section style={{marginBottom:34}}><h2 style={{color:"#182033"}}>My Service Listing</h2><p style={{color:"#667085"}}>Manage the service listing connected to this account.</p><div style={{display:"grid",gap:16,gridTemplateColumns:"repeat(auto-fit, minmax(220px, 1fr))"}}><div style={card}><strong>Listing name</strong><div style={muted}>{provider.business_name||provider.name||"Not added"}</div></div><div style={card}><strong>Location</strong><div style={muted}>{[provider.city,provider.state].filter(Boolean).join(", ")||"Not added"}</div></div><div style={card}><strong>Email</strong><div style={muted}>{provider.email||"Not added"}</div></div><div style={card}><strong>Phone</strong><div style={muted}>{provider.phone||"Not added"}</div></div></div><div style={{display:"flex",gap:10,flexWrap:"wrap",marginTop:16}}><a href="/dashboard/edit" style={secondary}>Edit Listing</a><a href={`/provider/${providerSlug(provider)}`} style={secondary}>View Listing</a></div></section>}
 
     {!provider&&!hasPosts&&<section style={{marginBottom:34,padding:22,borderRadius:16,background:"#f7f6ff"}}><h2 style={{marginTop:0,color:"#182033"}}>What would you like to do?</h2><p style={{color:"#667085",lineHeight:1.6}}>Create a service listing or post a Job, Gig, or Task.</p><div style={{display:"flex",gap:10,flexWrap:"wrap"}}><a href="/list-service" style={secondary}>List My Service</a><a href="/post-work" style={secondary}>Post a Job / Gig / Task</a></div></section>}
 
