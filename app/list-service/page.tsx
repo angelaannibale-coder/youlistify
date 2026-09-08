@@ -50,8 +50,8 @@ const response=await fetch(`/api/cities?zip=${encodeURIComponent(zip)}`);
 const data=await response.json();
 if(!response.ok||data?.unavailable){setZipError("We could not verify that ZIP code right now. Please try again.");return false;}
 const locations=Array.isArray(data?.locations)?data.locations:[];
-const matches=locations.some((location:{city?:string;state?:string})=>normalizeLocationName(location.city||"")===normalizeLocationName(city)&&(location.state||"").toUpperCase()===state);
-if(!matches){setZipError(`That ZIP code does not match ${city}, ${state}.`);return false;}
+const matches=locations.some((location:{city?:string;state?:string})=>(location.state||"").toUpperCase()===state);
+if(!matches){setZipError(`That ZIP code does not match ${state}.`);return false;}
 return true;
 }catch{
 setZipError("We could not verify that ZIP code right now. Please try again.");
