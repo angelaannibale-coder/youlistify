@@ -44,14 +44,7 @@ export default function ProviderAccountSignOutBridge() {
       const { data } = await supabase.auth.getUser();
       if (cancelled || !data.user) return;
 
-      if (path.startsWith("/dashboard/edit")) {
-        const backLink = Array.from(document.querySelectorAll<HTMLAnchorElement>("a")).find((a) =>
-          (a.textContent || "").includes("Back to Dashboard")
-        );
-        const topRow = backLink?.parentElement as HTMLElement | null;
-        if (topRow) addButton(topRow, "edit");
-        return;
-      }
+      if (path.startsWith("/dashboard/edit")) return;
 
       if (path.startsWith("/provider/")) {
         const backLink = Array.from(document.querySelectorAll<HTMLAnchorElement>("a")).find((a) =>
