@@ -402,6 +402,7 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
   background:linear-gradient(135deg,var(--yl-purple),var(--yl-pink));
   font-size:1.05rem;
   font-weight:900;
+  object-fit:cover;
 }
 .youlistify-brand-refresh .provider-card-heading{
   min-width:0;
