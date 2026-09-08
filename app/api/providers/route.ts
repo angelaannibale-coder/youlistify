@@ -11,6 +11,10 @@ provider_services (services (name))
 
 export async function GET(req: NextRequest) {
   try {
+    if (process.env.VERCEL_ENV === "preview" && !req.nextUrl.searchParams.get("id")) {
+      const productionResponse = await fetch("https://youlistify.com/api/providers", { cache: "no-store" });
+      if (productionResponse.ok) return NextResponse.json(await productionResponse.json());
+    }
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
