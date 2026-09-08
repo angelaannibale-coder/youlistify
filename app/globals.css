@@ -123,3 +123,7 @@ margin-bottom: 16px;
 width: 100%;
 margin-top: 2px;
 }
+
+.modal-head img.avatar{object-fit:cover}
+.listing-preview-label{margin:0 44px 14px 0;color:var(--purple);font-size:.75rem;font-weight:900;letter-spacing:.1em}
+.listing-preview-full{background:#111a3a;font-size:1.05rem;box-shadow:0 10px 24px rgba(17,26,58,.2)}
