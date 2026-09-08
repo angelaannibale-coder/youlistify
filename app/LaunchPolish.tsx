@@ -369,8 +369,6 @@ export default function LaunchPolish() {
 
   return (
     <>
-      {serviceTarget && pathname === "/dashboard/edit" && createPortal(serviceModeBlock, serviceTarget)}
-      {profileTarget && pathname === "/dashboard/edit" && createPortal(profilePhotoBlock, profileTarget)}
       {contactOpen && (
         <div onClick={() => setContactOpen(false)} style={{ position: "fixed", inset: 0, zIndex: 100, background: "rgba(12,16,35,.56)", display: "grid", placeItems: "center", padding: "20px" }}>
           <form onSubmit={sendMessage} onClick={(e) => e.stopPropagation()} style={{ width: "min(100%,560px)", background: "white", borderRadius: "24px", padding: "30px", boxShadow: "0 35px 100px rgba(0,0,0,.25)" }}>
