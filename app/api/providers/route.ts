@@ -27,14 +27,9 @@ export async function GET(req: NextRequest) {
     });
     const id = req.nextUrl.searchParams.get("id");
 
-    let query = admin
-      .from("Providers")
-      .select(publicFields)
-      .eq("profile_active", true);
-
     if (id) {
       if (!/^\d+$/.test(id)) return NextResponse.json({ error: "Invalid provider" }, { status: 400 });
-      const { data, error } = await query.eq("id", id).maybeSingle();
+      const { data, error } = await admin.from("Providers").select(publicFields).eq("id", id).maybeSingle();
       if (error) return NextResponse.json({ error: "Could not load provider" }, { status: 500 });
       if (!data) return NextResponse.json({ error: "Provider not found" }, { status: 404 });
       let isOwner = false;
@@ -45,10 +40,15 @@ export async function GET(req: NextRequest) {
         const { data: { user } } = await authClient.auth.getUser(token);
         isOwner = Boolean(user && data.user_id === user.id);
       }
+      if (!data.profile_active && !isOwner) return NextResponse.json({ error: "Provider not found" }, { status: 404 });
       return NextResponse.json({ provider: sanitizeProvider(data), isOwner });
     }
 
-    const { data, error } = await query.order("created_at", { ascending: false }).limit(1000);
+    const { data, error } = await admin
+      .from("Providers")
+      .select(publicFields)
+      .eq("profile_active", true)
+      .order("created_at", { ascending: false }).limit(1000);
     if (error) return NextResponse.json({ error: "Could not load providers" }, { status: 500 });
     return NextResponse.json({ providers: (data || []).map(sanitizeProvider) });
   } catch {
