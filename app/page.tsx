@@ -178,7 +178,7 @@ const searchableProviders: Provider[] = dbProviders.length
       contact_text: p.contact_text ?? false,
       contact_email: p.contact_email ?? false,
       contact_youlistify: p.contact_youlistify ?? false,
-      pricing_methods: p.pricing_methods || [],
+      pricing_methods: Array.from(new Set((p.pricing_methods || []).map((method:string)=>method==="Hourly rate"?"hourly":method==="Flat rate"?"flat":method==="Contact for pricing"?"contact":method))),
       starting_price: p.starting_price ?? null,
       flat_price: p.flat_price ?? null,
       specialties: p.provider_services?.map((ps: any) => ps.services?.name).filter(Boolean) || [],
