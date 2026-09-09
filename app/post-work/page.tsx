@@ -6,6 +6,25 @@ import { createClient } from "@supabase/supabase-js";
 const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 const states = ["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"];
 const categories=["Automotive","Beauty & Personal Care","Business & Professional Services","Cleaning","Creative & Media","Events & Entertainment","Fitness & Wellness","Home Repair & Improvement","Lawn, Garden & Outdoor","Lessons, Coaching & Tutoring","Moving, Hauling & Delivery","Personal, Family & Local Help","Pet Services","Real Estate & Property Services","Repairs, Crafts & Specialty Services","Technology & Digital"];
+const categorySearchTerms:Record<string,string[]>={
+  "Automotive":["auto","car","cars","vehicle","vehicles"],
+  "Beauty & Personal Care":["beauty","hair","nail","makeup","massage"],
+  "Business & Professional Services":["business","office","bookkeeping","accounting","assistant","marketing","notary"],
+  "Cleaning":["clean","cleaning","housekeeping"],
+  "Creative & Media":["photo","video","design","writer","content"],
+  "Events & Entertainment":["event","events","party","dj","cater","bartender"],
+  "Fitness & Wellness":["fitness","wellness","coach","yoga"],
+  "Home Repair & Improvement":["home","handyman","plumbing","electric","painting","construction","labor"],
+  "Lawn, Garden & Outdoor":["lawn","garden","outdoor","landscape","tree","snow"],
+  "Lessons, Coaching & Tutoring":["lesson","lessons","coach","coaching","tutor","tutoring","teach"],
+  "Moving, Hauling & Delivery":["moving","hauling","delivery","packing"],
+  "Personal, Family & Local Help":["personal","family","senior","babysit","nanny","errand","house sit"],
+  "Pet Services":["pet","dog","cat"],
+  "Real Estate & Property Services":["real estate","property","rental"],
+  "Repairs, Crafts & Specialty Services":["repair","repairs","craft","crafts","sew","sewing","tailor","alteration","alterations","scrapbook"],
+  "Technology & Digital":["tech","technology","computer","phone","digital","website"]
+};
+function getCategorySuggestions(value:string){const query=value.trim().toLowerCase();if(!query)return categories;return categories.filter(category=>category.toLowerCase().includes(query)||(categorySearchTerms[category]||[]).some(term=>term.includes(query))).slice(0,16);}
 const draftKey = "youlistify-work-post-draft";
 
 export default function PostWorkPage() {
@@ -33,7 +52,7 @@ export default function PostWorkPage() {
   useEffect(()=>{const zip=form.zip_code.replace(/\D/g,"");if(zip.length!==5)return;const timer=setTimeout(async()=>{try{const response=await fetch(`/api/cities?zip=${zip}`);const data=await response.json();const match=Array.isArray(data?.locations)?data.locations[0]:null;if(match?.city&&match?.state){setForm(v=>({...v,city:match.city,state:match.state}));setShowCitySuggestions(false);}}catch{}},220);return()=>clearTimeout(timer);},[form.zip_code]);
 
   const set=(key:string,value:any)=>setForm(v=>({...v,[key]:value}));
-  const categorySuggestions=categories.filter(c=>c.toLowerCase().includes(form.category.toLowerCase())).slice(0,10);
+  const categorySuggestions=getCategorySuggestions(form.category);
 
   async function submit(e:FormEvent){
     e.preventDefault();
