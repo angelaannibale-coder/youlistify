@@ -14,13 +14,12 @@ export async function POST(req: NextRequest) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(senderEmail)) return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-    if (!supabaseUrl || !anonKey) return NextResponse.json({ error: "Server configuration incomplete" }, { status: 500 });
+    if (!supabaseUrl || !serviceRoleKey) return NextResponse.json({ error: "Server configuration incomplete" }, { status: 500 });
 
-    const publicClient = createClient(supabaseUrl, anonKey, { auth: { persistSession: false, autoRefreshToken: false } });
+    const admin = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
 
-    const { data: post, error: postError } = await publicClient
+    const { data: post, error: postError } = await admin
       .from("work_posts")
       .select("id,title,user_id,status,contact_youlistify,contact_email_address")
       .eq("id", postId)
@@ -31,7 +30,7 @@ export async function POST(req: NextRequest) {
     if (post.status !== "active") return NextResponse.json({ error: `This post is currently ${post.status} and is not accepting new messages` }, { status: 409 });
     if (!post.contact_youlistify) return NextResponse.json({ error: "Contact through YouListify is turned off for this post" }, { status: 409 });
 
-    const { error: insertError } = await publicClient.from("work_post_messages").insert({
+    const { error: insertError } = await admin.from("work_post_messages").insert({
       work_post_id: post.id,
       sender_name: senderName,
       sender_email: senderEmail,
@@ -42,9 +41,8 @@ export async function POST(req: NextRequest) {
     const recipients = new Set<string>();
     if (post.contact_email_address) recipients.add(post.contact_email_address);
 
-    if (serviceRoleKey && post.user_id) {
+    if (post.user_id) {
       try {
-        const admin = createClient(supabaseUrl, serviceRoleKey, { auth: { persistSession: false, autoRefreshToken: false } });
         const { data: ownerData } = await admin.auth.admin.getUserById(post.user_id);
         if (ownerData.user?.email) recipients.add(ownerData.user.email);
       } catch (error) {
