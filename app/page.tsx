@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useEffect, useMemo, useState } from "react";
+import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
 import { createClient } from "@supabase/supabase-js";
 import { coreServiceQuery, queryRequestsMobile, textMatchesService } from "./searchVocabulary";
 
@@ -48,6 +48,7 @@ export default function Home(){
   const [searched,setSearched]=useState(false);
   const [allServices, setAllServices] = useState<any[]>([]);
   const [showServiceSuggestions, setShowServiceSuggestions] = useState(false);
+  const serviceSuggestionTouch = useRef<{ x: number; y: number; moved: boolean } | null>(null);
   const [showLocationSuggestions, setShowLocationSuggestions] = useState(false);
   const categories = useMemo(() => {
 const categoryMap: Record<string, string> = {
@@ -274,6 +275,12 @@ function selectRemoteLocation(){
   setShowLocationSuggestions(false);
 }
 
+function selectServiceSuggestion(item: any) {
+  setService(wantsMobileService ? `mobile ${item.name}` : item.name);
+  setShowServiceSuggestions(false);
+  if (document.activeElement instanceof HTMLElement) document.activeElement.blur();
+}
+
 function scrollToHomeSection(id: "search-services" | "categories") {
   const target = document.getElementById(id);
   if (!target) return;
@@ -355,7 +362,7 @@ return <main>
 <p>Search local services, see who is available, and connect directly—without filling out long forms or waiting for multiple quotes.</p>
 <form id="search-services" className="search-card" onSubmit={runSearch}>
 <label style={{ position: "relative" }}><span>WHAT DO YOU NEED?</span><div className="input-shell"><b>⌕</b><input value={service} onChange={(e) => {setService(e.target.value);setShowServiceSuggestions(true);}} onFocus={() => {setShowServiceSuggestions(true);setShowLocationSuggestions(false);}} placeholder="Handyman, DJ, cleaner..." /></div>
-{showServiceSuggestions && service.trim() && serviceSuggestions.length>0 && (<div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:20,background:"white",border:"1px solid #e6e9f0",borderRadius:"14px",marginTop:"6px",maxHeight:"360px",overflowY:"auto",boxShadow:"0 12px 30px rgba(0,0,0,.12)"}}>{serviceSuggestions.map((item:any)=><button key={item.id} type="button" onClick={()=>{setService(wantsMobileService?`mobile ${item.name}`:item.name);setShowServiceSuggestions(false);}} style={{display:"block",width:"100%",textAlign:"left",padding:"11px 14px",border:0,background:"white",cursor:"pointer"}}>{wantsMobileService?`Mobile ${item.name}`:item.name}</button>)}</div>)}</label>
+{showServiceSuggestions && service.trim() && serviceSuggestions.length>0 && (<div style={{position:"absolute",top:"100%",left:0,right:0,zIndex:20,background:"white",border:"1px solid #e6e9f0",borderRadius:"14px",marginTop:"6px",maxHeight:"360px",overflowY:"auto",boxShadow:"0 12px 30px rgba(0,0,0,.12)"}}>{serviceSuggestions.map((item:any)=><button key={item.id} type="button" onPointerDown={(e)=>{if(e.pointerType==="touch")serviceSuggestionTouch.current={x:e.clientX,y:e.clientY,moved:false};}} onPointerMove={(e)=>{const touch=serviceSuggestionTouch.current;if(!touch)return;if(Math.abs(e.clientX-touch.x)>8||Math.abs(e.clientY-touch.y)>8)touch.moved=true;}} onPointerUp={(e)=>{const touch=serviceSuggestionTouch.current;if(e.pointerType==="touch"&&touch&&!touch.moved){e.preventDefault();selectServiceSuggestion(item);}serviceSuggestionTouch.current=null;}} onClick={()=>{if(serviceSuggestionTouch.current?.moved){serviceSuggestionTouch.current=null;return;}selectServiceSuggestion(item);}} style={{display:"block",width:"100%",textAlign:"left",padding:"11px 14px",border:0,background:"white",cursor:"pointer"}}>{wantsMobileService?`Mobile ${item.name}`:item.name}</button>)}</div>)}</label>
 <label style={{ position: "relative" }} onBlur={(e)=>{if(!e.relatedTarget || !e.currentTarget.contains(e.relatedTarget as Node)) window.setTimeout(()=>setShowLocationSuggestions(false),600);}}><span>WHERE?</span><div className="input-shell" style={{ position: "relative" }}><b>✦</b><input value={location} onChange={(e)=>{const nextLocation=e.target.value;const wasRemoteLocation=location.trim().toLowerCase().startsWith("remote");setLocation(nextLocation);if(nextLocation.trim().toLowerCase().startsWith("remote"))setRemoteSearch(true);else if(wasRemoteLocation)setRemoteSearch(false);setShowLocationSuggestions(true);}} onFocus={(e)=>{if(location.trim().toLowerCase().startsWith("remote"))window.setTimeout(()=>e.currentTarget.select(),0);setShowLocationSuggestions(true);setShowServiceSuggestions(false);}} onClick={(e)=>{if(location.trim().toLowerCase().startsWith("remote"))e.currentTarget.select();}} placeholder="City, ZIP code, or Remote" /></div>
 {showLocationSuggestions && location.trim() && (remoteOptionMatches || visibleLocationSuggestions.length>0) && (<div className="location-suggestions-menu" style={{position:"absolute",top:"100%",left:0,right:0,zIndex:100,background:"white",border:"1px solid #e6e9f0",borderRadius:"14px",marginTop:"6px",padding:"6px 8px",maxHeight:"250px",overflowY:"auto",boxShadow:"0 12px 30px rgba(0,0,0,.12)"}}>{remoteOptionMatches && <button type="button" onClick={selectRemoteLocation} style={{display:"block",width:"100%",textAlign:"left",padding:"10px 4px",border:0,background:"white",cursor:"pointer",fontWeight:700}}>Remote / Online / Phone</button>}{visibleLocationSuggestions.map((loc)=><button key={loc} type="button" onClick={()=>{const replacingRemote=location.trim().toLowerCase().startsWith("remote");setLocation(loc);if(replacingRemote)setRemoteSearch(false);setShowLocationSuggestions(false);}} style={{display:"block",width:"100%",textAlign:"left",padding:"10px 4px",border:0,background:"white",cursor:"pointer"}}>{loc}</button>)}</div>)}</label>
 <label className="remote-search-toggle"><input type="checkbox" checked={remoteSearch} onChange={(e)=>{const checked=e.target.checked;setRemoteSearch(checked);setShowLocationSuggestions(false);if(!checked && location.trim().toLowerCase().startsWith("remote"))setLocation("");window.setTimeout(()=>document.querySelector(".search-card")?.scrollIntoView({behavior:"smooth",block:"center"}),250);}} /><span className="remote-search-toggle-text">Remote / Online / Phone</span></label>
