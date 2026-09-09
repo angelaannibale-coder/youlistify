@@ -7,6 +7,25 @@ import { useParams } from "next/navigation";
 const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 const states=["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"];
 const categories=["Automotive","Beauty & Personal Care","Business & Professional Services","Cleaning","Creative & Media","Events & Entertainment","Fitness & Wellness","Home Repair & Improvement","Lawn, Garden & Outdoor","Lessons, Coaching & Tutoring","Moving, Hauling & Delivery","Personal, Family & Local Help","Pet Services","Real Estate & Property Services","Repairs, Crafts & Specialty Services","Technology & Digital"];
+const categorySearchTerms:Record<string,string[]>={
+  "Automotive":["auto","car","cars","vehicle","vehicles"],
+  "Beauty & Personal Care":["beauty","hair","nail","makeup","massage"],
+  "Business & Professional Services":["business","office","bookkeeping","accounting","assistant","marketing","notary"],
+  "Cleaning":["clean","cleaning","housekeeping"],
+  "Creative & Media":["photo","video","design","writer","content"],
+  "Events & Entertainment":["event","events","party","dj","cater","bartender"],
+  "Fitness & Wellness":["fitness","wellness","coach","yoga"],
+  "Home Repair & Improvement":["home","handyman","plumbing","electric","painting","construction","labor"],
+  "Lawn, Garden & Outdoor":["lawn","garden","outdoor","landscape","tree","snow"],
+  "Lessons, Coaching & Tutoring":["lesson","lessons","coach","coaching","tutor","tutoring","teach"],
+  "Moving, Hauling & Delivery":["moving","hauling","delivery","packing"],
+  "Personal, Family & Local Help":["personal","family","senior","babysit","nanny","errand","house sit"],
+  "Pet Services":["pet","dog","cat"],
+  "Real Estate & Property Services":["real estate","property","rental"],
+  "Repairs, Crafts & Specialty Services":["repair","repairs","craft","crafts","sew","sewing","tailor","alteration","alterations","scrapbook"],
+  "Technology & Digital":["tech","technology","computer","phone","digital","website"]
+};
+function getCategorySuggestions(value:string){const query=value.trim().toLowerCase();if(!query)return categories;return categories.filter(category=>category.toLowerCase().includes(query)||(categorySearchTerms[category]||[]).some(term=>term.includes(query))).slice(0,16);}
 
 export default function EditWorkPostPage(){
   const params=useParams();
@@ -34,7 +53,7 @@ export default function EditWorkPostPage(){
   useEffect(()=>{const zip=String(form?.zip_code||"").replace(/\D/g,"");if(zip.length!==5)return;const timer=setTimeout(async()=>{try{const response=await fetch(`/api/cities?zip=${zip}`);const data=await response.json();const match=Array.isArray(data?.locations)?data.locations[0]:null;if(match?.city&&match?.state){setForm((v:any)=>({...v,city:match.city,state:match.state}));setShowCitySuggestions(false);}}catch{}},220);return()=>clearTimeout(timer);},[form?.zip_code]);
 
   const set=(key:string,value:any)=>setForm((v:any)=>({...v,[key]:value}));
-  const categorySuggestions=categories.filter(c=>c.toLowerCase().includes(String(form?.category||"").toLowerCase())).slice(0,10);
+  const categorySuggestions=getCategorySuggestions(String(form?.category||""));
   async function save(e:FormEvent){e.preventDefault();if(!form)return;if(!form.contact_call&&!form.contact_text&&!form.contact_email&&!form.contact_youlistify&&!String(form.application_url||"").trim()){alert("Choose at least one way for people to respond.");return;}setSaving(true);setMessage("");const payload={post_type:form.post_type,title:form.title,description:form.description,category:form.category||null,city:form.city||null,state:form.state||null,zip_code:form.zip_code||null,remote:!!form.remote,pay_type:form.pay_type,pay_amount:form.pay_amount!==""&&form.pay_amount!=null?Number(form.pay_amount):null,contact_call:!!form.contact_call,contact_text:!!form.contact_text,contact_email:!!form.contact_email,contact_youlistify:!!form.contact_youlistify,contact_phone:String(form.contact_phone||"").trim()||null,contact_email_address:String(form.contact_email_address||"").trim()||null,application_url:String(form.application_url||"").trim()||null,updated_at:new Date().toISOString()};const {error}=await supabase.from("work_posts").update(payload).eq("id",id);setSaving(false);if(error){setMessage(error.message);return;}window.location.href=`/work/${id}`;}
 
   if(loading)return <main style={{padding:40,fontFamily:"Arial,sans-serif"}}>Loading post...</main>;
