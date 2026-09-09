@@ -6,7 +6,7 @@ import { useParams } from "next/navigation";
 
 const supabase=createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!,process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 const states=["AL","AK","AZ","AR","CA","CO","CT","DE","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY","DC"];
-const categories=["Business Services","Marketing & Social Media","Writing and Content","Websites & Tech","Admin & Office","Household","Cleaning","Construction and Labor","Plumbing","Electrical","Landscaping","Moving & Labor","Delivery & Errands","Caregiving & Companionship","Childcare","Pet Care","Lessons & Tutoring","Food & Events","Retail & Restaurant Help","Creative","Automotive","Other"];
+const categories=["Automotive","Beauty & Personal Care","Business & Professional Services","Cleaning","Creative & Media","Events & Entertainment","Fitness & Wellness","Home Repair & Improvement","Lawn, Garden & Outdoor","Lessons, Coaching & Tutoring","Moving, Hauling & Delivery","Personal, Family & Local Help","Pet Services","Real Estate & Property Services","Repairs, Crafts & Specialty Services","Technology & Digital"];
 
 export default function EditWorkPostPage(){
   const params=useParams();
