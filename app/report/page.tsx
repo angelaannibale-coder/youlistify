@@ -122,31 +122,8 @@ export default function ReportPage() {
     window.setTimeout(() => setCopiedAction(""), 2000);
   }
 
-  async function shareReportDetails() {
-    const emailSubject = `Report YouListify ${typeLabel}${details.title ? `: ${details.title}` : ""}`;
-    const shareText = `Send to: ${supportEmailText}\n\n${reportText}`;
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: emailSubject, text: shareText });
-        return;
-      }
-    } catch {
-      return;
-    }
-
-    try {
-      await navigator.clipboard.writeText(shareText);
-    } catch {
-      const input = document.createElement("textarea");
-      input.value = shareText;
-      document.body.appendChild(input);
-      input.select();
-      document.execCommand("copy");
-      document.body.removeChild(input);
-    }
-    setCopiedAction("share");
-    window.setTimeout(() => setCopiedAction(""), 2000);
-  }
+  const emailSubject = `Report YouListify ${typeLabel}${details.title ? `: ${details.title}` : ""}`;
+  const mailHref = `mailto:${supportEmailText}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(reportText)}`;
 
   return (
     <main style={{ minHeight: "100vh", background: "#f6f7fb", padding: "40px 18px", fontFamily: "Arial,sans-serif" }}>
@@ -179,9 +156,8 @@ export default function ReportPage() {
             </form>
 
             <div style={{ display: "grid", gap: 10, marginTop: 16 }}>
-              <button type="button" onClick={shareReportDetails} style={secondaryButton}>{copiedAction === "share" ? "Report details copied" : "Share report details"}</button>
               <button type="button" onClick={copyReportDetails} style={secondaryButton}>{copiedAction === "details" ? "Report details copied" : "Copy report details"}</button>
-              <button type="button" onClick={copySupportEmail} style={secondaryButton}>{copiedAction === "email" ? "YouListify email copied" : "Copy YouListify email"}</button>
+              <a href={mailHref} style={{ ...secondaryButton, textAlign: "center" }}>Send email instead</a>
             </div>
           </>
         )}
