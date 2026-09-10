@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     if (reporterEmail && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(reporterEmail)) return NextResponse.json({ error: "Invalid email address" }, { status: 400 });
 
     const resendKey = process.env.RESEND_API_KEY;
-    if (!resendKey) return NextResponse.json({ error: "Server configuration incomplete" }, { status: 500 });
+    if (!resendKey) return NextResponse.json({ error: "Report email is not connected in this preview yet. You can use Copy report details or Open email instead." }, { status: 500 });
 
     const reportLines = [
       `Report type: ${type}`,
