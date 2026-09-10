@@ -2,7 +2,8 @@
 
 import { useEffect, useMemo, useState, type FormEvent } from "react";
 
-const supportEmail = "support@youlistify.com";
+const supportEmails = ["support@youlistify.com", "hello@youlistify.com"];
+const supportEmailText = supportEmails.join(", ");
 
 export default function ReportPage() {
   const [details, setDetails] = useState({ type: "listing", title: "", url: "", id: "" });
@@ -12,7 +13,7 @@ export default function ReportPage() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
-  const [copied, setCopied] = useState(false);
+  const [copiedAction, setCopiedAction] = useState("");
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -92,8 +93,8 @@ export default function ReportPage() {
   async function copyReportDetails() {
     try {
       await navigator.clipboard.writeText(reportText);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      setCopiedAction("details");
+      window.setTimeout(() => setCopiedAction(""), 2000);
     } catch {
       const input = document.createElement("textarea");
       input.value = reportText;
@@ -101,12 +102,25 @@ export default function ReportPage() {
       input.select();
       document.execCommand("copy");
       document.body.removeChild(input);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
+      setCopiedAction("details");
+      window.setTimeout(() => setCopiedAction(""), 2000);
     }
   }
 
-  const mailHref = `mailto:${supportEmail}?subject=${encodeURIComponent(`Report YouListify ${typeLabel}${details.title ? `: ${details.title}` : ""}`)}&body=${encodeURIComponent(reportText)}`;
+  async function copySupportEmail() {
+    try {
+      await navigator.clipboard.writeText(supportEmailText);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = supportEmailText;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+    }
+    setCopiedAction("email");
+    window.setTimeout(() => setCopiedAction(""), 2000);
+  }
 
   return (
     <main style={{ minHeight: "100vh", background: "#f6f7fb", padding: "40px 18px", fontFamily: "Arial,sans-serif" }}>
@@ -139,8 +153,8 @@ export default function ReportPage() {
             </form>
 
             <div style={{ display: "grid", gap: 10, marginTop: 16 }}>
-              <button type="button" onClick={copyReportDetails} style={secondaryButton}>{copied ? "Report details copied" : "Copy report details"}</button>
-              <a href={mailHref} style={{ ...secondaryButton, textAlign: "center" }}>Open email instead</a>
+              <button type="button" onClick={copyReportDetails} style={secondaryButton}>{copiedAction === "details" ? "Report details copied" : "Copy report details"}</button>
+              <button type="button" onClick={copySupportEmail} style={secondaryButton}>{copiedAction === "email" ? "YouListify email copied" : "Copy YouListify email"}</button>
             </div>
           </>
         )}
