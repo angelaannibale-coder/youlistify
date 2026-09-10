@@ -122,6 +122,10 @@ export default function ReportPage() {
     window.setTimeout(() => setCopiedAction(""), 2000);
   }
 
+  const emailSubject = `Report YouListify ${typeLabel}${details.title ? `: ${details.title}` : ""}`;
+  const mailHref = `mailto:${supportEmailText}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(reportText)}`;
+  const gmailHref = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(supportEmailText)}&su=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(reportText)}`;
+
   return (
     <main style={{ minHeight: "100vh", background: "#f6f7fb", padding: "40px 18px", fontFamily: "Arial,sans-serif" }}>
       <section style={{ maxWidth: 680, margin: "0 auto", background: "white", borderRadius: 24, padding: "clamp(24px,5vw,42px)", boxShadow: "0 12px 35px rgba(0,0,0,.07)" }}>
@@ -155,6 +159,8 @@ export default function ReportPage() {
             <div style={{ display: "grid", gap: 10, marginTop: 16 }}>
               <button type="button" onClick={copyReportDetails} style={secondaryButton}>{copiedAction === "details" ? "Report details copied" : "Copy report details"}</button>
               <button type="button" onClick={copySupportEmail} style={secondaryButton}>{copiedAction === "email" ? "YouListify email copied" : "Copy YouListify email"}</button>
+              <a href={gmailHref} target="_blank" rel="noreferrer" style={{ ...secondaryButton, textAlign: "center" }}>Open in Gmail</a>
+              <a href={mailHref} style={{ ...secondaryButton, textAlign: "center" }}>Open default email app</a>
             </div>
           </>
         )}
