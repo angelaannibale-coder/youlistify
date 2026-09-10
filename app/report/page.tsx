@@ -12,6 +12,7 @@ export default function ReportPage() {
   const [sending, setSending] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -91,6 +92,8 @@ export default function ReportPage() {
   async function copyReportDetails() {
     try {
       await navigator.clipboard.writeText(reportText);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
     } catch {
       const input = document.createElement("textarea");
       input.value = reportText;
@@ -98,6 +101,8 @@ export default function ReportPage() {
       input.select();
       document.execCommand("copy");
       document.body.removeChild(input);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
     }
   }
 
@@ -134,7 +139,7 @@ export default function ReportPage() {
             </form>
 
             <div style={{ display: "grid", gap: 10, marginTop: 16 }}>
-              <button type="button" onClick={copyReportDetails} style={secondaryButton}>Copy report details</button>
+              <button type="button" onClick={copyReportDetails} style={secondaryButton}>{copied ? "Report details copied" : "Copy report details"}</button>
               <a href={mailHref} style={{ ...secondaryButton, textAlign: "center" }}>Open email instead</a>
             </div>
           </>
