@@ -125,6 +125,31 @@ export default function ReportPage() {
   const emailSubject = `Report YouListify ${typeLabel}${details.title ? `: ${details.title}` : ""}`;
   const mailHref = `mailto:${supportEmailText}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(reportText)}`;
 
+  async function shareReportDetails() {
+    const shareText = `Send to: ${supportEmailText}\n\n${reportText}`;
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: emailSubject, text: shareText });
+        return;
+      }
+    } catch {
+      return;
+    }
+
+    try {
+      await navigator.clipboard.writeText(shareText);
+    } catch {
+      const input = document.createElement("textarea");
+      input.value = shareText;
+      document.body.appendChild(input);
+      input.select();
+      document.execCommand("copy");
+      document.body.removeChild(input);
+    }
+    setCopiedAction("share");
+    window.setTimeout(() => setCopiedAction(""), 2000);
+  }
+
   return (
     <main style={{ minHeight: "100vh", background: "#f6f7fb", padding: "40px 18px", fontFamily: "Arial,sans-serif" }}>
       <section style={{ maxWidth: 680, margin: "0 auto", background: "white", borderRadius: 24, padding: "clamp(24px,5vw,42px)", boxShadow: "0 12px 35px rgba(0,0,0,.07)" }}>
@@ -156,6 +181,7 @@ export default function ReportPage() {
             </form>
 
             <div style={{ display: "grid", gap: 10, marginTop: 16 }}>
+              <button type="button" onClick={shareReportDetails} style={secondaryButton}>{copiedAction === "share" ? "Report details copied" : "Share report details"}</button>
               <button type="button" onClick={copyReportDetails} style={secondaryButton}>{copiedAction === "details" ? "Report details copied" : "Copy report details"}</button>
               <a href={mailHref} style={{ ...secondaryButton, textAlign: "center" }}>Send email instead</a>
             </div>
