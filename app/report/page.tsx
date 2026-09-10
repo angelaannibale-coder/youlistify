@@ -123,8 +123,6 @@ export default function ReportPage() {
   }
 
   const emailSubject = `Report YouListify ${typeLabel}${details.title ? `: ${details.title}` : ""}`;
-  const mailHref = `mailto:${supportEmailText}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(reportText)}`;
-
   async function shareReportDetails() {
     const shareText = `Send to: ${supportEmailText}\n\n${reportText}`;
     try {
@@ -183,7 +181,7 @@ export default function ReportPage() {
             <div style={{ display: "grid", gap: 10, marginTop: 16 }}>
               <button type="button" onClick={shareReportDetails} style={secondaryButton}>{copiedAction === "share" ? "Report details copied" : "Share report details"}</button>
               <button type="button" onClick={copyReportDetails} style={secondaryButton}>{copiedAction === "details" ? "Report details copied" : "Copy report details"}</button>
-              <a href={mailHref} style={{ ...secondaryButton, textAlign: "center" }}>Send email instead</a>
+              <button type="button" onClick={shareReportDetails} style={secondaryButton}>Send email instead</button>
             </div>
           </>
         )}
