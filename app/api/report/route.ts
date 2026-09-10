@@ -37,7 +37,7 @@ export async function POST(req: NextRequest) {
       headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
       body: JSON.stringify({
         from: "YouListify <messages@youlistify.com>",
-        to: ["support@youlistify.com"],
+        to: ["support@youlistify.com", "hello@youlistify.com"],
         reply_to: reporterEmail || undefined,
         subject: `Report YouListify ${type}${title ? `: ${title}` : ""}`,
         html: `<div style="font-family:Arial,sans-serif;line-height:1.6;color:#182033"><h2>Report YouListify ${escapeHtml(type)}</h2><p><strong>Title:</strong> ${escapeHtml(title || "Not provided")}</p><p><strong>Link:</strong> ${url ? `<a href="${escapeHtml(url)}">${escapeHtml(url)}</a>` : "Not provided"}</p>${id ? `<p><strong>ID:</strong> ${escapeHtml(id)}</p>` : ""}<p><strong>Reporter name:</strong> ${escapeHtml(reporterName || "Not provided")}</p><p><strong>Reporter email:</strong> ${escapeHtml(reporterEmail || "Not provided")}</p><p><strong>Concern:</strong></p><p>${escapeHtml(concern).replace(/\n/g, "<br>")}</p><hr/><pre style="white-space:pre-wrap;background:#f8f8fb;padding:12px;border-radius:10px">${escapeHtml(reportLines.join("\n"))}</pre></div>`
