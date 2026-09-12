@@ -10,12 +10,6 @@ const listFields = "id,created_at,post_type,title,description,category,city,stat
 
 export async function GET(req: NextRequest) {
   try {
-    if (process.env.VERCEL_ENV === "preview") {
-      const productionUrl = `https://youlistify.com/api/work-posts${req.nextUrl.search}`;
-      const productionResponse = await fetch(productionUrl, { cache: "no-store" });
-      if (productionResponse.ok) return NextResponse.json(await productionResponse.json());
-    }
-
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
     const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
     if (!supabaseUrl || !serviceRoleKey) {
