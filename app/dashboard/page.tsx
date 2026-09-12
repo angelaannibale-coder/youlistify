@@ -44,7 +44,7 @@ export default function DashboardPage() {
     }
 
     const selectFields="id,name,last_name,business_name,email,phone,city,state,bio,name_display,user_id,profile_active";
-    const {data:owned}=await supabase.from("Providers").select(selectFields).eq("user_id",session.user.id).maybeSingle();
+    const {data:owned}=await supabase.from("Providers").select(selectFields).eq("user_id",session.user.id).order("id",{ascending:false}).limit(1).maybeSingle();
     if(owned){const ownedProvider={...(owned as Provider),profile_active:true};if((owned as Provider).profile_active!==true)await ensureProviderActive((owned as Provider).id);setProvider(ownedProvider);await loadProviderMessages(ownedProvider.id);setLoading(false);return;}
 
     try{
