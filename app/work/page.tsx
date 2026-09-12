@@ -4,7 +4,7 @@ type Post={id:number;post_type:string;title:string;description:string;category:s
 type LocationSuggestion={city:string;state:string};
 function pay(p:Post){if(p.pay_type==="contact"||p.pay_amount==null)return "Pay: discuss details";const n=Number(p.pay_amount).toLocaleString("en-US",{style:"currency",currency:"USD",maximumFractionDigits:0});return p.pay_type==="hourly"?`${n}/hr`:p.pay_type==="salary"?`${n} salary`:n;}
 function locationMode(p:Post){return p.location_mode||(p.remote?"remote":"local");}
-function place(p:Post){const local=[p.city,p.state].filter(Boolean).join(", ");const mode=locationMode(p);return mode==="both"&&local?`${local} + Remote`:mode==="remote"?"Remote":(local||"Location flexible");}
+function place(p:Post){const local=[p.city,p.state].filter(Boolean).join(", ");const mode=locationMode(p);return mode==="both"&&local?`${local} + Local + Remote`:mode==="remote"?"Remote":(local||"Location flexible");}
 function workMode(p:Post){const mode=locationMode(p);return mode==="both"?"Local + Remote":mode==="remote"?"Remote":"Local";}
 export default function WorkPage(){
  const [posts,setPosts]=useState<Post[]>([]),[q,setQ]=useState(""),[loc,setLoc]=useState(""),[type,setType]=useState("all"),[mode,setMode]=useState("all"),[loading,setLoading]=useState(true),[suggestions,setSuggestions]=useState<LocationSuggestion[]>([]),[showSuggestions,setShowSuggestions]=useState(false);
