@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
 const publicFields = `
-id,created_at,post_type,title,description,category,city,state,zip_code,remote,
+id,created_at,post_type,title,description,category,city,state,zip_code,remote,location_mode,
 pay_type,pay_amount,status,contact_call,contact_text,contact_email,
 contact_youlistify,contact_phone,contact_email_address,application_url
 `;
-const listFields = "id,created_at,post_type,title,description,category,city,state,remote,pay_type,pay_amount";
+const listFields = "id,created_at,post_type,title,description,category,city,state,remote,location_mode,pay_type,pay_amount";
 
 export async function GET(req: NextRequest) {
   try {
