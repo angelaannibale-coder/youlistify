@@ -11,6 +11,7 @@ type WorkSeo = {
   city: string | null;
   state: string | null;
   remote: boolean;
+  location_mode?: "local" | "remote" | "both" | null;
   category: string | null;
 };
 
@@ -26,7 +27,7 @@ const loadPost = cache(async (id: string): Promise<WorkSeo | null> => {
     });
     const { data } = await admin
       .from("work_posts")
-      .select("id,title,description,post_type,city,state,remote,category")
+      .select("id,title,description,post_type,city,state,remote,location_mode,category")
       .eq("id", id)
       .eq("status", "active")
       .maybeSingle();
@@ -50,7 +51,7 @@ export async function generateMetadata({
     };
   }
 
-  const place = post.remote ? "Remote" : [post.city, post.state].filter(Boolean).join(", ");
+  const place = getPlace(post);
   const fallback = `${post.post_type} opportunity${place ? ` in ${place}` : ""} on YouListify.`;
   const rawDescription = post.description?.trim() || fallback;
   const description = rawDescription.length > 160 ? `${rawDescription.slice(0, 157).trim()}...` : rawDescription;
@@ -81,7 +82,7 @@ export default async function WorkDetailLayout({
   const post = await loadPost(id);
   if (!post) return children;
 
-  const place = post.remote ? "Remote" : [post.city, post.state].filter(Boolean).join(", ");
+  const place = getPlace(post);
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "WebPage",
@@ -104,4 +105,12 @@ export default async function WorkDetailLayout({
       {children}
     </>
   );
+}
+
+function getPlace(post: WorkSeo) {
+  const mode = post.location_mode || (post.remote ? "remote" : "local");
+  const local = [post.city, post.state].filter(Boolean).join(", ");
+  if (mode === "remote") return "Remote";
+  if (mode === "both" && local) return `${local} + Remote`;
+  return local;
 }
