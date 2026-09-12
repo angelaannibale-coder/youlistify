@@ -45,6 +45,8 @@ export default function PostWorkPage() {
   async function submit(e:FormEvent){
     e.preventDefault();
     if(!form.contact_call&&!form.contact_text&&!form.contact_email&&!form.contact_youlistify&&!form.application_url.trim()){alert("Choose at least one way for people to respond.");return;}
+    const missingLocation=[!form.city.trim()&&"city",!form.state.trim()&&"state",!form.zip_code.trim()&&"ZIP code"].filter(Boolean);
+    if(missingLocation.length>0){alert(`Please fill in the ${missingLocation.join(", ")} above before posting. Even remote posts need a base city, state, and ZIP code so people know where the post is connected to.`);return;}
 
     if(!userId){
       localStorage.setItem(draftKey,JSON.stringify(form));
