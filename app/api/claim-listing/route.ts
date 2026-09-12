@@ -31,6 +31,8 @@ export async function POST(req: NextRequest) {
       .from("Providers")
       .select(selectFields)
       .eq("user_id", user.id)
+      .order("id", { ascending: false })
+      .limit(1)
       .maybeSingle();
 
     if (owned) return NextResponse.json({ provider: owned });
