@@ -30,6 +30,12 @@ export default function DashboardPage() {
   }
 
   async function loadDashboard(){
+    const params=new URLSearchParams(window.location.search);
+    const code=params.get("code");
+    if(code){
+      const {error}=await supabase.auth.exchangeCodeForSession(code);
+      if(!error)window.history.replaceState({}, "", "/dashboard");
+    }
     const {data:{session}}=await supabase.auth.getSession();
     if(!session?.user){window.location.href="/sign-in";return;}
     setUserEmail(session.user.email||"");
