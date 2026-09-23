@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
+const emailRedirectTo = "https://youlistify.com/dashboard";
+
 export async function POST(req: NextRequest) {
   try {
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -25,11 +27,22 @@ export async function POST(req: NextRequest) {
     const { error } = await supabase.auth.signUp({
       email,
       password,
-      options: { emailRedirectTo: "https://youlistify.com/dashboard" }
+      options: { emailRedirectTo }
     });
 
     if (error) {
       return NextResponse.json({ error: error.message }, { status: 400 });
+    }
+
+    const { error: resendError } = await supabase.auth.resend({
+      type: "signup",
+      email,
+      options: { emailRedirectTo }
+    });
+
+    if (resendError) {
+      console.error("Listing account confirmation resend failed:", resendError.message);
+      return NextResponse.json({ error: resendError.message }, { status: 400 });
     }
 
     return NextResponse.json({ ok: true });
