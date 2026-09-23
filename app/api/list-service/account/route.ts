@@ -34,17 +34,6 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: error.message }, { status: 400 });
     }
 
-    const { error: resendError } = await supabase.auth.resend({
-      type: "signup",
-      email,
-      options: { emailRedirectTo }
-    });
-
-    if (resendError) {
-      console.error("Listing account confirmation resend failed:", resendError.message);
-      return NextResponse.json({ error: resendError.message }, { status: 400 });
-    }
-
     return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Listing account creation failed:", error);
