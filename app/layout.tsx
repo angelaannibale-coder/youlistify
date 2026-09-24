@@ -19,19 +19,23 @@ import ReviewDisplayCleanup from "./ReviewDisplayCleanup";
 import ProviderAccountSignOutBridge from "./ProviderAccountSignOutBridge";
 import HomepageWorkNavBridge from "./HomepageWorkNavBridge";
 
+const siteDescription = "YouListify helps people find and list local and remote service providers. Search by service and location, compare providers, and connect directly.";
+
 export const metadata: Metadata = {
   title: "YouListify | Find the right person. Call them in minutes.",
-  description: "Find local professionals ready to work. Search by service and location, compare providers, and connect directly.",
+  description: siteDescription,
   applicationName: "YouListify",
   metadataBase: new URL("https://youlistify.com"),
   keywords: [
     "local services",
+    "remote services",
     "service providers",
+    "list your service",
+    "find service providers",
     "local professionals",
     "jobs",
     "gigs",
-    "tasks",
-    "remote services"
+    "tasks"
   ],
   creator: "YouListify",
   publisher: "YouListify",
@@ -43,8 +47,8 @@ export const metadata: Metadata = {
     shortcut: "/path-sun-logo.svg"
   },
   openGraph: {
-    title: "YouListify | Find the right person",
-    description: "Search local and remote services, see who is available, and connect directly.",
+    title: "YouListify | Find and list local and remote services",
+    description: siteDescription,
     url: "https://youlistify.com",
     siteName: "YouListify",
     locale: "en_US",
@@ -52,8 +56,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary",
-    title: "YouListify | Find the right person",
-    description: "Search local and remote services, see who is available, and connect directly."
+    title: "YouListify | Find and list local and remote services",
+    description: siteDescription
   },
   robots: { index: true, follow: true }
 };
@@ -66,16 +70,63 @@ const siteStructuredData = {
       "@id": "https://youlistify.com/#organization",
       name: "YouListify",
       url: "https://youlistify.com",
-      logo: "https://youlistify.com/path-sun-logo.svg"
+      logo: "https://youlistify.com/path-sun-logo.svg",
+      description: siteDescription,
+      sameAs: [
+        "https://www.facebook.com/YouListify"
+      ]
     },
     {
       "@type": "WebSite",
       "@id": "https://youlistify.com/#website",
       name: "YouListify",
       url: "https://youlistify.com",
-      description: "Find local and remote service providers and connect directly.",
+      description: siteDescription,
       publisher: { "@id": "https://youlistify.com/#organization" },
-      inLanguage: "en-US"
+      inLanguage: "en-US",
+      potentialAction: {
+        "@type": "SearchAction",
+        target: "https://youlistify.com/?service={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://youlistify.com/#faq",
+      mainEntity: [
+        {
+          "@type": "Question",
+          name: "What is YouListify?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "YouListify helps people find and list local and remote service providers. Customers can search by service and location, then connect directly with providers."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "Can providers list remote services on YouListify?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Yes. Providers can list local services, remote services, or services that are both local and remote."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "Can providers create a free YouListify listing?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Providers can create a YouListify listing and start with a free introductory period. The listing can help customers find them and contact them directly."
+          }
+        },
+        {
+          "@type": "Question",
+          name: "How do customers contact providers on YouListify?",
+          acceptedAnswer: {
+            "@type": "Answer",
+            text: "Depending on what the provider chooses to display, customers can connect by call, text, email, or YouListify message."
+          }
+        }
+      ]
     }
   ]
 };
