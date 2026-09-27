@@ -14,3 +14,6 @@ on public.work_posts
 for insert
 to authenticated
 with check (auth.uid() = user_id);
+
+grant select, insert, update, delete on table public.work_posts to service_role;
+grant usage, select on sequence public.work_posts_id_seq to service_role;
