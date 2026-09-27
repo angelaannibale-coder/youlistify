@@ -47,13 +47,14 @@ export default function SignInPage() {
     });
     setResendLoading(false);
     setMessage(error ? error.message : "Verification email sent again. Check your inbox and spam folder.");
+    setShowResendVerification(Boolean(error));
   }
 
   async function createAccount(e: React.FormEvent) {
     e.preventDefault();
     if (!email || !password) { setMessage(posting?"Enter your email and choose a password to finish your post.":"Enter the email used on your listing and choose a password."); return; }
     if (!acceptedLegalTerms) { setMessage("Please agree to the Terms of Use and acknowledge the Privacy Policy to create your account."); return; }
-    setLoading(true); setMessage("");
+    setLoading(true); setMessage(""); setShowResendVerification(false);
     const redirectPath=posting?"/post-work":"/dashboard";
     try {
       const response = await fetch("/api/list-service/account", {
@@ -67,7 +68,8 @@ export default function SignInPage() {
         setMessage(result.error || "Could not create account. Please try again.");
         return;
       }
-      setMessage(posting?"Your free account was created. Check your email to confirm it, then return to your saved draft to publish your post.":"Account created. Check your email to confirm it, then sign in. Your listing will be connected automatically using the same email address.");
+      setMessage(posting?"Your free account was created. Check your email to confirm it, then return to your saved draft to publish your post. If the email does not arrive, tap Resend verification email below.":"Account created. Check your email to confirm it, then sign in. If the email does not arrive, tap Resend verification email below.");
+      setShowResendVerification(true);
     } catch {
       setLoading(false);
       setMessage("Could not create account. Please check your connection and try again.");
@@ -87,9 +89,9 @@ export default function SignInPage() {
         {accountMode && <label style={{display:"flex",alignItems:"flex-start",gap:"10px",margin:"0 0 18px",color:"#475467",fontSize:"14px",lineHeight:1.5,cursor:"pointer"}}><input type="checkbox" checked={acceptedLegalTerms} onChange={e=>setAcceptedLegalTerms(e.target.checked)} required style={{marginTop:"3px",width:"18px",height:"18px",flex:"0 0 auto"}}/><span>I agree to YouListify&apos;s <a href="/terms" target="_blank" rel="noopener noreferrer" style={{color:"#4f46e5",fontWeight:700}}>Terms of Use</a> and acknowledge the <a href="/privacy" target="_blank" rel="noopener noreferrer" style={{color:"#4f46e5",fontWeight:700}}>Privacy Policy</a>.</span></label>}
         <button type="submit" disabled={loading} style={{width:"100%",padding:"15px",border:"none",borderRadius:"10px",background:"#4f46e5",color:"white",fontSize:"17px",fontWeight:"bold",cursor:"pointer"}}>{loading?"Please wait...":accountMode?(posting?"Create Free Account & Continue":"Create My Free Account"):"Sign In"}</button>
       </form>
-      {posting && <button type="button" onClick={()=>{setPosting(false);setClaimMode(false);setPassword("");setMessage("");}} style={{width:"100%",marginTop:14,background:"white",border:"1px solid #d9dce7",padding:"13px",borderRadius:10,color:"#4f46e5",fontWeight:700,cursor:"pointer"}}>I already have an account — Sign In</button>}
+      {posting && <button type="button" onClick={()=>{setPosting(false);setClaimMode(false);setPassword("");setMessage("");setShowResendVerification(false);}} style={{width:"100%",marginTop:14,background:"white",border:"1px solid #d9dce7",padding:"13px",borderRadius:10,color:"#4f46e5",fontWeight:700,cursor:"pointer"}}>I already have an account — Sign In</button>}
       {!posting&&!claimMode && <button type="button" onClick={async()=>{if(!email){setMessage("Enter your email address first.");return;} const {error}=await supabase.auth.resetPasswordForEmail(email.trim(),{redirectTo:"https://youlistify.com/reset-password"}); setMessage(error?error.message:"Password reset email sent. Check your inbox.");}} style={{background:"none",border:"none",color:"#4f46e5",cursor:"pointer",fontSize:"15px",marginTop:"14px",padding:0,textDecoration:"underline"}}>Forgot password?</button>}
-      {!posting && <div style={{marginTop:"28px",paddingTop:"22px",borderTop:"1px solid #eee",textAlign:"center"}}><p style={{color:"#667085",fontSize:"14px",marginBottom:"10px"}}>{claimMode?"Already have an account?":"Created a listing but haven't created your account yet?"}</p><button type="button" onClick={()=>{setClaimMode(!claimMode);setMessage("");setPassword("");}} style={{background:"none",border:"none",color:"#4f46e5",fontWeight:700,cursor:"pointer",fontSize:"15px",textDecoration:"underline"}}>{claimMode?"Back to Sign In":"Create an account to manage my listing"}</button></div>}
+      {!posting && <div style={{marginTop:"28px",paddingTop:"22px",borderTop:"1px solid #eee",textAlign:"center"}}><p style={{color:"#667085",fontSize:"14px",marginBottom:"10px"}}>{claimMode?"Already have an account?":"Created a listing but haven't created your account yet?"}</p><button type="button" onClick={()=>{setClaimMode(!claimMode);setMessage("");setPassword("");setShowResendVerification(false);}} style={{background:"none",border:"none",color:"#4f46e5",fontWeight:700,cursor:"pointer",fontSize:"15px",textDecoration:"underline"}}>{claimMode?"Back to Sign In":"Create an account to manage my listing"}</button></div>}
       {message && <div style={{marginTop:"18px"}}><p style={{margin:0,color:message.startsWith("Your free account was created")||message.startsWith("Your free account was created.")||message.startsWith("Account created")||message.startsWith("Password reset")||message.startsWith("Verification email sent")?"#166534":"#b91c1c",lineHeight:1.5}}>{message}</p>{showResendVerification&&<button type="button" disabled={resendLoading} onClick={resendVerificationEmail} style={{marginTop:"12px",background:"#f5f3ff",border:"1px solid #ddd6fe",color:"#4f46e5",cursor:resendLoading?"default":"pointer",fontSize:"15px",padding:"11px 15px",borderRadius:"10px",fontWeight:700}}>{resendLoading?"Sending verification email...":"Resend verification email"}</button>}</div>}
     </div>
   </main>;
