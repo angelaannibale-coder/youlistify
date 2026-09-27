@@ -40,6 +40,8 @@ export default function DashboardPage() {
     if(!session?.user){window.location.href="/sign-in";return;}
     setUserEmail(session.user.email||"");
 
+    try{await fetch("/api/claim-work-posts",{method:"POST",headers:{Authorization:`Bearer ${session.access_token}`}});}catch{}
+
     const {data:workPosts}=await supabase.from("work_posts").select("id,post_type,title,category,status,created_at").eq("user_id",session.user.id).order("created_at",{ascending:false});
     const ownedPosts=(workPosts||[]) as WorkPost[];
     setPosts(ownedPosts);
