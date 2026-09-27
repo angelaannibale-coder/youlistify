@@ -20,7 +20,9 @@ export default function SignInPage() {
   useEffect(()=>{
     const params=new URLSearchParams(window.location.search);
     const next=params.get("next");
+    const emailParam=params.get("email");
     if(next && next.startsWith("/")) setNextPath(next);
+    if(emailParam) setEmail(emailParam);
     setPosting(params.get("posting")==="1");
   },[]);
 
@@ -55,7 +57,7 @@ export default function SignInPage() {
     if (!email || !password) { setMessage(posting?"Enter your email and choose a password to finish your post.":"Enter the email used on your listing and choose a password."); return; }
     if (!acceptedLegalTerms) { setMessage("Please agree to the Terms of Use and acknowledge the Privacy Policy to create your account."); return; }
     setLoading(true); setMessage(""); setShowResendVerification(false);
-    const redirectPath=posting?"/post-work":"/dashboard";
+    const redirectPath="/dashboard";
     try {
       const response = await fetch("/api/list-service/account", {
         method: "POST",
@@ -68,7 +70,7 @@ export default function SignInPage() {
         setMessage(result.error || "Could not create account. Please try again.");
         return;
       }
-      setMessage(posting?"Your free account was created. Check your email to confirm it, then return to your saved draft to publish your post. If the email does not arrive, tap Resend verification email below.":"Account created. Check your email to confirm it, then sign in. If the email does not arrive, tap Resend verification email below.");
+      setMessage(posting?"Your free account was created. Check your email to confirm it, then sign in to manage your saved job post. If the email does not arrive, tap Resend verification email below.":"Account created. Check your email to confirm it, then sign in. If the email does not arrive, tap Resend verification email below.");
       setShowResendVerification(true);
     } catch {
       setLoading(false);
@@ -82,7 +84,7 @@ export default function SignInPage() {
   return <main style={{minHeight:"100vh",display:"flex",alignItems:"center",justifyContent:"center",background:"#f8f8fb",padding:"24px"}}>
     <div style={{width:"100%",maxWidth:"460px",background:"white",padding:"40px",borderRadius:"20px",boxShadow:"0 10px 35px rgba(0,0,0,.08)"}}>
       <h1 style={{fontSize:"36px",marginBottom:"10px"}}>{posting?"Finish your post":claimMode?"Claim your listing":"Welcome back"}</h1>
-      <p style={{marginBottom:"28px",color:"#666",lineHeight:1.55}}>{posting?"Your draft is saved on this device. Sign in below, or create your free YouListify account to publish your post, manage and edit it later, and receive responses through YouListify.":claimMode?"Already created a listing but didn't create your account? Use the same email address from your listing and choose a password.":"Sign in to your YouListify account."}</p>
+      <p style={{marginBottom:"28px",color:"#666",lineHeight:1.55}}>{posting?"Your job post has been created. Create your free YouListify account or sign in with the same email to manage and edit it later, and receive responses through YouListify.":claimMode?"Already created a listing but didn't create your account? Use the same email address from your listing and choose a password.":"Sign in to your YouListify account."}</p>
       <form onSubmit={accountMode ? createAccount : handleSignIn} autoComplete="on">
         <input type="email" name="email" autoComplete="email" inputMode="email" placeholder="Email address" value={email} onChange={e=>setEmail(e.target.value)} required style={inputStyle}/>
         <input type="password" name="password" autoComplete={accountMode ? "new-password" : "current-password"} placeholder={accountMode ? "Choose a password" : "Password"} value={password} onChange={e=>setPassword(e.target.value)} required style={{...inputStyle,marginBottom:"18px"}}/>
