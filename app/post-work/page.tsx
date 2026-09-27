@@ -12,6 +12,8 @@ const draftKey = "youlistify-work-post-draft";
 export default function PostWorkPage() {
   const [userId,setUserId]=useState("");
   const [saving,setSaving]=useState(false);
+  const [createdPostId,setCreatedPostId]=useState<number|null>(null);
+  const [createdPostEmail,setCreatedPostEmail]=useState("");
   const [showCategorySuggestions,setShowCategorySuggestions]=useState(false);
   const [showCitySuggestions,setShowCitySuggestions]=useState(false);
   const [citySuggestions,setCitySuggestions]=useState<{city:string;state:string}[]>([]);
@@ -42,27 +44,34 @@ export default function PostWorkPage() {
   const categoryOptions=Array.from(new Set(serviceCatalog.map(service=>service.category).filter(Boolean)));
   const categorySuggestions=getCategorySuggestions(form.category,categoryOptions,serviceCatalog);
 
+  if(createdPostId)return <main style={{minHeight:"100vh",background:"#f8f8fb",padding:"40px 18px",fontFamily:"Arial,sans-serif"}}><section style={{maxWidth:760,margin:"0 auto",background:"white",borderRadius:24,padding:"clamp(28px,5vw,48px)",boxShadow:"0 10px 35px rgba(0,0,0,.07)",textAlign:"center"}}><div style={{fontSize:52,marginBottom:14}}>✓</div><h1 style={{fontSize:"clamp(34px,6vw,46px)",margin:"0 0 12px",color:"#171b36"}}>Your job post has been created!</h1><p style={{color:"#667085",fontSize:18,lineHeight:1.6,margin:"0 0 22px"}}>Your post is saved on YouListify now. Create your free account with <strong>{createdPostEmail}</strong> so you can manage and edit it later, and receive responses through YouListify.</p><div style={{display:"grid",gap:12}}><a href={`/sign-in?next=/dashboard&posting=1&email=${encodeURIComponent(createdPostEmail)}`} style={{display:"block",padding:16,borderRadius:13,background:"#5b4df5",color:"white",fontWeight:900,fontSize:17,textDecoration:"none"}}>Create Free Account</a><a href={`/work/${createdPostId}`} style={{display:"block",padding:14,borderRadius:13,background:"white",color:"#5b4df5",fontWeight:800,textDecoration:"none",border:"1px solid #ddd6fe"}}>View Job Post</a><a href="/work" style={{display:"block",padding:14,borderRadius:13,background:"white",color:"#5b4df5",fontWeight:800,textDecoration:"none",border:"1px solid #ddd6fe"}}>Back to Jobs, Gigs & Tasks</a></div></section></main>;
+
   async function submit(e:FormEvent){
     e.preventDefault();
     if(!form.contact_call&&!form.contact_text&&!form.contact_email&&!form.contact_youlistify&&!form.application_url.trim()){alert("Choose at least one way for people to respond.");return;}
 
-    if(!userId){
-      localStorage.setItem(draftKey,JSON.stringify(form));
-      window.location.href="/sign-in?next=/post-work&posting=1";
+    if(!userId&&!form.contact_email_address.trim()){
+      alert("Enter an email address so you can create an account and manage this post.");
       return;
     }
 
     localStorage.setItem(draftKey,JSON.stringify(form));
     setSaving(true);
-    const {data,error}=await supabase.from("work_posts").insert({...form,user_id:userId,pay_amount:form.pay_amount?Number(form.pay_amount):null,contact_phone:form.contact_phone.trim()||null,contact_email_address:form.contact_email_address.trim()||null,application_url:form.application_url.trim()||null}).select("id").single();
+    const {data:{session}}=await supabase.auth.getSession();
+    const response=await fetch("/api/work-posts",{method:"POST",headers:{"Content-Type":"application/json",...(session?.access_token?{Authorization:`Bearer ${session.access_token}`}:{})},body:JSON.stringify({...form,pay_amount:form.pay_amount?Number(form.pay_amount):null,contact_phone:form.contact_phone.trim()||null,contact_email_address:form.contact_email_address.trim()||null,application_url:form.application_url.trim()||null})});
+    const result=await response.json().catch(()=>({error:"Could not create post"}));
     setSaving(false);
-    if(error){
-      console.error("Work post publish error",error);
-      alert(`We couldn't publish this yet. Your post is still saved.\n\n${error.message}${error.code?`\n\nCode: ${error.code}`:""}`);
+    if(!response.ok){
+      alert(`We couldn't create this post yet. Your post is still saved.\n\n${result.error||"Please try again."}`);
       return;
     }
     localStorage.removeItem(draftKey);
-    window.location.href=`/work/${data.id}`;
+    if(session?.user?.id){
+      window.location.href=`/work/${result.post.id}`;
+      return;
+    }
+    setCreatedPostId(Number(result.post.id));
+    setCreatedPostEmail(form.contact_email_address.trim());
   }
 
   const input={width:"100%",padding:"14px 15px",border:"1px solid #d9dce7",borderRadius:12,fontSize:16,boxSizing:"border-box" as const};
