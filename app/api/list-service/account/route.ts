@@ -1,7 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 
-const emailRedirectTo = "https://youlistify.com/dashboard";
+function safeRedirectPath(value: unknown) {
+  const path = String(value || "").trim();
+  return path === "/post-work" ? path : "/dashboard";
+}
 
 export async function POST(req: NextRequest) {
   try {
@@ -15,6 +18,8 @@ export async function POST(req: NextRequest) {
     const body = await req.json().catch(() => null);
     const email = String(body?.email || "").trim();
     const password = String(body?.password || "");
+    const redirectPath = safeRedirectPath(body?.redirectPath);
+    const emailRedirectTo = `https://youlistify.com${redirectPath}`;
 
     if (!email || !password) {
       return NextResponse.json({ error: "Please enter an email and password." }, { status: 400 });
