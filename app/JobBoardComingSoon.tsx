@@ -28,7 +28,7 @@ export default function JobBoardComingSoon() {
           <p>Whether it’s an ongoing job, freelance gig or one-time task, tell people what you need and let the right person respond.</p>
           <div className="yl-work-offer">
             <strong>🎉 Post FREE</strong>
-            <span>No fees to post jobs, gigs, or tasks.</span>
+            <span>No fees to post jobs, gigs, or tasks. No credit card required.</span>
           </div>
           <div className="yl-work-actions">
             <a className="yl-work-primary" href="/post-work">Post FREE</a>
