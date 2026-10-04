@@ -8,11 +8,11 @@ export default function JobBoardComingSoon() {
 
   useEffect(() => {
     if (window.location.pathname !== "/") return;
-    const categoriesSection = document.querySelector("#categories");
-    if (!categoriesSection?.parentElement) return;
+    const providerSection = document.querySelector("#providers");
+    if (!providerSection?.parentElement) return;
     const node = document.createElement("div");
     node.id = "youlistify-find-or-post";
-    categoriesSection.insertAdjacentElement("afterend", node);
+    providerSection.insertAdjacentElement("afterend", node);
     setMountNode(node);
     return () => node.remove();
   }, []);
