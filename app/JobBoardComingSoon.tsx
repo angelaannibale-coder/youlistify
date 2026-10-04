@@ -33,6 +33,7 @@ export default function JobBoardComingSoon() {
           <div className="yl-work-actions">
             <a className="yl-work-primary" href="/post-work">Post a Job, Gig or Task</a>
           </div>
+          <a className="yl-work-small-link" href="/work">Looking for work? View open jobs, gigs & tasks.</a>
         </div>
       </div>
     </section>,
