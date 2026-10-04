@@ -21,6 +21,8 @@ service_mode?: string;
 mobile_service?: boolean;
 zip_code?: string;
 profile_photo?: string;
+gallery_photos?: string[];
+created_at?: string;
 };
 
 const providers: Provider[] = [
@@ -38,6 +40,33 @@ function initialsFor(displayName: string) {
   if (words.length === 0) return "P";
   if (words.length === 1) return words[0].slice(0, 2).toUpperCase();
   return `${words[0][0]}${words[1][0]}`.toUpperCase();
+}
+
+
+function profileCompletenessScore(p: Provider) {
+  let score = 0;
+  const aboutLength = (p.response || "").trim().length;
+  const contactCount = [p.contact_youlistify, p.contact_email, p.contact_text, p.contact_call].filter(Boolean).length;
+
+  if (p.available_now) score += 1000;
+  if (p.contact_youlistify) score += 120;
+  if (aboutLength >= 40) score += 110;
+  else if (aboutLength >= 15) score += 55;
+  if (p.profile_photo) score += 85;
+  score += Math.min((p.gallery_photos || []).length, 3) * 45;
+  score += Math.min(p.specialties.length, 5) * 28;
+  if ((p.pricing_methods || []).length > 0) score += 60;
+  score += contactCount * 22;
+  if (p.city) score += 18;
+  if (p.zip_code) score += 12;
+  if (p.service_mode) score += 12;
+
+  return score;
+}
+
+function newestProviderTime(p: Provider) {
+  const time = p.created_at ? new Date(p.created_at).getTime() : 0;
+  return Number.isFinite(time) ? time : 0;
 }
 
 export default function Home(){
@@ -159,6 +188,7 @@ const searchableProviders: Provider[] = dbProviders.length
       const displayName = publicProviderName(p);
       return {
       id: p.id,
+      created_at: p.created_at || "",
       slug: `${(p.name || "provider").toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "")}-${p.id}`,
       name: displayName,
       category: p.category || "",
@@ -167,6 +197,7 @@ const searchableProviders: Provider[] = dbProviders.length
       mobile_service: p.mobile_service ?? false,
       zip_code: p.zip_code || "",
       profile_photo: p.profile_photo || "",
+      gallery_photos: Array.isArray(p.gallery_photos) ? p.gallery_photos : [],
       rating: 0,
       reviews: 0,
       response: p.bio || "",
@@ -246,7 +277,7 @@ const filtered = useMemo(()=>{
   const s = (mobileOnly ? coreServiceQuery(service) : service).trim().toLowerCase();
   const l = location.trim().toLowerCase();
 
-  return searchableProviders.filter((p) => {
+  const matches = searchableProviders.filter((p) => {
     const serviceMatch = !s || p.category.toLowerCase().includes(s) || p.name.toLowerCase().includes(s) || p.specialties.some((x) => textMatchesService(s, x));
     if (!serviceMatch) return false;
     if (mobileOnly && !p.mobile_service) return false;
@@ -266,6 +297,15 @@ const filtered = useMemo(()=>{
 
     return localMatch || remoteMatch;
   });
+
+  if (!s && !l && !remoteSearch) {
+    return [...matches].sort((a, b) =>
+      profileCompletenessScore(b) - profileCompletenessScore(a) ||
+      newestProviderTime(b) - newestProviderTime(a)
+    );
+  }
+
+  return matches;
 }, [service, location, remoteSearch, dbProviders]);
 
 function selectRemoteLocation(){
