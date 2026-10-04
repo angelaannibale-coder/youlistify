@@ -394,6 +394,7 @@ return <main>
 <div className="header-actions">
 <a className="work-nav-link" data-work-nav="true" href="/work">Find Work</a>
 <a className="list-link" href="/list-service">List Your Service</a>
+<a className="post-work-link" href="/post-work">Post Job · Gig · Task</a>
 <span className="desktop-auth">{isSignedIn ? (<><a className="sign-in" href="/dashboard">My Dashboard</a><button type="button" onClick={handleSignOut}>Sign out</button></>) : (<a className="sign-in" href="/sign-in">Sign in</a>)}</span>
 </div>
 <div className="top-value-line">List free. Post free. Contact directly.</div>
