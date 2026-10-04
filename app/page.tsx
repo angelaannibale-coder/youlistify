@@ -349,7 +349,7 @@ return <main>
 {isSignedIn ? (<><a className="mobile-auth-link" href="/dashboard">Dashboard</a><button className="mobile-auth-link mobile-sign-out" type="button" onClick={handleSignOut}>Sign out</button></>) : (<a className="mobile-auth-link" href="/sign-in">Sign in</a>)}
 </nav>
 <div className="header-actions">
-<a className="work-nav-link" data-work-nav="true" href="/work">Jobs / Gigs / Tasks</a>
+<a className="work-nav-link" data-work-nav="true" href="/work">Find Work</a>
 <a className="list-link" href="/list-service">List Your Service</a>
 <span className="desktop-auth">{isSignedIn ? (<><a className="sign-in" href="/dashboard">My Dashboard</a><button type="button" onClick={handleSignOut}>Sign out</button></>) : (<a className="sign-in" href="/sign-in">Sign in</a>)}</span>
 </div>
