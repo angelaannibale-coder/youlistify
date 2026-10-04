@@ -773,3 +773,43 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     margin-top:-2px;
   }
 }
+
+/* Add a clear job-posting path without crowding the two main header actions. */
+.youlistify-brand-refresh .topbar .post-work-link{
+  grid-column:1 / -1;
+  min-height:44px;
+  border-radius:11px;
+  background:rgba(255,255,255,.08);
+  border:1px solid rgba(255,255,255,.18);
+  color:#fff;
+  font-weight:900;
+  text-decoration:none;
+}
+
+@media(min-width:721px){
+  .youlistify-brand-refresh .topbar .header-actions{
+    grid-template-columns:repeat(2,minmax(0,1fr));
+  }
+
+  .youlistify-brand-refresh .topbar .post-work-link{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+  }
+}
+
+@media(max-width:720px){
+  .youlistify-brand-refresh .topbar .header-actions{
+    grid-template-columns:1fr 1fr;
+  }
+
+  .youlistify-brand-refresh .topbar .post-work-link{
+    display:flex!important;
+    align-items:center;
+    justify-content:center;
+    min-height:46px!important;
+    padding:0 14px!important;
+    font-size:clamp(14px,3.7vw,17px)!important;
+  }
+}
