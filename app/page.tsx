@@ -45,19 +45,23 @@ function initialsFor(displayName: string) {
 
 function profileCompletenessScore(p: Provider) {
   let score = 0;
-  const aboutLength = (p.response || "").trim().length;
+  const about = (p.response || "").trim();
+  const aboutLength = about.length;
   const contactCount = [p.contact_youlistify, p.contact_email, p.contact_text, p.contact_call].filter(Boolean).length;
+  const galleryCount = (p.gallery_photos || []).length;
 
-  if (p.available_now) score += 1000;
-  if (p.contact_youlistify) score += 120;
-  if (aboutLength >= 40) score += 110;
-  else if (aboutLength >= 15) score += 55;
-  if (p.profile_photo) score += 85;
-  score += Math.min((p.gallery_photos || []).length, 3) * 45;
-  score += Math.min(p.specialties.length, 5) * 28;
-  if ((p.pricing_methods || []).length > 0) score += 60;
-  score += contactCount * 22;
-  if (p.city) score += 18;
+  if (p.available_now) score += 300;
+  if (p.profile_photo) score += 450;
+  if (galleryCount > 0) score += 260 + Math.min(galleryCount, 3) * 75;
+  if (aboutLength >= 180) score += 360;
+  else if (aboutLength >= 80) score += 260;
+  else if (aboutLength >= 40) score += 120;
+  else if (aboutLength >= 15) score += 35;
+  score += Math.min(p.specialties.length, 8) * 55;
+  if ((p.pricing_methods || []).length > 0) score += 120;
+  if (p.contact_youlistify) score += 100;
+  score += contactCount * 28;
+  if (p.city) score += 20;
   if (p.zip_code) score += 12;
   if (p.service_mode) score += 12;
 
