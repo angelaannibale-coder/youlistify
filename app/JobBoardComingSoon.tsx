@@ -8,11 +8,11 @@ export default function JobBoardComingSoon() {
 
   useEffect(() => {
     if (window.location.pathname !== "/") return;
-    const categoriesSection = document.querySelector("#categories");
-    if (!categoriesSection?.parentElement) return;
+    const providerSection = document.querySelector("#providers");
+    if (!providerSection?.parentElement) return;
     const node = document.createElement("div");
     node.id = "youlistify-find-or-post";
-    categoriesSection.insertAdjacentElement("afterend", node);
+    providerSection.insertAdjacentElement("afterend", node);
     setMountNode(node);
     return () => node.remove();
   }, []);
@@ -21,24 +21,19 @@ export default function JobBoardComingSoon() {
 
   return createPortal(
     <section className="yl-work-zone">
-      <div className="yl-work-zone-inner">
+      <div className="yl-work-zone-inner yl-work-zone-single">
         <div className="yl-work-zone-copy">
           <span className="yl-work-kicker">JOBS · GIGS · TASKS</span>
-          <h2>Can’t find exactly what you need? Post it.</h2>
-          <p>Whether it’s an ongoing job, freelance gig or one-time task, tell people what you need and let the right person respond.</p>
+          <h2>Post available work. Find people fast.</h2>
+          <p>Need help with a job, gig, task, errand, project, or one-time job? Post it free so local or remote workers can respond.</p>
           <div className="yl-work-offer">
-            <strong>🎉 Post FREE for your first 3 months</strong>
-            <span>Then one simple yearly fee for unlimited posts.</span>
+            <strong>🎉 Free to post</strong>
+            <span>No fees to post jobs, gigs, or tasks. No credit card required.</span>
           </div>
           <div className="yl-work-actions">
-            <a className="yl-work-primary" href="/post-work">Post FREE</a>
-            <a className="yl-work-secondary" href="/work">Browse Jobs, Gigs & Tasks</a>
+            <a className="yl-work-primary" href="/post-work">Post Job · Gig · Task</a>
           </div>
-        </div>
-        <div className="yl-work-types" aria-label="Types of work posts">
-          <article><span>JOB</span><strong>Ongoing work</strong><p>Full-time, part-time or recurring opportunities.</p></article>
-          <article><span>GIG</span><strong>Freelance & contract</strong><p>Projects, temporary work and flexible opportunities.</p></article>
-          <article><span>TASK</span><strong>One-time help</strong><p>Something specific you need done now or soon.</p></article>
+          <a className="yl-work-small-link" href="/work">Looking for work? View open jobs, gigs & tasks.</a>
         </div>
       </div>
     </section>,

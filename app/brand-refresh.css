@@ -12,7 +12,8 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
 
 .youlistify-brand-refresh .yl-work-zone{padding:64px 20px;background:var(--yl-navy);color:#fff;border:0}.youlistify-brand-refresh .yl-work-zone-inner{max-width:1120px;margin:0 auto;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);gap:42px;align-items:center}.youlistify-brand-refresh .yl-work-kicker{display:inline-block;color:#ff8bb2;font-size:12px;font-weight:900;letter-spacing:.14em;margin-bottom:12px}.youlistify-brand-refresh .yl-work-zone h2{font-size:clamp(32px,4.5vw,50px);line-height:1.04;letter-spacing:-.04em;margin:0 0 16px;color:#fff}.youlistify-brand-refresh .yl-work-zone-copy>p{font-size:17px;line-height:1.65;color:#d8dbea;margin:0 0 20px}.youlistify-brand-refresh .yl-work-offer{display:flex;flex-direction:column;gap:3px;padding:14px 16px;border:1px solid rgba(255,255,255,.15);border-radius:15px;background:rgba(255,255,255,.07);margin-bottom:20px}.youlistify-brand-refresh .yl-work-offer strong{color:#fff}.youlistify-brand-refresh .yl-work-offer span{font-size:13px;color:#cfd3e1}.youlistify-brand-refresh .yl-work-actions{display:flex;gap:10px;flex-wrap:wrap}.youlistify-brand-refresh .yl-work-actions a{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:0 18px;border-radius:11px;font-weight:800;text-decoration:none}.youlistify-brand-refresh .yl-work-primary{background:linear-gradient(135deg,var(--yl-pink),#ff1670);color:#fff}.youlistify-brand-refresh .yl-work-secondary{border:1px solid rgba(255,255,255,.28);color:#fff;background:transparent}.youlistify-brand-refresh .yl-work-types{display:grid;gap:10px}.youlistify-brand-refresh .yl-work-types article{padding:17px 18px;border:1px solid rgba(255,255,255,.13);border-radius:16px;background:rgba(255,255,255,.065);box-shadow:none!important}.youlistify-brand-refresh .yl-work-types article>span{display:inline-block;color:#ff8bb2;font-size:11px;font-weight:900;letter-spacing:.12em;margin-bottom:5px}.youlistify-brand-refresh .yl-work-types strong{display:block;color:#fff;font-size:17px;margin-bottom:3px}.youlistify-brand-refresh .yl-work-types p{margin:0;color:#cfd3e1;font-size:14px;line-height:1.45}
 
-.youlistify-brand-refresh .categories{background:var(--yl-soft)}.youlistify-brand-refresh .category{border-color:#e7e1f2;border-radius:18px;box-shadow:0 8px 24px rgba(14,19,40,.035)}.youlistify-brand-refresh .category-icon{width:46px;height:46px;border-radius:50%;color:var(--yl-pink);background:linear-gradient(135deg,#23104d,#0e1836);box-shadow:0 8px 20px rgba(14,19,40,.13)}.youlistify-brand-refresh .kicker,.youlistify-brand-refresh .category-head a{color:var(--yl-pink)}.youlistify-brand-refresh .tag,.youlistify-brand-refresh .chips span{background:#f4eaff;color:#5b20c8}.youlistify-brand-refresh .provider-actions button,.youlistify-brand-refresh .call-action,.youlistify-brand-refresh .suggestion-button{background:linear-gradient(135deg,var(--yl-pink),#ff1670)}.youlistify-brand-refresh .provider-actions .secondary{background:var(--yl-navy);color:#fff}.youlistify-brand-refresh .how{background:#fff}.youlistify-brand-refresh .steps article{border-radius:22px;border-color:#e7e1f2}.youlistify-brand-refresh .steps article>span{color:#cbb8ff}.youlistify-brand-refresh .provider-cta{background:radial-gradient(circle at 86% 82%,rgba(255,45,117,.30),transparent 28%),radial-gradient(circle at 15% 10%,rgba(122,61,255,.50),transparent 34%),linear-gradient(135deg,#07142d,#25104e)}.youlistify-brand-refresh .cta-card{border:1px solid #ece5f6}.youlistify-brand-refresh .suggestion-card{border-color:#e7e1f2}
+.youlistify-brand-refresh .categories{background:var(--yl-soft)}.youlistify-brand-refresh .category{border-color:#e7e1f2;border-radius:18px;box-shadow:0 8px 24px rgba(14,19,40,.035)}.youlistify-brand-refresh .category-icon{width:46px;height:46px;border-radius:50%;color:var(--yl-pink);background:linear-gradient(135deg,#23104d,#0e1836);box-shadow:0 8px 20px rgba(14,19,40,.13)}.youlistify-brand-refresh .kicker,.youlistify-brand-refresh .category-head a{color:var(--yl-pink)}.youlistify-brand-refresh .tag,.youlistify-brand-refresh .chips span{background:#f4eaff;color:#5b20c8}.youlistify-brand-refresh .provider-actions button,.youlistify-brand-refresh .provider-actions a,.youlistify-brand-refresh .call-action,.youlistify-brand-refresh .suggestion-button{background:linear-gradient(135deg,var(--yl-pink),#ff1670)}.youlistify-brand-refresh .provider-actions a{display:inline-flex;align-items:center;justify-content:center;color:#fff;text-decoration:none;font-weight:800;border-radius:14px;padding:12px 18px;min-height:44px;box-sizing:border-box}
+.youlistify-brand-refresh .provider-actions .secondary{background:var(--yl-navy);color:#fff}.youlistify-brand-refresh .how{background:#fff}.youlistify-brand-refresh .steps article{border-radius:22px;border-color:#e7e1f2}.youlistify-brand-refresh .steps article>span{color:#cbb8ff}.youlistify-brand-refresh .provider-cta{background:radial-gradient(circle at 86% 82%,rgba(255,45,117,.30),transparent 28%),radial-gradient(circle at 15% 10%,rgba(122,61,255,.50),transparent 34%),linear-gradient(135deg,#07142d,#25104e)}.youlistify-brand-refresh .cta-card{border:1px solid #ece5f6}.youlistify-brand-refresh .suggestion-card{border-color:#e7e1f2}
 
 /* Free-listing offer is a standalone box directly beneath the mini-site section. */
 .youlistify-brand-refresh .provider-cta{margin-bottom:0}.youlistify-brand-refresh #founding-offer-provider{width:auto;margin:16px 5.3vw 70px;background:transparent;padding:0}.youlistify-brand-refresh #founding-offer-provider .yl-free-offer{width:100%;max-width:none;margin:0;padding:0;box-sizing:border-box}.youlistify-brand-refresh #founding-offer-provider .yl-free-offer-card{background:linear-gradient(135deg,#151c3d,#38205e);border:1px solid rgba(255,255,255,.18)}.youlistify-brand-refresh .yl-free-offer-card{display:flex;align-items:center;justify-content:space-between;gap:22px;padding:16px 18px;border:1px solid rgba(255,255,255,.18);border-radius:16px;background:rgba(255,255,255,.10);box-shadow:none}.youlistify-brand-refresh .yl-free-offer-title{color:#fff;font-weight:900;font-size:17px}.youlistify-brand-refresh .yl-free-offer-subtitle{color:#ff8bb2;font-weight:800;font-size:14px;margin-top:2px}.youlistify-brand-refresh .yl-free-offer-detail{color:#d9dbea;font-size:13px;line-height:1.45;margin-top:3px}.youlistify-brand-refresh .yl-free-offer-button{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;min-height:43px;padding:0 16px;border-radius:10px;background:linear-gradient(135deg,var(--yl-pink),#ff1670);color:#fff;font-weight:800;text-decoration:none;font-size:13px}
@@ -702,4 +703,73 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
 /* Fine-tune the sun over the enlarged first i. */
 .youlistify-brand-refresh .topbar .header-sun-i svg{
   left:calc(50% + 4px);
+}
+
+
+/* Make the work posting block a focused conversion section. */
+.youlistify-brand-refresh .yl-work-zone-single{
+  display:block;
+  max-width:980px;
+}
+.youlistify-brand-refresh .yl-work-zone-single .yl-work-zone-copy{
+  max-width:860px;
+}
+.youlistify-brand-refresh .yl-work-zone-single .yl-work-actions{
+  display:block;
+}
+.youlistify-brand-refresh .yl-work-zone-single .yl-work-primary{
+  width:min(100%,560px);
+  min-height:58px;
+  font-size:1.05rem;
+}
+@media(max-width:720px){
+  .youlistify-brand-refresh .yl-work-zone-single .yl-work-primary{
+    width:100%;
+    min-height:56px;
+  }
+}
+
+
+/* Keep the worker path available without competing with posting. */
+.youlistify-brand-refresh .yl-work-small-link{
+  display:inline-flex;
+  margin-top:16px;
+  color:#d8dbea;
+  font-size:.95rem;
+  font-weight:800;
+  text-decoration:underline;
+  text-underline-offset:4px;
+}
+.youlistify-brand-refresh .yl-work-small-link:hover{
+  color:#fff;
+}
+
+/* Tiny proof line under the primary mobile actions. */
+.youlistify-brand-refresh .topbar .top-value-line{
+  display:none;
+}
+
+.youlistify-brand-refresh .yl-free-offer-title{
+  line-height:1.25;
+}
+
+@media(max-width:720px){
+  .youlistify-brand-refresh .topbar{
+    grid-template-areas:
+      "brand"
+      "actions"
+      "value"
+      "nav"!important;
+  }
+
+  .youlistify-brand-refresh .topbar .top-value-line{
+    grid-area:value;
+    display:block;
+    color:#d8dbea;
+    text-align:center;
+    font-size:clamp(11px,3vw,14px);
+    font-weight:800;
+    line-height:1.25;
+    margin-top:-2px;
+  }
 }
