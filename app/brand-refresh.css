@@ -703,3 +703,37 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
 .youlistify-brand-refresh .topbar .header-sun-i svg{
   left:calc(50% + 4px);
 }
+
+
+/* Keep the mini-site card compact and direct. */
+.youlistify-brand-refresh .provider-cta .cta-card{
+  padding:22px 24px;
+  border-radius:22px;
+}
+.youlistify-brand-refresh .provider-cta .cta-card h3{
+  margin:0;
+  font-size:clamp(1.8rem,3.2vw,2.7rem);
+  line-height:1.08;
+  letter-spacing:-.045em;
+}
+.youlistify-brand-refresh .provider-cta .cta-card p{
+  margin:18px 0 0;
+  font-size:1.15rem;
+  line-height:1.35;
+}
+@media(max-width:720px){
+  .youlistify-brand-refresh .provider-cta{
+    gap:24px;
+  }
+  .youlistify-brand-refresh .provider-cta .cta-card{
+    padding:22px 22px;
+    border-radius:20px;
+  }
+  .youlistify-brand-refresh .provider-cta .cta-card h3{
+    font-size:clamp(1.65rem,8vw,2.15rem);
+  }
+  .youlistify-brand-refresh .provider-cta .cta-card p{
+    margin-top:14px;
+    font-size:1rem;
+  }
+}
