@@ -31,7 +31,7 @@ export default function JobBoardComingSoon() {
             <span>No fees to post jobs, gigs, or tasks. No credit card required.</span>
           </div>
           <div className="yl-work-actions">
-            <a className="yl-work-primary" href="/post-work">Post a Job, Gig or Task</a>
+            <a className="yl-work-primary" href="/post-work">Post Job · Gig · Task</a>
           </div>
           <a className="yl-work-small-link" href="/work">Looking for work? View open jobs, gigs & tasks.</a>
         </div>
