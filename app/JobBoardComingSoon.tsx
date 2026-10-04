@@ -21,24 +21,18 @@ export default function JobBoardComingSoon() {
 
   return createPortal(
     <section className="yl-work-zone">
-      <div className="yl-work-zone-inner">
+      <div className="yl-work-zone-inner yl-work-zone-single">
         <div className="yl-work-zone-copy">
           <span className="yl-work-kicker">JOBS · GIGS · TASKS</span>
-          <h2>Can’t find exactly what you need? Post it.</h2>
-          <p>Whether it’s an ongoing job, freelance gig or one-time task, tell people what you need and let the right person respond.</p>
+          <h2>Post available work. Find people fast.</h2>
+          <p>Need help with a job, gig, task, errand, project, or one-time job? Post it free so local or remote workers can respond.</p>
           <div className="yl-work-offer">
-            <strong>🎉 Post FREE</strong>
+            <strong>🎉 Free to post</strong>
             <span>No fees to post jobs, gigs, or tasks. No credit card required.</span>
           </div>
           <div className="yl-work-actions">
-            <a className="yl-work-primary" href="/post-work">Post FREE</a>
-            <a className="yl-work-secondary" href="/work">Browse Jobs, Gigs & Tasks</a>
+            <a className="yl-work-primary" href="/post-work">Post a Job, Gig or Task</a>
           </div>
-        </div>
-        <div className="yl-work-types" aria-label="Types of work posts">
-          <article><span>JOB</span><strong>Ongoing work</strong><p>Full-time, part-time or recurring opportunities.</p></article>
-          <article><span>GIG</span><strong>Freelance & contract</strong><p>Projects, temporary work and flexible opportunities.</p></article>
-          <article><span>TASK</span><strong>One-time help</strong><p>Something specific you need done now or soon.</p></article>
         </div>
       </div>
     </section>,
