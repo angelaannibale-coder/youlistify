@@ -727,3 +727,18 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
     min-height:56px;
   }
 }
+
+
+/* Keep the worker path available without competing with posting. */
+.youlistify-brand-refresh .yl-work-small-link{
+  display:inline-flex;
+  margin-top:16px;
+  color:#d8dbea;
+  font-size:.95rem;
+  font-weight:800;
+  text-decoration:underline;
+  text-underline-offset:4px;
+}
+.youlistify-brand-refresh .yl-work-small-link:hover{
+  color:#fff;
+}
