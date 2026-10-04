@@ -19,9 +19,10 @@ function OfferCard({ compact = false, showButton = true }: { compact?: boolean; 
       <div className="yl-free-offer-card">
         <div className="yl-free-offer-copy">
           <div className="yl-free-offer-title">🎉 Create Your Free Listing</div>
-          <div className="yl-free-offer-subtitle">Free</div>
+          <div className="yl-free-offer-subtitle">Free for your first 3 months</div>
           <div className="yl-free-offer-detail">
             No commissions. No fees per lead. No credit card required.
+            {!compact && " After your free period, you can choose whether to continue for one simple yearly fee. The price will be clearly disclosed before any charge."}
           </div>
         </div>
         {showButton && <a href="/list-service" className="yl-free-offer-button">Create Your Free Listing</a>}
