@@ -742,3 +742,33 @@ body.youlistify-brand-refresh{--yl-navy:#0e1328;--yl-navy-2:#111a3c;--yl-pink:#f
 .youlistify-brand-refresh .yl-work-small-link:hover{
   color:#fff;
 }
+
+/* Tiny proof line under the primary mobile actions. */
+.youlistify-brand-refresh .topbar .top-value-line{
+  display:none;
+}
+
+.youlistify-brand-refresh .yl-free-offer-title{
+  line-height:1.25;
+}
+
+@media(max-width:720px){
+  .youlistify-brand-refresh .topbar{
+    grid-template-areas:
+      "brand"
+      "actions"
+      "value"
+      "nav"!important;
+  }
+
+  .youlistify-brand-refresh .topbar .top-value-line{
+    grid-area:value;
+    display:block;
+    color:#d8dbea;
+    text-align:center;
+    font-size:clamp(11px,3vw,14px);
+    font-weight:800;
+    line-height:1.25;
+    margin-top:-2px;
+  }
+}
