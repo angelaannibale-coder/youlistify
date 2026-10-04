@@ -19,7 +19,6 @@ function OfferCard({ compact = false, showButton = true }: { compact?: boolean; 
       <div className="yl-free-offer-card">
         <div className="yl-free-offer-copy">
           <div className="yl-free-offer-title">🎉 Create Your Free Listing</div>
-          <div className="yl-free-offer-subtitle">Free</div>
           <div className="yl-free-offer-detail">
             No commissions. No fees per lead. No credit card required.
           </div>
